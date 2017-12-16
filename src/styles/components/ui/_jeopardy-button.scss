@@ -1,0 +1,12 @@
+.jeopardy-button {
+  display: flex;
+  padding: 10px 20px;
+  justify-content: center;
+  max-width: 120px;
+  margin: 15px;
+  border-radius: 5px;
+
+  .button {
+    color: #fff;
+  }
+}

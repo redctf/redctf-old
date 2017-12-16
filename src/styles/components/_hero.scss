@@ -1,0 +1,33 @@
+header {
+  position: relative;
+  height: 60vh;
+  background: linear-gradient( 90deg, #fc3476, #ff1111 ) no-repeat center center fixed;
+}
+
+h1 {
+  padding: 50px 0;
+  font-size: 125px;
+  font-weight: 100;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  margin: 0px 0px 0px -5px;
+  text-transform: lowercase;
+  letter-spacing: -6px;
+}
+
+.red {
+  color: #9c0404; /* #ffc500; */
+  letter-spacing: -10px;
+}
+
+header {
+  color: white;
+}
+
+svg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 25vh;
+  /* set height to pixels if you want angle to change with screen width */
+}

@@ -1,0 +1,23 @@
+.category {
+  &-horizontal {
+    border-bottom: 1px solid #ccc;
+    .challengeRowCol {
+      .horizontal {
+        flex-direction: row;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  &-vertical .challengeRowCol {    
+    .vertical {
+      flex-direction: column;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.challengeCategory {
+  min-width: 150px;
+}
