@@ -2,12 +2,11 @@
 
 The most customizeable CTF Framework built with modern technologies.
 
-## Built With:
-
 #### Client
 * ReactJS 15
 * React Router 4
 * Webpack 3
+* Mobx
 
 #### Realtime Integration
 * Horizon
