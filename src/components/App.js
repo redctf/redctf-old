@@ -1,13 +1,19 @@
-import React, { Component } from "react";
-import { Route, Link, withRouter } from "react-router-dom";
-import { inject, observer } from "mobx-react";
-import LazyRoute from "lazy-route";
-import DevTools from "mobx-react-devtools";
+import React, { Component } from 'react';
+import { Route, Link, withRouter } from 'react-router-dom';
+import { inject, observer } from 'mobx-react';
+import LazyRoute from 'lazy-route';
+import DevTools from 'mobx-react-devtools';
 
-import TopBar from "./TopBar";
+/* Horizon */
+import Horizon from '@horizon/client';
+const horizon = new Horizon({host: 'localhost:8181'});
+const users_collection = horizon('users');
+
+/* Components */
+import TopBar from './TopBar';
 
 @withRouter
-@inject("store")
+@inject('store')
 @observer
 export default class App extends Component {
 	constructor(props) {
@@ -16,6 +22,21 @@ export default class App extends Component {
 	}
 	componentDidMount() {
 		this.authenticate();
+
+		horizon.connect();
+
+    horizon.onReady().subscribe(() => {
+      console.info('Connected to Horizon server');
+    });
+ 
+    horizon.onDisconnected().subscribe(() => {
+      console.info('Disconnected from Horizon server');
+    });
+
+    users_collection.order('id').watch().subscribe(allItems => {
+      console.log({users: allItems}),
+      error => console.error(error)	
+    });
 	}
 	authenticate(e) {
 		if (e) e.preventDefault();
@@ -30,61 +51,61 @@ export default class App extends Component {
 			testval
 		} = this.store.appState;
 		return (
-			<div className="wrapper">
+			<div className='wrapper'>
 				{/*<DevTools />*/}
 				<TopBar />
 
 				<Route
 					exact
-					path="/"
+					path='/'
 					render={props => (
-						<LazyRoute {...props} component={import("./Home")} />
+						<LazyRoute {...props} component={import('./Home')} />
 					)}
 				/>
 				<Route
 					exact
-					path="/posts"
+					path='/posts'
 					render={props => (
-						<LazyRoute {...props} component={import("../pages/SubPage")} />
+						<LazyRoute {...props} component={import('../pages/SubPage')} />
 					)}
 				/>
 				<Route
 					exact
-					path="/challenges"
+					path='/challenges'
 					render={props => (
-						<LazyRoute {...props} component={import("../pages/Challenges")} />
+						<LazyRoute {...props} component={import('../pages/Challenges')} />
 					)}
 				/>
 				<Route
 					exact
-					path="/scoreboard"
+					path='/scoreboard'
 					render={props => (
-						<LazyRoute {...props} component={import("../pages/Scoreboard")} />
+						<LazyRoute {...props} component={import('../pages/Scoreboard')} />
 					)}
 				/>
 				<Route
 					exact
-					path="/posts/:id"
+					path='/posts/:id'
 					render={props => (
-						<LazyRoute {...props} component={import("../pages/SubItem")} />
+						<LazyRoute {...props} component={import('../pages/SubItem')} />
 					)}
 				/>
 				<Route
 					exact
-					path="/login"
+					path='/login'
 					render={props => (
-						<LazyRoute {...props} component={import("./Login")} />
+						<LazyRoute {...props} component={import('./Login')} />
 					)}
 				/>
 				<footer>
 					{testval}
-					<a href="https://twitter.com/redctf" target="_blank">
+					<a href='https://twitter.com/redctf' target='_blank'>
 						@red_ctf
 					</a>
-					{" "}
+					{' '}
 					| github:
-					{" "}
-					<a href="https://github.com/redctf/redctf" target="_blank">
+					{' '}
+					<a href='https://github.com/redctf/redctf' target='_blank'>
 						redctf
 					</a>
 				</footer>
