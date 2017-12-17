@@ -6,6 +6,10 @@
   margin: 15px;
   border-radius: 5px;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   .button {
     color: #fff;
   }

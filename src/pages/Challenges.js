@@ -31,9 +31,9 @@ export default class Challenges extends Component {
     // Iterate over challenge category JSON 
     const categories = fakeCategoryData.map((category) => {
       return (
-        <div className={`category-${categoryOrientationClass}`}>
-          <ChallengeRowCol key={category}
-            category={category}
+        <div key={category}
+          className={`category-${categoryOrientationClass}`}>
+          <ChallengeRowCol category={category}
             vertical={items.verticalChallengeOrientation}/>
         </div>
       )

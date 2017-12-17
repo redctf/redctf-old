@@ -48,6 +48,7 @@ export default class ChallengeRowCol extends Component {
         <JeopardyButton key={`${challenge.value}-${challenge.name}`}
           value={challenge.value}
           name={challenge.name}
+          category={this.props.category}
           description={challenge.description}
           solved={challenge.solved}
         />
