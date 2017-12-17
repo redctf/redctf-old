@@ -29,19 +29,19 @@ Run the following (in order):
 
 1) To Start Rethinkdb
 
-`rethinkdb`
+    `rethinkdb`
 
 2) To Run Horizon Server
 
-`hz serve --dev`
+    `hz serve --dev`
 
 3) To Start Client
 
-`npm start`
+    `npm start`
 
 
 
 ## Sources
 
 * Horizon
-** https://appendto.com/2017/08/using-horizonrethinkdb-react/
+   * https://appendto.com/2017/08/using-horizonrethinkdb-react/
