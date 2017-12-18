@@ -40,11 +40,15 @@ export default class Challenges extends Component {
             vertical={verticalChallengeOrientation}/>
         </div>
       )
-    })
+    });
 
     return (
       <div className={`page posts post-${categoryOrientationClass}`}>
         {categories}
+        <span className='legend'>
+          <span className='solved-key'/> Solved
+          <span className='unsolved-key'/> Unsolved
+        </span>
       </div>
     );
   }

@@ -36,3 +36,25 @@
   align-items: center;
   padding-top: 100px !important;
 }
+
+.legend {
+  width: 100%;
+  align-items: center;
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  .solved-key {
+    background-color: green;
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .unsolved-key {
+    background-color: blue;
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    margin: 0px 5px 0px 15px;
+  }
+}

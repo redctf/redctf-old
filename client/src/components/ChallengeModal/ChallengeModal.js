@@ -8,7 +8,9 @@ export default class ChallengeModal extends Component {
 
   render() {
     return (
-      <p>Challenge Modal</p>
+      <div className='challenge-modal'>
+        <p>Challenge Modal</p>
+      </div>
     );
   }
 }

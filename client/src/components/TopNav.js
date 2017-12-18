@@ -23,7 +23,6 @@ export default class TopNav extends Component {
 				<ActiveLink activeOnlyWhenExact={true} to="/">Home</ActiveLink>
 				{authenticated && <ActiveLink to="/challenges">Challenges</ActiveLink>}
 				{authenticated && <ActiveLink to="/scoreboard">Scoreboard</ActiveLink>}
-				{authenticated && <ActiveLink to="/posts">Posts</ActiveLink>}
 			</nav>
 		);
 	}

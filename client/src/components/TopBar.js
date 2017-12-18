@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Link, withRouter } from "react-router-dom";
 
 import TopNav from "./TopNav";
+import ActiveLink from "./ui/ActiveLink";
 import Button from "./ui/Button";
 
 @withRouter
@@ -25,6 +26,7 @@ export default class TopBar extends Component {
 		return (
 			<div className="topbar">
 				<TopNav location={this.props.location} />
+				<span className='team-name'>{authenticated && <ActiveLink to="/posts">Team Name</ActiveLink>}</span>
 				<Button
 					onClick={this.authenticate.bind(this)}
 					title={authenticated ? "Log out" : "Sign in"}
