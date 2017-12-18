@@ -9,7 +9,8 @@
       }
     }
   }
-  &-vertical .challengeRowCol {    
+  &-vertical .challengeRowCol { 
+    margin-top: 60px;   
     .vertical {
       flex-direction: column;
       display: flex;
@@ -20,4 +21,18 @@
 
 .challengeCategory {
   min-width: 150px;
+}
+
+
+.post-vertical {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.post-horizontal {
+  display: flex;
+  align-items: center;
+  padding-top: 100px !important;
 }

@@ -16,8 +16,11 @@ export default class Challenges extends Component {
     this.store = this.props.store;
   }
   render() {    
-    const { items } = this.store.appState;
-    const categoryOrientationClass = items.verticalChallengeOrientation ? 'vertical' : 'horizontal';
+    const { 
+      items,
+      verticalChallengeOrientation
+    } = this.store.appState;
+    const categoryOrientationClass = verticalChallengeOrientation ? 'vertical' : 'horizontal';
 
     // Fake JSON Challenge Data - Ideally we'll query with just a teamId and return the following.
     const fakeCategoryData = [
@@ -34,13 +37,13 @@ export default class Challenges extends Component {
         <div key={category}
           className={`category-${categoryOrientationClass}`}>
           <ChallengeRowCol category={category}
-            vertical={items.verticalChallengeOrientation}/>
+            vertical={verticalChallengeOrientation}/>
         </div>
       )
     })
 
     return (
-      <div className="page posts">
+      <div className={`page posts post-${categoryOrientationClass}`}>
         {categories}
       </div>
     );
