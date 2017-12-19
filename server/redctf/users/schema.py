@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from users.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 class UserType(DjangoObjectType):
