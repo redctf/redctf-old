@@ -44,6 +44,13 @@ class LogIn(graphene.Mutation):
         login(info.context, user)
 
         return LogIn(status='Authentication successful!')
+    
+class LogOut(graphene.Mutation):
+    status = graphene.String()
+
+    def mutate(self, info):
+        logout(info.context) 
+        return LogOut(status='Logged Out')
 
 class Query(object):
     me = graphene.String()
@@ -59,3 +66,4 @@ class Query(object):
 class Mutation(object):
     create_user = CreateUser.Field()
     login = LogIn.Field()
+    logout = LogOut.Field()
