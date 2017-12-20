@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'graphene_django',
     'challenges',
     'users',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -128,3 +131,5 @@ GRAPHENE = {
 
 AUTH_USER_MODEL = 'users.User'
 
+CORS_ORIGIN_WHITELIST = ( 'localhost:3000', 'localhost:8000', )
+CORS_ALLOW_CREDENTIALS=True
