@@ -10,7 +10,7 @@ class UserType(DjangoObjectType):
 
 
 class CreateUser(graphene.Mutation):
-    user = graphene.Field(UserType)
+    status = graphene.String()
 
     class Arguments:
         username = graphene.String(required=True)
@@ -18,6 +18,10 @@ class CreateUser(graphene.Mutation):
         email = graphene.String(required=True)
 
     def mutate(self, info, username, password, email):
+
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+            raise Exception('Username or email not available')
+
         user = User(
             username=username,
             email=email,
@@ -25,11 +29,12 @@ class CreateUser(graphene.Mutation):
         user.set_password(password)
         user.save()
 
-        return CreateUser(user=user)
+        return CreateUser(status='User account created')
 
 
 class LogIn(graphene.Mutation):
-    status = graphene.String()
+    id = graphene.Int()
+    isAdmin = graphene.Int()
 
     class Arguments:
         username = graphene.String()
@@ -39,11 +44,11 @@ class LogIn(graphene.Mutation):
         user = authenticate(username=username, password=password)
 
         if not user:
-            raise Exception('Invalid username or password!')
+            raise Exception('Invalid username or password')
 
         login(info.context, user)
 
-        return LogIn(status='Authentication successful!')
+        return LogIn(id=user.id, isAdmin=user.is_superuser)
     
 class LogOut(graphene.Mutation):
     status = graphene.String()
@@ -58,7 +63,7 @@ class Query(object):
     def resolve_me(self, info):
         user = info.context.user
         if info.context.user.is_anonymous:
-            raise Exception('Not authenticated!')
+            raise Exception('Not authenticated')
 
         return info.context.user.username
 

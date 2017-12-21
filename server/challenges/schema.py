@@ -3,8 +3,7 @@ from graphene_django import DjangoObjectType
 from challenges.models import Challenge
 
 class AddChallenge(graphene.Mutation):
-    id = graphene.Int()
-    flag = graphene.String()
+    status = graphene.String()
 
     class Arguments:
         category = graphene.String(required=True)
@@ -23,12 +22,8 @@ class AddChallenge(graphene.Mutation):
 
         # Push the realtime data to rethinkdb
         # save_to_rethinkdb(challenge.id, category, title, points, description)
-        pass
 
-        return AddChallenge(
-            id=challenge.id,
-            flag=challenge.flag,
-        )
+        return AddChallenge(status='Challenge Created')
 
 
 class Mutation(graphene.ObjectType):

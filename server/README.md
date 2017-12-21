@@ -4,10 +4,10 @@
 ## endpoints
 
 #### login
-`mutation { login ( username: "${username}", password: "${password}") {status} }`
+`mutation { login ( username: "${username}", password: "${password}") {id isAdmin} }`
 
 #### create user
-`mutation { createUser(username:"test", email:"test@example.com", password: "abcd1234") { status } }`
+`mutation { createUser(username:"${username}", email:"${email}", password: "${password}") { status } }`
 
 #### add challenge
-`mutation { addChallenge(flag:"flag1234", category: "pwn", title: "pwn 100", points: 200, description: "This is pwn 100") { status } }`
+`mutation { addChallenge(flag:"${flag}", category: "${category}", title: "${title}", points: ${points}, description: "${description}") { status } }`
