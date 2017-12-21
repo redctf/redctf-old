@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from users.models import User
+from users.validators import validate_username, validate_password, validate_email
 from django.contrib.auth import authenticate, login, logout
 
 
@@ -18,9 +19,10 @@ class CreateUser(graphene.Mutation):
         email = graphene.String(required=True)
 
     def mutate(self, info, username, password, email):
-
-        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-            raise Exception('Username or email not available')
+        # Validate username, password, and email
+        validate_username(username)
+        validate_password(password)
+        validate_email(email)
 
         user = User(
             username=username,
@@ -41,6 +43,10 @@ class LogIn(graphene.Mutation):
         password = graphene.String()
 
     def mutate(self, info, username, password):
+        # Validate username and password
+        validate_username(username)
+        validate_password(password)
+
         user = authenticate(username=username, password=password)
 
         if not user:
