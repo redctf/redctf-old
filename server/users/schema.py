@@ -1,13 +1,20 @@
 import graphene
 from graphene_django import DjangoObjectType
 from users.models import User
-from users.validators import validate_username, validate_password, validate_email
+from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique
 from django.contrib.auth import authenticate, login, logout
 
 
 class UserType(DjangoObjectType):
     class Meta:
         model = User
+
+
+class Me(DjangoObjectType):
+    class Meta:
+        model = User
+        only_fields = ('id', 'username', 'is_superuser')
+        filter_fields = ('id', 'username', 'is_superuser')
 
 
 class CreateUser(graphene.Mutation):
@@ -20,9 +27,11 @@ class CreateUser(graphene.Mutation):
 
     def mutate(self, info, username, password, email):
         # Validate username, password, and email
-        validate_username(username)
-        validate_password(password)
+        validate_username(username) 
+        validate_username_unique(username) 
         validate_email(email)
+        validate_email_unique(email)
+        validate_password(password)
 
         user = User(
             username=username,
@@ -36,7 +45,7 @@ class CreateUser(graphene.Mutation):
 
 class LogIn(graphene.Mutation):
     id = graphene.Int()
-    isAdmin = graphene.Int()
+    isSuperuser = graphene.Int()
 
     class Arguments:
         username = graphene.String()
@@ -54,7 +63,7 @@ class LogIn(graphene.Mutation):
 
         login(info.context, user)
 
-        return LogIn(id=user.id, isAdmin=user.is_superuser)
+        return LogIn(id=user.id, isSuperuser=user.is_superuser)
     
 class LogOut(graphene.Mutation):
     status = graphene.String()
@@ -64,14 +73,14 @@ class LogOut(graphene.Mutation):
         return LogOut(status='Logged Out')
 
 class Query(object):
-    me = graphene.String()
+    me = graphene.Field(Me) 
 
     def resolve_me(self, info):
         user = info.context.user
-        if info.context.user.is_anonymous:
+        if user.is_anonymous:
             raise Exception('Not authenticated')
 
-        return info.context.user.username
+        return user
 
 
 class Mutation(object):
