@@ -4,7 +4,7 @@
 ## endpoints
 
 
-###Mutations
+### Mutations
 #### login
 `mutation { login ( username: "${username}", password: "${password}") {id isSuperuser} }`
 
@@ -14,6 +14,6 @@
 #### add challenge
 `mutation { addChallenge(flag:"${flag}", category: "${category}", title: "${title}", points: ${points}, description: "${description}") { status } }`
 
-###Queries
+### Queries
 #### whoami
 `query { me {id isSuperuser username}}`
