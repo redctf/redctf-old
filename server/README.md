@@ -1,19 +1,12 @@
 # server
-
-
-## endpoints
-
-
 ### Mutations
-#### login
-`mutation { login ( username: "${username}", password: "${password}") {id isSuperuser} }`
-
-#### create user
-`mutation { createUser(username:"${username}", email:"${email}", password: "${password}") { status } }`
-
-#### add challenge
-`mutation { addChallenge(flag:"${flag}", category: "${category}", title: "${title}", points: ${points}, description: "${description}") { status } }`
+| Function |  Graphql Command   |
+|----------|--------------------|
+| Create New User | `mutation { createUser(username:"${username}", email:"${email}", password: "${password}") { status } }`  | 
+| Login           | `mutation { login ( username: "${username}", password: "${password}") {id isSuperuser} }`  |
+| Add Challenge   | `mutation { addChallenge(flag:"${flag}", category: "${category}", title: "${title}", points: ${points}, description: "${description}") { status } }`  | 
 
 ### Queries
-#### whoami
-`query { me {id isSuperuser username}}`
+| Function              |  Graphql Command   |
+|-----------------------|--------------------|
+| Get User Information  | `query { me {id isSuperuser username}}` |
