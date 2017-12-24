@@ -5,7 +5,7 @@ import { Match, Link } from "react-router-dom";
 import Protected from "../components/Protected";
 import DataWrapper from "../components/DataWrapper";
 
-import ChallengeRowCol from '../components/ChallengeRowCol/ChallengeRowCol';
+import ChallengeRowCol from '../components/ChallengeRowCol';
 
 @Protected
 @DataWrapper

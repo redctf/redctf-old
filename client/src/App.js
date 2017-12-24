@@ -10,7 +10,7 @@ const horizon = new Horizon({host: 'localhost:8181'});
 const users_collection = horizon('users');
 
 /* Components */
-import TopBar from './TopBar';
+import TopBar from './components/TopBar';
 
 @withRouter
 @inject('store')
@@ -59,42 +59,42 @@ export default class App extends Component {
 					exact
 					path='/'
 					render={props => (
-						<LazyRoute {...props} component={import('./Home')} />
+						<LazyRoute {...props} component={import('./components/Home')} />
 					)}
 				/>
 				<Route
 					exact
 					path='/posts'
 					render={props => (
-						<LazyRoute {...props} component={import('../pages/SubPage')} />
+						<LazyRoute {...props} component={import('./pages/SubPage')} />
 					)}
 				/>
 				<Route
 					exact
 					path='/challenges'
 					render={props => (
-						<LazyRoute {...props} component={import('../pages/Challenges')} />
+						<LazyRoute {...props} component={import('./pages/Challenges')} />
 					)}
 				/>
 				<Route
 					exact
 					path='/scoreboard'
 					render={props => (
-						<LazyRoute {...props} component={import('../pages/Scoreboard')} />
+						<LazyRoute {...props} component={import('./pages/Scoreboard')} />
 					)}
 				/>
 				<Route
 					exact
 					path='/posts/:id'
 					render={props => (
-						<LazyRoute {...props} component={import('../pages/SubItem')} />
+						<LazyRoute {...props} component={import('./pages/SubItem')} />
 					)}
 				/>
 				<Route
 					exact
 					path='/login'
 					render={props => (
-						<LazyRoute {...props} component={import('./Login')} />
+						<LazyRoute {...props} component={import('./pages/Login')} />
 					)}
 				/>
 				<footer>

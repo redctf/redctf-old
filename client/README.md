@@ -1,25 +1,15 @@
-# redctf
 
-The most customizeable CTF Framework built with modern technologies.
+# Client
 
-#### Client
+## Composition
 * ReactJS 15
 * React Router 4
 * Webpack 3
 * Mobx
 
-#### Realtime Integration
+## Realtime Integration
 * Horizon
 * RethinkDB
-
-#### Backend
-* Django
-* GraphQL
-
-
-## Requirements
-* Horizon
-* Rethinkdb
 
 
 ## To Develop on Project
@@ -37,8 +27,6 @@ Run the following (in order):
 3) To Start Client
 
     `npm start`
-
-
 
 ## Sources
 

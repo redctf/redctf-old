@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import Modal from 'react-modal';
 
-import ChallengeModal from '../ChallengeModal/ChallengeModal';
+import ChallengeModal from '../ChallengeModal';
 import ModalHeader from './Modal/ModalHeader';
 import ModalContent from './Modal/ModalContent';
 import ModalFooter from './Modal/ModalFooter';

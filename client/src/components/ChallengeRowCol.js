@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import JeopardyButton from '../ui/JeopardyButton';
+import JeopardyButton from './ui/JeopardyButton';
 
 export default class ChallengeRowCol extends Component {
   render() {
