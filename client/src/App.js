@@ -97,6 +97,13 @@ export default class App extends Component {
 						<LazyRoute {...props} component={import('./pages/Login')} />
 					)}
 				/>
+				<Route
+					exact
+					path='/register'
+					render={props => (
+						<LazyRoute {...props} component={import('./pages/Register')} />
+					)}
+				/>
 				<footer>
 					{testval}
 					<a href='https://twitter.com/redctf' target='_blank'>

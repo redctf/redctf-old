@@ -28,6 +28,7 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Admin Page
   - [ ] Add CTFs
   - [ ] Complete Control of Challenges - Create/Edit/Delete
+- [ ] Large Scale Documentation
 
 
 ## Phase Three
@@ -38,7 +39,8 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Allow pick color scheme
   - [ ] Allow choose horizontal/vertical challenge board orientation
   - [ ] Choose email verification (i.e. send pwd, force pwd change or email verification link)
-
+  - [ ] Choose team / multiple logins per team
+- [ ] Complete Documentation
 
 
 ## Composition

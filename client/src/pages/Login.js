@@ -8,12 +8,16 @@ import axios from "axios";
 export default class Login extends Component {
 	constructor(props) {
 		super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
 	}
 
 	onSubmit(event) {
 		const port = 8000;
 		axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-		const mutation = this.postLogin("ryan", "abcd1234");
+		const mutation = this.postLogin(this.state.username, this.state.password);
 		axios.post('/graphql/',
 			{
 				query: mutation,
@@ -59,13 +63,21 @@ export default class Login extends Component {
 	  });
 	}
 
+	handleUserNameChaned = (e) => {
+		this.setState({username: e.currentTarget.value});
+	}
+
+	handlePasswordChaned = (e) => {
+		this.setState({password: e.currentTarget.value});
+	}
+
 	render() {
 		return (
 			<div className="page login">
 				<main>
 					<div className='login-window'>
 						<div className='login-inputs'>
-							<input type="text" placeholder="name"/>
+							<input type="text" placeholder="username"/>
 						</div>
 						<div className='login-inputs'>
 							<input type="password" placeholder="password"/>
@@ -76,11 +88,13 @@ export default class Login extends Component {
 								onClick={this.onSubmit.bind(this)}>
 								Login
 							</button>
-							<button type="button"
-								className='login-button'
-								onClick={this.registerUser.bind(this)}>
-								Register
-							</button>
+        			<a href='/register'
+        				className='button'>
+								<button type="button"
+									className='login-button'>
+									Register
+								</button>
+							</a>
 						</div>
 
 						{this.props.store.authenticated &&
