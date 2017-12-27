@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from users.models import User
+from teams.models import Team
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique
 from django.contrib.auth import authenticate, login, logout
 
@@ -33,9 +34,13 @@ class CreateUser(graphene.Mutation):
         validate_email_unique(email)
         validate_password(password)
 
+        team = Team(name=username)
+        team.save()
+
         user = User(
             username=username,
             email=email,
+            team=team,
         )
         user.set_password(password)
         user.save()

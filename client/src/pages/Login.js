@@ -29,12 +29,18 @@ export default class Login extends Component {
 				},
 			}
 	  )
-	  .then(function (response) {
-	    console.log(response.data.data.login);
+	  .then((response) => {
+	    console.log(response);
+
+	    if (response) {
+
+	    } else {
+	    	this.setState({
+	    		isLoginError: true,
+	    		errorMessage: response
+	    	});
+	    }
 	  })
-	  .catch(function (error) {
-	    console.log(error);
-	  });
 	}
 
 	postLogin() {

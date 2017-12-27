@@ -12,10 +12,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Challenge',
+            name='Team',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('flag', models.CharField(max_length=100)),
+                ('name', models.CharField(max_length=150, unique=True)),
+                ('points', models.IntegerField(default=0)),
             ],
         ),
     ]
