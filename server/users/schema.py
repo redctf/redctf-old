@@ -5,10 +5,14 @@ from teams.models import Team
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique
 from django.contrib.auth import authenticate, login, logout
 
-
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
+# ======================== #
+# Temp fix for stage 1 dev #
+# ======================== # 
+import uuid
+from teams.models import Team
+# ======================== #
+# Temp fix for stage 1 dev #
+# ======================== #
 
 
 class Me(DjangoObjectType):
@@ -34,8 +38,18 @@ class CreateUser(graphene.Mutation):
         validate_email_unique(email)
         validate_password(password)
 
-        team = Team(name=username)
+        # ======================== #
+        # Temp fix for stage 1 dev #
+        # ======================== # 
+        token = str(uuid.uuid4())
+        while Team.objects.filter(token__iexact=token).exists():
+            token = str(uuid.uuid4())
+
+        team = Team(name=username, token=token)
         team.save()
+        # ======================== #
+        # Temp fix for stage 1 dev #
+        # ======================== # 
 
         user = User(
             username=username,
@@ -53,8 +67,8 @@ class LogIn(graphene.Mutation):
     isSuperuser = graphene.Int()
 
     class Arguments:
-        username = graphene.String()
-        password = graphene.String()
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
 
     def mutate(self, info, username, password):
         # Validate username and password
