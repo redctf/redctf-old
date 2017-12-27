@@ -40,3 +40,23 @@
   justify-content: space-between;
   margin-top:15px;
 }
+
+.error-message {
+  background-color: pink;
+  margin-top:15px;
+  padding: 5px 10px;
+  color: red;
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px solid red;
+}
+
+.success-message {
+  background-color: #ade3c3;
+  margin-top:15px;
+  padding: 5px 10px;
+  color: green;
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px solid green;
+}

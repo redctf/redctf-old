@@ -9,9 +9,13 @@ export default class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      team: '',
       password: '',
-      email: ''
+      email: '',
+      isRegistrationError: false,
+      errorMessage: 'Error',
+      isRegistrationSuccess: false,
+      successMessage: 'Success'
     };
   }
 
@@ -28,29 +32,52 @@ export default class Register extends Component {
         },
       }
     )
-    .then(function (response) {
+    .then((response) => {
       console.log(response);
+      const res = response.data;
+
+      if (res.data.createUser !== null) {
+        console.log('success' + res.data.createUser.status);
+        this.setState({
+          isRegistrationSuccess: true,
+          successMessage: res.data.createUser.status
+        }, () => {
+          setTimeout(() => {
+            this.props.history.push('/login');
+          }, 200);
+        });
+      } else {
+        this.setState({
+          isRegistrationError: true,
+          errorMessage: res.errors[0].message
+        });
+      }
     })
-    .catch(function (error) {
-      console.log(error);
-    });
   }
 
   registerUser() {
-    return `mutation { createUser ( username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}") { status } }`;
+    return `mutation { createUser ( username: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}") { status } }`;
   }
 
-  handleUserNameChaned = (e) => {
-    this.setState({username: e.currentTarget.value});
-    console.log('this.state.username:', this.state.username);
+  handleTeamNameChaned = (e) => {
+    this.setState({
+      team: e.currentTarget.value,
+      isRegistrationError: false
+    });
   }
 
   handlePasswordChaned = (e) => {
-    this.setState({password: e.currentTarget.value});
+    this.setState({
+      password: e.currentTarget.value,
+      isRegistrationError: false
+    });
   }
 
   handleEmailChaned = (e) => {
-    this.setState({email: e.currentTarget.value});
+    this.setState({
+      email: e.currentTarget.value,
+      isRegistrationError: false
+    });
   }
 
   render() {
@@ -60,8 +87,8 @@ export default class Register extends Component {
           <div className='login-window'>
             <div className='login-inputs'>
               <input type="text"
-                placeholder="username"
-                onChange={this.handleUserNameChaned}/>
+                placeholder="team name"
+                onChange={this.handleTeamNameChaned}/>
             </div>
             <div className='login-inputs'>
               <input type="password"
@@ -73,6 +100,12 @@ export default class Register extends Component {
                 placeholder="email address"
                 onChange={this.handleEmailChaned}/>
             </div>
+            {this.state.isRegistrationError && <div className='error-message'>
+              {this.state.errorMessage}
+            </div>}
+            {this.state.isRegistrationSuccess && <div className='success-message'>
+              {this.state.successMessage}
+            </div>}
             <div className='login-button-row'>
               <button type="button"
                 className='login-button'

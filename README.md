@@ -40,6 +40,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Allow choose horizontal/vertical challenge board orientation
   - [ ] Choose email verification (i.e. send pwd, force pwd change or email verification link)
   - [ ] Choose team / multiple logins per team
+  - [ ] Choose different scss modes (i.e. Vanilla Mode, Midnight Mode, Custom Mode, etc)
 - [ ] Complete Documentation
 
 

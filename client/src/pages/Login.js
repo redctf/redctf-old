@@ -9,15 +9,17 @@ export default class Login extends Component {
 	constructor(props) {
 		super(props);
     this.state = {
-      username: '',
-      password: ''
+      team: '',
+      password: '',
+      isLoginError: false,
+      errorMessage: 'Error'
     };
 	}
 
 	onSubmit(event) {
 		const port = 8000;
 		axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-		const mutation = this.postLogin(this.state.username, this.state.password);
+		const mutation = this.postLogin();
 		axios.post('/graphql/',
 			{
 				query: mutation,
@@ -35,12 +37,8 @@ export default class Login extends Component {
 	  });
 	}
 
-	postLogin(username, password) {
-		return `mutation { login ( username: "${username}", password: "${password}") {status} }`;
-	}
-
-	registerUser() {
-		return `mutation { createUser ( username: "${username}", email: "${email}", password: "${password}") { status } }`;
+	postLogin() {
+		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {status} }`;
 	}
 
 	whoami() {
@@ -62,9 +60,8 @@ export default class Login extends Component {
 	    console.log(error);
 	  });
 	}
-
-	handleUserNameChaned = (e) => {
-		this.setState({username: e.currentTarget.value});
+	handleTeamNameChaned = (e) => {
+		this.setState({team: e.currentTarget.value});
 	}
 
 	handlePasswordChaned = (e) => {
@@ -77,11 +74,18 @@ export default class Login extends Component {
 				<main>
 					<div className='login-window'>
 						<div className='login-inputs'>
-							<input type="text" placeholder="username"/>
+							<input type="text"
+								placeholder="team name"
+								onChange={this.handleTeamNameChaned}/>
 						</div>
 						<div className='login-inputs'>
-							<input type="password" placeholder="password"/>
+							<input type="password"
+								placeholder="password"
+								onChange={this.handlePasswordChaned}/>
 						</div>
+						{this.state.isLoginError && <div className='error-message'>
+							{this.state.errorMessage}
+						</div>}
 						<div className='login-button-row'>
 							<button type="button"
 								className='login-button'
