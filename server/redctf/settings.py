@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'challenges',
     'users',
+    'teams',
     'corsheaders'
 ]
 
