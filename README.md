@@ -8,7 +8,7 @@ The most customizeable CTF Framework built with modern technologies.
 
 - [ ] Auth
   - [ ] Login - no access with proper login
-  - [ ] Register
+  - [x] Register
 - [ ] Admin Page
   - [ ] Create Challenge
   - [ ] Release Hints
