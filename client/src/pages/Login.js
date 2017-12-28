@@ -31,20 +31,21 @@ export default class Login extends Component {
 	  )
 	  .then((response) => {
 	    console.log(response);
+	   	const res = response.data;
 
-	    if (response) {
-
+	    if (res.data.login !== null) {
+	    	this.props.history.push('/');
 	    } else {
 	    	this.setState({
 	    		isLoginError: true,
-	    		errorMessage: response
+	    		errorMessage: res.errors[0].message
 	    	});
 	    }
 	  })
 	}
 
 	postLogin() {
-		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {status} }`;
+		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id} }`;
 	}
 
 	whoami() {
@@ -67,11 +68,17 @@ export default class Login extends Component {
 	  });
 	}
 	handleTeamNameChaned = (e) => {
-		this.setState({team: e.currentTarget.value});
+		this.setState({
+			team: e.currentTarget.value,
+			isLoginError: false
+		});
 	}
 
 	handlePasswordChaned = (e) => {
-		this.setState({password: e.currentTarget.value});
+		this.setState({
+			password: e.currentTarget.value,
+			isLoginError: false
+		});
 	}
 
 	render() {
