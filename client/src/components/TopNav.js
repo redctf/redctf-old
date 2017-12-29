@@ -8,21 +8,19 @@ import ActiveLink from "./ui/ActiveLink";
 export default class TopNav extends Component {
 	constructor(props) {
 		super(props);
-		this.store = this.props.store.appState;
 	}
 
-	authenticate(e) {
-		if (e) e.preventDefault();
-		this.props.store.authenticate();
-	}
+	// authenticate(e) {
+	// 	if (e) e.preventDefault();
+	// 	this.props.store.authenticate();
+	// }
 
 	render() {
-		const { authenticated, authenticating } = this.store;
 		return (
 			<nav>
 				<ActiveLink activeOnlyWhenExact={true} to="/">Home</ActiveLink>
-				{authenticated && <ActiveLink to="/challenges">Challenges</ActiveLink>}
-				{authenticated && <ActiveLink to="/scoreboard">Scoreboard</ActiveLink>}
+				<ActiveLink to="/challenges">Challenges</ActiveLink>
+				<ActiveLink to="/scoreboard">Scoreboard</ActiveLink>
 			</nav>
 		);
 	}

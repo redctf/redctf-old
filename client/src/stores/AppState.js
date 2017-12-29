@@ -6,15 +6,16 @@ export default class AppState {
   @observable authenticating;
   @observable items;
   @observable item;
-
+  @observable team;
   @observable testval;
 
   constructor() {
     this.authenticated = false;
-    this.authenticating = false;
+    this.team = '';
     this.items = [];
     this.item = {};
 
+    // footer value
     this.testval = "Cobbled together by ";
 
     // if you want vertical orientation on your challenge board, set this to true.
@@ -42,7 +43,8 @@ export default class AppState {
     this.item = {};
   }
 
-  @action authenticate() {
+  @action authenticate(team) {
+    this.team = team ? team : '';
     return new Promise((resolve, reject) => {
       this.authenticating = true;
       setTimeout(() => {

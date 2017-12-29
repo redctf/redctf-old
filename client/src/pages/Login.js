@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 @inject("store")
@@ -9,6 +8,7 @@ export default class Login extends Component {
 	constructor(props) {
 		super(props);
     this.state = {
+    	redirectToReferrer: false,
       team: '',
       password: '',
       isLoginError: false,
@@ -34,7 +34,9 @@ export default class Login extends Component {
 	   	const res = response.data;
 
 	    if (res.data.login !== null) {
-	    	this.props.history.push('/');
+	    	this.props.store.appState.authenticate(this.state.team).then(() => {
+	    		this.props.history.push('/');
+	    	});
 	    } else {
 	    	this.setState({
 	    		isLoginError: true,
@@ -48,25 +50,6 @@ export default class Login extends Component {
 		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id} }`;
 	}
 
-	whoami() {
-		const port = 8000;
-		axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-		axios.post('/graphql/',
-			{
-				query: "query{me}",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-			}
-	  )
-	  .then(function (response) {
-	    console.log(response);
-	  })
-	  .catch(function (error) {
-	    console.log(error);
-	  });
-	}
 	handleTeamNameChaned = (e) => {
 		this.setState({
 			team: e.currentTarget.value,
@@ -113,17 +96,8 @@ export default class Login extends Component {
 								</button>
 							</a>
 						</div>
-
-						{this.props.store.authenticated &&
-							!this.props.store.authenticating &&
-							<Redirect to="/" />}
 					</div>
 				</main>
-				<button type="button"
-					className='login-button'
-					onClick={this.whoami.bind(this)}>
-					whoami
-				</button>
 			</div>
 		);
 	}
