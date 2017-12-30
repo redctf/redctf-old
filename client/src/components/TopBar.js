@@ -17,7 +17,6 @@ export default class TopBar extends Component {
 
 	authenticate(e) {
 		if (e) e.preventDefault();
-		console.log("CLICKED BUTTON");
 		this.store.authenticate();
 	}
 
@@ -27,6 +26,7 @@ export default class TopBar extends Component {
 			<div className="topbar">
 				{authenticated && <TopNav location={this.props.location} />}
 				{authenticated && <span className='team-name'><ActiveLink to="/posts">{this.store.team}</ActiveLink></span>}
+				{authenticated && <span className='team-name'><ActiveLink to="/admin">Admin</ActiveLink></span>}
 				{authenticated && <Button
 					onClick={this.authenticate.bind(this)}
 					title={authenticated ? "Log out" : "Sign in"}

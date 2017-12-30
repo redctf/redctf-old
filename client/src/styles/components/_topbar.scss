@@ -18,7 +18,18 @@
 }
 
 .team-name {
-  padding: 0px 20px;
+  padding: 0px 20px 0px 0px;
+
+  a {
+    color: rgba(#000, 0.5);
+  }
+
+  &:hover {
+    cursor: pointer;
+    a {
+      color:rgba(#000, 1);
+    }
+  };
 }
 
 .push-right {
