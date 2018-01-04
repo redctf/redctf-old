@@ -4,6 +4,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from users.models import User
 from teams.models import Team
+from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from teams.validators import validate_teamname, validate_token, validate_teamname_unique 
 
 class TeamType(DjangoObjectType):
@@ -42,8 +43,7 @@ class JoinTeam(graphene.Mutation):
         validate_token(token)
 
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not authenticated')
+        validate_user_is_authenticated(user)
 
         if not Team.objects.filter(token__iexact=token).exists():
             raise Exception('Invalid team token')
@@ -60,8 +60,7 @@ class Query(object):
 
     def resolve_team(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not authenticated')
+        validate_user_is_authenticated(user)
 
         if not user.team:
             raise Exception('User has not joined a team')

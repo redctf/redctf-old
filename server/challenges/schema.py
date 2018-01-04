@@ -48,7 +48,11 @@ class CheckFlag(graphene.Mutation):
         validate_flag(flag)
 
         if Challenge.objects.filter(flag__iexact=flag).exists():
-            user.team.points += Challenge.objects.get(flag__iexact=flag).points
+            chal = Challenge.objects.filter(flag__iexact=flag)
+            if chal not in user.team.solved.all():
+                user.team.points += chal.points
+                user.team.solved.add(chal)
+                user.team.save()
             return CheckFlag(status='Correct Flag') 
         else:
             return CheckFlag(status='Wrong Flag') 
