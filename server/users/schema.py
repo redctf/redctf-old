@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from users.models import User
 from teams.models import Team
-from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique
+from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
 from django.contrib.auth import authenticate, login, logout
 
 # ======================== #
@@ -96,8 +96,7 @@ class Query(object):
 
     def resolve_me(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not authenticated')
+        validate_user_is_authenticated(user)
 
         return user
 

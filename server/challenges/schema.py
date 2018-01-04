@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from users.validators import validate_user_is_admin
 from challenges.models import Challenge
 
 class AddChallenge(graphene.Mutation):
@@ -13,8 +14,8 @@ class AddChallenge(graphene.Mutation):
         flag = graphene.String(required=True)
 
     def mutate(self, info, category, title, points, description, flag):
-        if not info.context.user.is_superuser:
-            raise Exception('Administrator permission required to add challenge!')
+        # Validate user is admin
+        validate_user_is_admin(info.context.user)
 
         # Save the challenge flag to the database
         challenge = Challenge(flag=flag)
