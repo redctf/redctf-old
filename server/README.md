@@ -7,6 +7,10 @@
 | Create New Team | `mutation { createTeam(teamname:"${teamname}") { token } }`  | 
 | Join Team       | `mutation { joinTeam(token:"${token}") { status } }`  | 
 | Add Challenge   | `mutation { addChallenge(flag:"${flag}" category: "${category}" title: "${title}" points: ${points} description: "${description}") { status } }`  | 
+| Check Flag      | `mutation { checkFlag(flag:"${flag}") { status } }`  | 
+
+
+
 
 ### Queries
 | Function              |  Graphql Command   |
