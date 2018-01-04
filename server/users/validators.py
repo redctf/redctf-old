@@ -28,5 +28,5 @@ def validate_email_unique(value):
 
 
 def validate_password(value):
-    if not re.match(r"^[a-zA-Z0-9 !\"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~]{12,}$", value):
+    if not re.match(r"^[a-zA-Z0-9\ \!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~]{12,}$", value):
         raise Exception('Password invalid. Must contain an uppercase letter, lowercase letter, a digit, a special character and be at least 12 characters long')
