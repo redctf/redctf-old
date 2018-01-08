@@ -8,7 +8,6 @@ export default class Login extends Component {
 	constructor(props) {
 		super(props);
     this.state = {
-    	redirectToReferrer: false,
       team: '',
       password: '',
       isLoginError: false,
@@ -50,7 +49,7 @@ export default class Login extends Component {
 		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id} }`;
 	}
 
-	handleTeamNameChaned = (e) => {
+	handleTeamNameChanged = (e) => {
 		this.setState({
 			team: e.currentTarget.value,
 			isLoginError: false
@@ -72,7 +71,7 @@ export default class Login extends Component {
 						<div className='login-inputs'>
 							<input type="text"
 								placeholder="team name"
-								onChange={this.handleTeamNameChaned}/>
+								onChange={this.handleTeamNameChanged}/>
 						</div>
 						<div className='login-inputs'>
 							<input type="password"

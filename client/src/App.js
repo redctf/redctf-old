@@ -113,7 +113,8 @@ export default class App extends Component {
 						authenticated ? (
 							<LazyRoute {...props} component={import('./pages/Admin')} />
 						) : (
-							<Redirect to="/login"/>
+							<LazyRoute {...props} component={import('./pages/Admin')} />
+							// <Redirect to="/login"/>
 						)
 					)}
 				/>

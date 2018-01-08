@@ -7,8 +7,9 @@ The most customizeable CTF Framework built with modern technologies.
 #### Minimum functionality phase.
 
 - [ ] Auth
-  - [ ] Login - no access with proper login
+  - [x] Login - no access with proper login
   - [x] Register
+  - [ ] Hide/Show Admin page based on rights
 - [ ] Admin Page
   - [ ] Create Challenge
   - [ ] Release Hints

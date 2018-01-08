@@ -1,0 +1,93 @@
+/** @define drop-down */
+
+.drop-down__container {
+  width: 222px;
+  position: relative;
+  /*border: 1px solid #ccc;*/
+  border-radius: 3px;
+}
+
+.drop-down__menu {
+  background: #fff;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
+  padding: 10px 0;
+  position: absolute;
+  z-index: 9999;
+  outline: 0;
+  width: 100%;
+};
+
+.drop-down__caret {
+  padding-right: 5px;
+}
+
+.drop-down--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  &--cursor {
+    cursor: not-allowed;
+  }
+}
+
+.drop-down__select-box {
+  user-select: none;
+  padding: 2px;
+  line-height: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+
+  /* item in the menu that's been selected, so the style of the opened menu */
+  &--selected {
+    padding: 6px 5px 6px 7px;
+    white-space: nowrap;
+    &:hover {
+      background-color: #52a6fa;
+      color: #fff;
+    }
+  }
+  &--disabled {
+    border: 1px solid rgba(204, 204, 204, 0.3);
+  }
+};
+
+.drop-down__place-holder {
+  display: none;
+  color: #ccc;
+  &:hover {
+    color: #ccc;
+  }
+}
+
+.drop-down__item {
+  display: block;
+  font-family: "Open Sans", sans-serif;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 6px 0 6px 20px;
+  &:hover {
+    background-color: #52a6fa;
+    color: #fff;
+  }
+  /* Current element being show in the dropdown */
+  &--active {
+    padding: 6px 5px 6px 13px;
+    display: inline-block;
+    user-select: none;
+    &:hover {
+      background-color: #fff;
+      color: #000;
+    }
+  }
+}
+
+.drop-down__selected-item {
+  padding: 0;
+}
+
+.drop-down__inline-element {
+  display: inline-block;
+  padding: 0 0 0 4px;
+}
