@@ -30,6 +30,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Add CTFs
   - [ ] Complete Control of Challenges - Create/Edit/Delete
 - [ ] Large Scale Documentation
+- [ ] Input Validation (Only Numbers here, Valid Email there, etc)
 
 
 ## Phase Three
