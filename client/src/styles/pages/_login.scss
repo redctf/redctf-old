@@ -60,3 +60,14 @@
   border-radius: 5px;
   border: 1px solid green;
 }
+
+.disabled {
+  background-color: #aaa;
+  border-color: grey;
+
+  &:hover {
+    background-color: #aaa;
+    border-color: grey;
+    cursor: not-allowed;
+  }
+}

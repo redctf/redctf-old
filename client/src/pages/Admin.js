@@ -81,6 +81,19 @@ export default class Admin extends Component {
     return items;
   }
 
+  validateInput = (event, maxLength, regex) => {
+    const charCode = event.which;
+    if (charCode === 0) {
+      return;
+    }
+
+    const charStr = String.fromCharCode(charCode);
+
+    if ((!regex.test(charStr) || event.target.value.length >= maxLength) && (event.which !== 8)) {
+      event.preventDefault();
+    }
+  }
+
   render() {
     console.log('this.state.challenge:', this.state.challenge);
     const categories = this.getCategories();
@@ -95,11 +108,12 @@ export default class Admin extends Component {
             <ul className="temp-flex">
               <li>
                 <label>Category</label>
-                <DropDown width={475}
+                <DropDown width={460}
                     selectedItem={this.state.challenge.category}
                     selectedListItem={<SelectedItem/>}>
                     {categories}
                 </DropDown>
+                <span className='requiredStar'>*</span>
               </li>
               <li>
                 <label>Title</label>
@@ -108,6 +122,7 @@ export default class Admin extends Component {
                   className="temp-input"
                   placeholder="Awesome Laser Challenge"
                   onChange={this.handleFieldChanged}/>
+                <span className='requiredStar'>*</span>
               </li>
               <li>
                 <label>Points</label>
@@ -115,7 +130,9 @@ export default class Admin extends Component {
                   id="points"
                   className="temp-input"
                   placeholder="It's over 9000"
+                  onKeyPress={(event) => {this.validateInput(event, 10, /^\d+$/);}}
                   onChange={this.handleFieldChanged}/>
+                <span className='requiredStar'>*</span>
               </li>
               <li>
                 <label>Description</label>
@@ -125,6 +142,7 @@ export default class Admin extends Component {
                   placeholder="Duck the lasers, steal the egg. Simple."
                   onChange={this.handleFieldChanged}>
                 </textarea>
+                <span className='requiredStar'>*</span>
               </li>
               <li>
                 <label>Flag</label>
@@ -133,7 +151,9 @@ export default class Admin extends Component {
                   className="temp-input"
                   placeholder="ctf{flagformat}"
                   onChange={this.handleFieldChanged}/>
+                <span className='requiredStar'>*</span>
               </li>
+              <li><small className='requiredText'>* required</small></li>
               <li>
                 <button type="button"
                   onClick={this.onSubmit.bind(this)}>Submit</button>

@@ -46,7 +46,9 @@ export default class JeopardyButton extends Component {
           <ModalHeader title={`${this.props.category} - ${this.props.name}`}
             handleClose={this.handleCloseModal}/>
           <ModalContent>
-            <ChallengeModal />
+            <ChallengeModal name={this.props.name}
+              value={this.props.value}
+              description={this.props.description}/>
           </ModalContent>
           <ModalFooter confirmText='Done'
             cancel={this.handleCloseModal}/>

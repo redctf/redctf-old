@@ -13,36 +13,39 @@ export default class Login extends Component {
       isLoginError: false,
       errorMessage: 'Error'
     };
+    this.handleKeyPress = ::this.handleKeyPress;
 	}
 
-	onSubmit(event) {
-		const port = 8000;
-		axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-		const mutation = this.postLogin();
-		axios.post('/graphql/',
-			{
-				query: mutation,
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-			}
-	  )
-	  .then((response) => {
-	    console.log(response);
-	   	const res = response.data;
+	onSubmit() {
+		if (this.state.team !== '' && this.state.password !== '') {
+			const port = 8000;
+			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+			const mutation = this.postLogin();
+			axios.post('/graphql/',
+				{
+					query: mutation,
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+				}
+		  )
+		  .then((response) => {
+		    console.log(response);
+		   	const res = response.data;
 
-	    if (res.data.login !== null) {
-	    	this.props.store.appState.authenticate(this.state.team).then(() => {
-	    		this.props.history.push('/');
-	    	});
-	    } else {
-	    	this.setState({
-	    		isLoginError: true,
-	    		errorMessage: res.errors[0].message
-	    	});
-	    }
-	  })
+		    if (res.data.login !== null) {
+		    	this.props.store.appState.authenticate(this.state.team).then(() => {
+		    		this.props.history.push('/');
+		    	});
+		    } else {
+		    	this.setState({
+		    		isLoginError: true,
+		    		errorMessage: res.errors[0].message
+		    	});
+		    }
+		  })
+		}
 	}
 
 	postLogin() {
@@ -63,10 +66,17 @@ export default class Login extends Component {
 		});
 	}
 
+  handleKeyPress(event) {
+    if (event.key === 'Enter' && this.state.team !== '' && this.state.password !== '') {
+      this.onSubmit();
+    }
+  }
+
 	render() {
+		const loginDisabled = (this.state.team !== '' && this.state.password !== '') ? '' : 'disabled';
 		return (
 			<div className="page login">
-				<main>
+				<form onKeyPress={this.handleKeyPress}>
 					<div className='login-window'>
 						<div className='login-inputs'>
 							<input type="text"
@@ -83,7 +93,7 @@ export default class Login extends Component {
 						</div>}
 						<div className='login-button-row'>
 							<button type="button"
-								className='login-button'
+								className={`login-button ${loginDisabled}`}
 								onClick={this.onSubmit.bind(this)}>
 								Login
 							</button>
@@ -96,7 +106,7 @@ export default class Login extends Component {
 							</a>
 						</div>
 					</div>
-				</main>
+				</form>
 			</div>
 		);
 	}

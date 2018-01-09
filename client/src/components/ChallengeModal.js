@@ -9,7 +9,9 @@ export default class ChallengeModal extends Component {
   render() {
     return (
       <div className='challenge-modal'>
-        <p>Challenge Modal</p>
+        <h2>{this.props.name}</h2>
+        <small>{this.props.value} Points</small>
+        <p>{this.props.description}</p>
       </div>
     );
   }
