@@ -24,7 +24,7 @@ export default class Admin extends Component {
 
   addChallenge() {
     const c = this.state.challenge;
-    return `mutation { addChallenge(flag: "${c.flag}" category: "${c.category}" title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
+    return `mutation { addChallenge(flag: "${c.flag}" category: ${c.category} title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
   }
 
   addCategory() {
