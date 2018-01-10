@@ -7,7 +7,7 @@ import categories.schema
 class Query(users.schema.Query, teams.schema.Query, graphene.ObjectType):
     pass
 
-class Mutation(users.schema.Mutation, teams.schema.Mutation, challenges.schema.Mutation, categories.schema.Mutation, graphene.ObjectType,):
+class Mutation(users.schema.Mutation, teams.schema.Mutation, challenges.schema.Mutation, categories.schema.Mutation, graphene.ObjectType):
     pass
 
 

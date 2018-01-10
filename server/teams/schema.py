@@ -1,4 +1,7 @@
 import graphene
+import rethinkdb as r
+from rethinkdb.errors import RqlRuntimeError, RqlDriverError
+from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 import uuid
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
