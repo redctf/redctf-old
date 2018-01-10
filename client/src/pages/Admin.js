@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import DropDown from '../components/ui/DropDown/DropDown';
 import DropDownItem from '../components/ui/DropDown/DropDownItem';
 import SelectedItem from '../components/ui/DropDown/SelectedItem';
+import axios from "axios";
 
 @observer
 export default class Admin extends Component {
@@ -22,7 +23,8 @@ export default class Admin extends Component {
   }
 
   addChallenge() {
-    return `mutation { addChallenge(challenge: "${this.state.challenge}") { status } }`;
+    const c = this.state.challenge;
+    return `mutation { addChallenge(flag: "${c.flag}" category: "${c.category}" title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
   }
 
   addCategory() {
