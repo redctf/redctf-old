@@ -35,7 +35,6 @@ export default class Admin extends Component {
     const port = 8000;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
     axios.defaults.withCredentials = true;
-    axios.credentials = 'same-origin';
 
     const mutation = this.addChallenge();
     axios.post('/graphql/',

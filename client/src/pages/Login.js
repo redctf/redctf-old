@@ -20,7 +20,6 @@ export default class Login extends Component {
 		if (this.state.team !== '' && this.state.password !== '') {
 			const port = 8000;
 			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-			axios.defaults.credentials = 'same-origin';
 			axios.defaults.withCredentials = true;
 			const mutation = this.postLogin();
 			axios.post('/graphql/',
