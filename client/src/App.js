@@ -142,10 +142,10 @@ export default class App extends Component {
 				/>
 				<Route
 					exact
-					path='/posts/:id'
+					path='/team/:id'
 					render={props => (
 						authenticated ? (
-							<LazyRoute {...props} component={import('./pages/SubItem')}/>
+							<LazyRoute {...props} component={import('./pages/Team')}/>
 						) : (
 							<Redirect to="/login"/>
 						)

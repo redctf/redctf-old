@@ -16,12 +16,17 @@ export default class Admin extends Component {
         points: 0,
         description: '',
         flag: ''
-      }
+      },
+      category: ''
     };
   }
 
   addChallenge() {
     return `mutation { addChallenge(challenge: "${this.state.challenge}") { status } }`;
+  }
+
+  addCategory() {
+    return `mutation { addCategory(category: "${this.state.category}") { status } }`;
   }
 
   onSubmit(e) {
@@ -42,10 +47,33 @@ export default class Admin extends Component {
     })
   }
   
+  onCategorySubmitted(e) {
+    const port = 8000;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    const mutation = this.addCategory();
+    axios.post('/graphql/',
+      {
+        query: mutation,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response);
+    })
+
+  }
+
   handleFieldChanged = (e) => {
     const challenge = {...this.state.challenge};
     challenge[e.currentTarget.id] = e.currentTarget.value;
     this.setState({challenge});
+  }
+
+  handleCategoryChanged = (e) => {
+    this.setState({category: e.currentTarget.value});
   }
 
   handleSelection = (selectedIndex, value) => {
@@ -100,6 +128,30 @@ export default class Admin extends Component {
     return (
       <div className="page posts">
         <div className="page-header">Admin Panel</div>
+
+
+        {/* temporary section for creating categories */}
+        <div className="temp-section">
+          <div className="temp-header">Create Category</div>
+          <div className="temp-form">
+            <ul className="temp-flex">
+              <li>
+                <label>Category</label>
+                <input type="text"
+                  id="title"
+                  className="temp-input"
+                  placeholder="Cool Category"
+                  onChange={this.handleCategoryChanged}/>
+                <span className='requiredStar'>*</span>
+              </li>
+              <li><small className='requiredText'>* required</small></li>
+              <li>
+                <button type="button"
+                  onClick={this.onCategorySubmitted.bind(this)}>Submit</button>
+              </li>
+            </ul>
+          </div>
+        </div>
 
         {/* temporary section for creating challenge */}
         <div className="temp-section">
