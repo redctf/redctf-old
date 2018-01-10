@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'challenges',
     'users',
     'teams',
+    'categories',
     'corsheaders'
 ]
 

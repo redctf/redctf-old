@@ -2,13 +2,14 @@ import graphene
 from graphene_django import DjangoObjectType
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points
+from categories.models import Category
 from challenges.models import Challenge
 
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
 
     class Arguments:
-        category = graphene.String(required=True)
+        category = graphene.Int(required=True)
         title = graphene.String(required=True)
         points = graphene.Int(required=True)
         description = graphene.String(required=True)
@@ -18,13 +19,15 @@ class AddChallenge(graphene.Mutation):
         # Validate user is admin
         validate_user_is_admin(info.context.user)
 
-        # Sanitize inputs 
+        # TODO: sanitize all the input fields 
         validate_flag(flag)
         validate_flag_unique(flag)
         validate_points(points)
 
+        challenge_category = Category.objects.get(id=category)
+
         # Save the challenge flag to the database
-        challenge = Challenge(flag=flag, points=points)
+        challenge = Challenge(category=challenge_category, flag=flag, points=points)
         challenge.save()
 
         # Push the realtime data to rethinkdb
