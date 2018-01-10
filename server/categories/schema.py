@@ -5,7 +5,7 @@ from categories.validators import validate_name, validate_name_unique
 from categories.models import Category
 
 class AddCategory(graphene.Mutation):
-    id = graphene.Int()
+    status = graphene.String()
 
     class Arguments:
         name = graphene.String(required=True)
@@ -24,7 +24,7 @@ class AddCategory(graphene.Mutation):
         category.save()
 
 
-        return AddCategory(id=category.id)
+        return AddCategory(status='Category Created')
 
 
 
