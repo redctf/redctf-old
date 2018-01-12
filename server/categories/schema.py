@@ -31,7 +31,7 @@ class AddCategory(graphene.Mutation):
         try:
             r.db(CTF_DB).table('categories').insert({ 'sid': category.id, 'name': name }).run(connection)
         except RqlRuntimeError as e:
-            raise('Error adding categoryt to realtime database: %s' % (e))
+            raise Exception('Error adding category to realtime database: %s' % (e))
         finally:
             connection.close()
 

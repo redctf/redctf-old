@@ -1,4 +1,7 @@
 import graphene
+import rethinkdb as r
+from rethinkdb.errors import RqlRuntimeError, RqlDriverError
+from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from users.models import User
 from teams.models import Team
@@ -58,6 +61,15 @@ class CreateUser(graphene.Mutation):
         )
         user.set_password(password)
         user.save()
+
+        # Push the realtime data to rethinkdb
+        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        try:
+            r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'points': team.points, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': list(team.solved.all().values_list('id', flat=True))}).run(connection)
+        except RqlRuntimeError as e:
+            raise Exception('Error adding category to realtime database: %s' % (e))
+        finally:
+            connection.close()
 
         return CreateUser(status='User account created')
 
