@@ -8,3 +8,7 @@ def validate_name(value):
 def validate_name_unique(value):
     if Category.objects.filter(name__iexact=value).exists():
         raise Exception('Category already exists')
+
+def validate_category_exists(id_value):
+    if not Category.objects.filter(id=id_value).exists():
+        raise Exception('Category does not exist')

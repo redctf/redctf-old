@@ -43,10 +43,9 @@ class JoinTeam(graphene.Mutation):
 
     def mutate(self, info, token):
         # Validate username and password
-        validate_token(token)
-
         user = info.context.user
         validate_user_is_authenticated(user)
+        validate_token(token)
 
         if not Team.objects.filter(token__iexact=token).exists():
             raise Exception('Invalid team token')

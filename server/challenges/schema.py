@@ -5,6 +5,7 @@ from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points
+from categories.validators import validate_category_exists
 from categories.models import Category
 from challenges.models import Challenge
 
@@ -26,6 +27,9 @@ class AddChallenge(graphene.Mutation):
         validate_flag(flag)
         validate_flag_unique(flag)
         validate_points(points)
+        validate_title(title)
+        validate_description(description)
+        validate_category_exists(category)
 
         challenge_category = Category.objects.get(id=category)
 

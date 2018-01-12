@@ -62,6 +62,9 @@ class CreateUser(graphene.Mutation):
         user.set_password(password)
         user.save()
 
+        # ======================== #
+        # Temp fix for stage 1 dev #
+        # ======================== # 
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
@@ -70,6 +73,9 @@ class CreateUser(graphene.Mutation):
             raise Exception('Error adding category to realtime database: %s' % (e))
         finally:
             connection.close()
+        # ======================== #
+        # Temp fix for stage 1 dev #
+        # ======================== # 
 
         return CreateUser(status='User account created')
 
