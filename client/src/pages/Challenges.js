@@ -17,26 +17,21 @@ export default class Challenges extends Component {
   }
   render() {    
     const { 
+      categories,
       items,
       verticalChallengeOrientation
     } = this.store.appState;
     const categoryOrientationClass = verticalChallengeOrientation ? 'vertical' : 'horizontal';
 
-    // Fake JSON Challenge Data - Ideally we'll query with just a teamId and return the following.
-    const fakeCategoryData = [
-      'Cryptography',
-      'Forensics',
-      'Miscellaneous',
-      'Web',
-      'Pwn'
-    ];
-
-    // Iterate over challenge category JSON 
-    const categories = fakeCategoryData.map((category) => {
+    if (categories && categories[0].id == 'test') {
+      categories.shift();
+    }
+    const categoryMap = categories.map((cat) => {
       return (
-        <div key={category}
+        <div key={cat.id}
           className={`category-${categoryOrientationClass}`}>
-          <ChallengeRowCol category={category}
+          <ChallengeRowCol category={cat.name}
+            categoryId={cat.sid}
             vertical={verticalChallengeOrientation}/>
         </div>
       )
@@ -44,7 +39,7 @@ export default class Challenges extends Component {
 
     return (
       <div className={`page posts post-${categoryOrientationClass}`}>
-        {categories}
+        {categoryMap}
         <span className='legend'>
           <span className='solved-key'/> Solved
           <span className='unsolved-key'/> Unsolved

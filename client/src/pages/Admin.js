@@ -5,6 +5,7 @@ import DropDownItem from '../components/ui/DropDown/DropDownItem';
 import SelectedItem from '../components/ui/DropDown/SelectedItem';
 import axios from "axios";
 
+@inject("store")
 @observer
 export default class Admin extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ export default class Admin extends Component {
       },
       category: ''
     };
+    this.getCategories = ::this.getCategories;
   }
 
   addChallenge() {
@@ -32,23 +34,25 @@ export default class Admin extends Component {
   }
 
   onSubmit(e) {
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-    axios.defaults.withCredentials = true;
+    if (this.state.challenge.category) {
+      const port = 8000;
+      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      axios.defaults.withCredentials = true;
 
-    const mutation = this.addChallenge();
-    axios.post('/graphql/',
-      {
-        query: mutation,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response);
-    })
+      const mutation = this.addChallenge();
+      axios.post('/graphql/',
+        {
+          query: mutation,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+      })
+    }
   }
   
   onCategorySubmitted(e) {
@@ -67,7 +71,6 @@ export default class Admin extends Component {
     .then((response) => {
       console.log(response);
     })
-
   }
 
   handleFieldChanged = (e) => {
@@ -87,30 +90,32 @@ export default class Admin extends Component {
   }
 
   getCategories() {
-    const categories = [{
-        category: 'Web',
-        id: 0
-      }, {
-        category: 'Forensics',
-        id: 1
-      }, {
-        category: 'Miscellaneous', 
-        id: 2
-      }, {
-        category: 'Learning',
-        id: 3
-      }];
-    const items = categories.map((ele, idx) => {
-      return (
-        <DropDownItem onClick={this.handleSelection.bind(this, ele.id)}
-          key={ele.id}
-          value={ele.id}>
-          <span>{ele.category}</span>
-        </DropDownItem>
-      );
-    });
+    const categories = this.store.appState.categories;
+    let items = null;
 
-    return items;
+    if (categories.length == 0 || categories[0].id !== 'test') {
+      categories.unshift({
+        id: 'test',
+        name: 'Please select a category',
+        sid: 0
+      });
+    }
+    console.log('getCategories', categories);
+
+    if (categories.length !== 0) {
+      categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
+
+      items = categories.map((ele, idx) => {
+        return (
+          <DropDownItem onClick={this.handleSelection.bind(this, ele)}
+            key={ele.sid}
+            value={ele.sid}>
+            <span>{ele.name}</span>
+          </DropDownItem>
+        );
+      });
+    }
+    return items;  
   }
 
   validateInput = (event, maxLength, regex) => {
@@ -127,8 +132,8 @@ export default class Admin extends Component {
   }
 
   render() {
-    console.log('this.state.challenge:', this.state.challenge);
     const categories = this.getCategories();
+    categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
     return (
       <div className="page posts">
         <div className="page-header">Admin Panel</div>

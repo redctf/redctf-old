@@ -8,6 +8,8 @@ import DevTools from 'mobx-react-devtools';
 import Horizon from '@horizon/client';
 const horizon = new Horizon({host: 'localhost:8181'});
 const users_collection = horizon('users');
+const categories_collection = horizon('categories');
+const challenges_collection = horizon('challenges');
 
 /* Components */
 import TopBar from './components/TopBar';
@@ -33,9 +35,18 @@ export default class App extends Component {
       console.info('Disconnected from Horizon server');
     });
 
-    users_collection.order('id'). atch().subscribe(allItems => {
+    users_collection.order('id').watch().subscribe(allItems => {
       console.log({users: allItems}),
       error => console.error(error)	
+    });
+    categories_collection.order('id').watch().subscribe(allCategories => {
+      allCategories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
+      console.log({categories: allCategories}), error => console.error(error);
+      this.store.appState.categories = allCategories;
+    });
+    challenges_collection.order('id').watch().subscribe(allChallenges => {
+      console.log({challenges: allChallenges}), error => console.error(error);
+      this.store.appState.challenges = allChallenges;
     });
 	}
 	authenticate(e) {

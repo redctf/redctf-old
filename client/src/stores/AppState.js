@@ -15,6 +15,8 @@ export default class AppState {
     this.items = [];
     this.item = {};
     this.isSuperuser = false;
+    this.categories = [];
+    this.challenges = [];
 
     // footer value
     this.testval = "Cobbled together by ";
