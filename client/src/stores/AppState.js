@@ -14,6 +14,7 @@ export default class AppState {
     this.team = '';
     this.items = [];
     this.item = {};
+    this.isSuperuser = false;
 
     // footer value
     this.testval = "Cobbled together by ";

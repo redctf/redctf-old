@@ -3,3 +3,4 @@
 *.pyc
 *.sqlite3
 node_modules/
+rethinkdbb_data/

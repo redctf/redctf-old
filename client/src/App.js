@@ -46,6 +46,7 @@ export default class App extends Component {
 	render() {
 		const {
 			authenticated,
+			isSuperuser,
 			timeToRefresh,
 			refreshToken,
 			testval
@@ -110,11 +111,10 @@ export default class App extends Component {
 					exact
 					path='/admin'
 					render={props => (
-						authenticated ? (
+						(authenticated && isSuperuser) ? (
 							<LazyRoute {...props} component={import('./pages/Admin')} />
 						) : (
-							<LazyRoute {...props} component={import('./pages/Admin')} />
-							// <Redirect to="/login"/>
+							<Redirect to="/login"/>
 						)
 					)}
 				/>

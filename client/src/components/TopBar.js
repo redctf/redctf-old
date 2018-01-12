@@ -21,12 +21,12 @@ export default class TopBar extends Component {
 	}
 
 	render() {
-		const { authenticated } = this.store;
+		const { authenticated, isSuperuser } = this.store;
 		return (
 			<div className="topbar">
 				{authenticated && <TopNav location={this.props.location} />}
 				{authenticated && <span className='team-name'><ActiveLink to="/team">{this.store.team}</ActiveLink></span>}
-				{authenticated && <span className='team-name'><ActiveLink to="/admin">Admin</ActiveLink></span>}
+				{authenticated && isSuperuser && <span className='team-name'><ActiveLink to="/admin">Admin</ActiveLink></span>}
 				{authenticated && <Button
 					onClick={this.authenticate.bind(this)}
 					title={authenticated ? "Log out" : "Sign in"}

@@ -36,6 +36,8 @@ export default class Login extends Component {
 		   	const res = response.data;
 
 		    if (res.data.login !== null) {
+		    	this.props.store.appState.isSuperuser = res.data.login.isSuperuser;
+		    	console.log('this.props.store.appState.isSuperuser', this.props.store.appState.isSuperuser);
 		    	this.props.store.appState.authenticate(this.state.team).then(() => {
 		    		this.props.history.push('/');
 		    	});
@@ -50,7 +52,7 @@ export default class Login extends Component {
 	}
 
 	postLogin() {
-		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id} }`;
+		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id isSuperuser} }`;
 	}
 
 	handleTeamNameChanged = (e) => {

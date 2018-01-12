@@ -30,3 +30,76 @@
 2017-12-17T20:51:57.637613000 17190.112555s notice: All client connections closed.
 2017-12-17T20:51:57.637617000 17190.112558s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 2017-12-17T20:51:57.655205000 17190.130146s notice: Storage engine shut down.
+2018-01-10T09:06:15.558005000 0.037015s notice: Recursively removing directory /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/tmp
+2018-01-10T09:06:15.559877000 0.038890s notice: Running rethinkdb 2.3.6 (CLANG 9.0.0 (clang-900.0.37))...
+2018-01-10T09:06:15.564812000 0.043822s notice: Running on Darwin 17.3.0 x86_64
+2018-01-10T09:06:15.564868000 0.043877s notice: Loading data from directory /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data
+2018-01-10T09:06:15.602294000 0.081303s info: Automatically using cache size of 100 MB
+2018-01-10T09:06:15.602303000 0.081312s warn: Cache size does not leave much memory for server and query overhead (available memory: 1043 MB).
+2018-01-10T09:06:15.602370000 0.081380s warn: Cache size is very low and may impact performance.
+2018-01-10T09:06:15.606471000 0.085480s notice: Listening for intracluster connections on port 29015
+2018-01-10T09:06:15.654619000 0.133629s notice: Listening for client driver connections on port 28015
+2018-01-10T09:06:15.654715000 0.133724s notice: Listening for administrative HTTP connections on port 8080
+2018-01-10T09:06:15.654716000 0.133725s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2018-01-10T09:06:15.654771000 0.133780s notice: Listening on driver addresses: 127.0.0.1, ::1
+2018-01-10T09:06:15.654774000 0.133783s notice: Listening on http addresses: 127.0.0.1, ::1
+2018-01-10T09:06:15.654776000 0.133785s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2018-01-10T09:06:15.654778000 0.133787s notice: Server ready, "Adams_MBP_domain_1qv" 107e2b60-edc4-43c2-b266-d83e2b6a2569
+2018-01-10T09:06:16.825523000 1.304534s info: Table e0b04b62-9441-4910-bf64-99495f822b7c: Starting a new Raft election for term 2.
+2018-01-10T09:06:16.836604000 1.315615s info: Table e0b04b62-9441-4910-bf64-99495f822b7c: This server is Raft leader for term 2. Latest log index is 5.
+2018-01-10T09:06:16.840148000 1.319158s info: Table e9cf6c6e-1724-4cad-8d4c-105712780feb: Starting a new Raft election for term 2.
+2018-01-10T09:06:16.856022000 1.335032s info: Table e9cf6c6e-1724-4cad-8d4c-105712780feb: This server is Raft leader for term 2. Latest log index is 4.
+2018-01-10T09:06:17.242045000 1.721056s info: Table b0726426-0d85-451a-baf3-3c63373a78e3: Starting a new Raft election for term 2.
+2018-01-10T09:06:17.252311000 1.731323s info: Table b0726426-0d85-451a-baf3-3c63373a78e3: This server is Raft leader for term 2. Latest log index is 5.
+2018-01-10T09:06:17.466716000 1.945728s info: Table c1d8a27a-8b50-4888-9bed-318fc023d34c: Starting a new Raft election for term 2.
+2018-01-10T09:06:17.483766000 1.962778s info: Table c1d8a27a-8b50-4888-9bed-318fc023d34c: This server is Raft leader for term 2. Latest log index is 4.
+2018-01-10T09:07:13.699046000 58.178115s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/b0726426-0d85-451a-baf3-3c63373a78e3
+2018-01-10T09:07:13.699055000 58.178124s info: Table b0726426-0d85-451a-baf3-3c63373a78e3: Deleted the table.
+2018-01-10T09:07:13.716283000 58.195352s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/c1d8a27a-8b50-4888-9bed-318fc023d34c
+2018-01-10T09:07:13.716291000 58.195360s info: Table c1d8a27a-8b50-4888-9bed-318fc023d34c: Deleted the table.
+2018-01-10T09:07:13.741926000 58.220995s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/e0b04b62-9441-4910-bf64-99495f822b7c
+2018-01-10T09:07:13.741938000 58.221006s info: Table e0b04b62-9441-4910-bf64-99495f822b7c: Deleted the table.
+2018-01-10T09:07:13.783750000 58.262819s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/e9cf6c6e-1724-4cad-8d4c-105712780feb
+2018-01-10T09:07:13.783762000 58.262830s info: Table e9cf6c6e-1724-4cad-8d4c-105712780feb: Deleted the table.
+2018-01-10T09:07:13.917021000 58.396090s info: Table 3a612d73-2af6-4c68-9156-01c890408933: Starting a new Raft election for term 1.
+2018-01-10T09:07:13.917225000 58.396294s info: Table 3a612d73-2af6-4c68-9156-01c890408933: Added replica on this server.
+2018-01-10T09:07:13.930300000 58.409369s info: Table 3a612d73-2af6-4c68-9156-01c890408933: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-10T09:07:14.549969000 59.029039s info: Table 2325ac53-e62c-47a5-abaa-8357d88ec6ca: Starting a new Raft election for term 1.
+2018-01-10T09:07:14.550180000 59.029250s info: Table 2325ac53-e62c-47a5-abaa-8357d88ec6ca: Added replica on this server.
+2018-01-10T09:07:14.559336000 59.038406s info: Table 2325ac53-e62c-47a5-abaa-8357d88ec6ca: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-10T09:07:15.179775000 59.658846s info: Table 6ee036b3-4ce7-4bb7-a288-e365cc6baf65: Starting a new Raft election for term 1.
+2018-01-10T09:07:15.180092000 59.659163s info: Table 6ee036b3-4ce7-4bb7-a288-e365cc6baf65: Added replica on this server.
+2018-01-10T09:07:15.188473000 59.667544s info: Table 6ee036b3-4ce7-4bb7-a288-e365cc6baf65: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-10T09:08:20.801407000 125.280545s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/2325ac53-e62c-47a5-abaa-8357d88ec6ca
+2018-01-10T09:08:20.801415000 125.280552s info: Table 2325ac53-e62c-47a5-abaa-8357d88ec6ca: Deleted the table.
+2018-01-10T09:08:20.822200000 125.301337s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/3a612d73-2af6-4c68-9156-01c890408933
+2018-01-10T09:08:20.822208000 125.301345s info: Table 3a612d73-2af6-4c68-9156-01c890408933: Deleted the table.
+2018-01-10T09:08:20.836295000 125.315432s notice: Removing file /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data/6ee036b3-4ce7-4bb7-a288-e365cc6baf65
+2018-01-10T09:08:20.836305000 125.315442s info: Table 6ee036b3-4ce7-4bb7-a288-e365cc6baf65: Deleted the table.
+2018-01-10T09:08:20.971523000 125.450661s info: Table d3271c52-5ae7-4996-950e-75bfd32f9573: Starting a new Raft election for term 1.
+2018-01-10T09:08:20.971734000 125.450871s info: Table d3271c52-5ae7-4996-950e-75bfd32f9573: Added replica on this server.
+2018-01-10T09:08:20.981290000 125.460428s info: Table d3271c52-5ae7-4996-950e-75bfd32f9573: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-10T09:08:21.596776000 126.075915s info: Table 9294bcc8-8d60-46e5-9dae-179bb070cdff: Starting a new Raft election for term 1.
+2018-01-10T09:08:21.596900000 126.076038s info: Table 9294bcc8-8d60-46e5-9dae-179bb070cdff: Added replica on this server.
+2018-01-10T09:08:21.611234000 126.090372s info: Table 9294bcc8-8d60-46e5-9dae-179bb070cdff: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-10T09:08:22.205173000 126.684312s info: Table c9eb8dec-cfbd-4d7b-bdc8-2c5937729c36: Starting a new Raft election for term 1.
+2018-01-10T09:08:22.205325000 126.684464s info: Table c9eb8dec-cfbd-4d7b-bdc8-2c5937729c36: Added replica on this server.
+2018-01-10T09:08:22.213089000 126.692228s info: Table c9eb8dec-cfbd-4d7b-bdc8-2c5937729c36: This server is Raft leader for term 1. Latest log index is 0.
+2018-01-11T11:14:13.398185000 0.034956s notice: Running rethinkdb 2.3.6 (CLANG 9.0.0 (clang-900.0.37))...
+2018-01-11T11:14:13.404990000 0.041757s notice: Running on Darwin 17.3.0 x86_64
+2018-01-11T11:14:13.405067000 0.041833s notice: Loading data from directory /Users/clevernyyyy/develop/redctf/redctf/client/rethinkdb_data
+2018-01-11T11:14:13.445268000 0.082034s info: Automatically using cache size of 1099 MB
+2018-01-11T11:14:13.448146000 0.084912s notice: Listening for intracluster connections on port 29015
+2018-01-11T11:14:13.498659000 0.135425s notice: Listening for client driver connections on port 28015
+2018-01-11T11:14:13.498809000 0.135576s notice: Listening for administrative HTTP connections on port 8080
+2018-01-11T11:14:13.498811000 0.135577s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2018-01-11T11:14:13.498889000 0.135655s notice: Listening on driver addresses: 127.0.0.1, ::1
+2018-01-11T11:14:13.498891000 0.135657s notice: Listening on http addresses: 127.0.0.1, ::1
+2018-01-11T11:14:13.498894000 0.135660s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2018-01-11T11:14:13.498896000 0.135662s notice: Server ready, "Adams_MBP_domain_1qv" 107e2b60-edc4-43c2-b266-d83e2b6a2569
+2018-01-11T11:14:14.807159000 1.443926s info: Table 9294bcc8-8d60-46e5-9dae-179bb070cdff: Starting a new Raft election for term 2.
+2018-01-11T11:14:14.820209000 1.456975s info: Table 9294bcc8-8d60-46e5-9dae-179bb070cdff: This server is Raft leader for term 2. Latest log index is 3.
+2018-01-11T11:14:15.315629000 1.952395s info: Table c9eb8dec-cfbd-4d7b-bdc8-2c5937729c36: Starting a new Raft election for term 2.
+2018-01-11T11:14:15.324834000 1.961601s info: Table c9eb8dec-cfbd-4d7b-bdc8-2c5937729c36: This server is Raft leader for term 2. Latest log index is 3.
+2018-01-11T11:14:15.449221000 2.085987s info: Table d3271c52-5ae7-4996-950e-75bfd32f9573: Starting a new Raft election for term 2.
+2018-01-11T11:14:15.457759000 2.094525s info: Table d3271c52-5ae7-4996-950e-75bfd32f9573: This server is Raft leader for term 2. Latest log index is 3.
