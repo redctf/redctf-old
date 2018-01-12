@@ -14,41 +14,6 @@ export default class ChallengeRowCol extends Component {
   render() {
     const { challenges, categories } = this.store.appState;
 
-
-    // Fake JSON Challenge Data - Ideally we'll query with just a teamId and Category and return the following.
-    const fakeChallengeData = [
-      {
-        value: '100',
-        name: 'challenge100',
-        description: 'challenge100 Description',
-        solved: true
-      },
-      {
-        value: '200',
-        name: 'challenge200',
-        description: 'challenge200 Description',
-        solved: true
-      },
-      {
-        value: '300',
-        name: 'challenge300',
-        description: 'challenge300 Description',
-        solved: false
-      },
-      {
-        value: '400',
-        name: 'challenge400',
-        description: 'challenge400 Description',
-        solved: true
-      },
-      {
-        value: '500',
-        name: 'challenge500',
-        description: 'challenge500 Description',
-        solved: false
-      }
-    ];
-
     // Default to horizontal challenge orientation unless 'vertical' is passed in as a prop
     const direction = this.props.vertical ? 'vertical' : 'horizontal';  
 
@@ -58,14 +23,7 @@ export default class ChallengeRowCol extends Component {
       }
     });
 
-    console.log('categories', categories);
-    console.log('challenges', challenges);
-    console.log('challengeData', challengeData);
-
-
-
     // Map over JSON challenge data
-
     const challengeRowCol = challengeData.map((challenge) => {
       return (
         <JeopardyButton key={`${challenge.id}`}

@@ -6,17 +6,19 @@ The most customizeable CTF Framework built with modern technologies.
 ## Phase One
 #### Minimum functionality phase.
 
-- [ ] Auth
+- [x] Auth
   - [x] Login - no access with proper login
   - [x] Register
-  - [ ] Hide/Show Admin page based on rights
+  - [x] Hide/Show Admin page based on rights
 - [ ] Admin Page
-  - [ ] Create Challenge
+  - [x] Create Category
+  - [x] Create Challenge
   - [ ] Release Hints
 - [ ] Challenge Board
+  - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [ ] Challenge Modals
   - [ ] Flag Check in Django
-  - [ ] Challenge Update thru Rethinkdb/Horizon
+  - [ ] Live Challenge Score Update thru Rethinkdb/Horizon
 - [ ] Scoreboard Page
 - [ ] Team Page
 
