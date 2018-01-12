@@ -28,7 +28,7 @@ export default class Admin extends Component {
   }
 
   addCategory() {
-    return `mutation { addCategory(category: "${this.state.category}") { status } }`;
+    return `mutation { addCategory(name: "${this.state.category}") { status } }`;
   }
 
   onSubmit(e) {
