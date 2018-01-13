@@ -4,7 +4,7 @@ from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
-from challenges.validators import validate_flag, validate_flag_unique, validate_points
+from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description
 from categories.validators import validate_category_exists
 from categories.models import Category
 from challenges.models import Challenge
@@ -20,8 +20,9 @@ class AddChallenge(graphene.Mutation):
         flag = graphene.String(required=True)
 
     def mutate(self, info, category, title, points, description, flag):
+        user = info.context.user
         # Validate user is admin
-        validate_user_is_admin(info.context.user)
+        validate_user_is_admin(user)
 
         # TODO: sanitize all the input fields 
         validate_flag(flag)

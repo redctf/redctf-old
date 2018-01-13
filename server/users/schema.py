@@ -68,9 +68,9 @@ class CreateUser(graphene.Mutation):
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'points': team.points, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': list(team.solved.all().values_list('id', flat=True))}).run(connection)
+            r.db(CTF_DB).table('teams').insert({ 'sid': user.team.id, 'name': user.team.name, 'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': list(user.team.solved.all().values_list('id', flat=True))}).run(connection)
         except RqlRuntimeError as e:
-            raise Exception('Error adding category to realtime database: %s' % (e))
+            raise Exception('Error adding team to realtime database: %s' % (e))
         finally:
             connection.close()
         # ======================== #

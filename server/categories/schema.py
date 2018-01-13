@@ -3,7 +3,7 @@ import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
-from users.validators import validate_user_is_admin, validate_user_is_authenticated
+from users.validators import validate_user_is_admin
 from categories.validators import validate_name, validate_name_unique
 from categories.models import Category
 
@@ -15,8 +15,9 @@ class AddCategory(graphene.Mutation):
 
 
     def mutate(self, info, name):
+        user = info.context.user
         # Validate user is admin
-        validate_user_is_admin(info.context.user)
+        validate_user_is_admin(user)
 
         # Sanitize inputs 
         validate_name(name)
