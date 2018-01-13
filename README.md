@@ -17,7 +17,7 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [ ] Challenge Modals
-  - [ ] Flag Check in Django
+  - [x] Flag Check in Django
   - [ ] Live Challenge Score Update thru Rethinkdb/Horizon
 - [ ] Scoreboard Page
 - [ ] Team Page
