@@ -37,8 +37,8 @@ def resetDjangoDB(admin_name, admin_email, admin_password):
         os.remove(DATABASES['default']['NAME'])
     
     # Remove migrations
-    #os.system('find . -path "*/migrations/*.py" -not -name "__init__.py" -delete')
-    #os.system('find . -path "*/migrations/*.pyc"  -delete')
+    os.system('find . -path "*/migrations/*.py" -not -name "__init__.py" -delete')
+    os.system('find . -path "*/migrations/*.pyc"  -delete')
 
     # Rebuild database
     os.system('python3 manage.py makemigrations')
