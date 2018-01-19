@@ -36,16 +36,16 @@ export default class App extends Component {
     });
 
     users_collection.order('id').watch().subscribe(allItems => {
-      console.log({users: allItems}),
+      console.log({horizon_users: allItems}),
       error => console.error(error)	
     });
     categories_collection.order('id').watch().subscribe(allCategories => {
-      allCategories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
-      console.log({categories: allCategories}), error => console.error(error);
+      allCategories.sort(function(a,b){return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); } );
+      console.log({horizon_categories: allCategories}), error => console.error(error);
       this.store.appState.categories = allCategories;
     });
     challenges_collection.order('id').watch().subscribe(allChallenges => {
-      console.log({challenges: allChallenges}), error => console.error(error);
+      console.log({horizon_challenges: allChallenges}), error => console.error(error);
       this.store.appState.challenges = allChallenges;
     });
 	}

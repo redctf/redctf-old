@@ -27,7 +27,6 @@ export default class Challenges extends Component {
       categories.shift();
     }
     const categoryMap = categories.map((cat) => {
-      console.log('cat', cat);
       return (
         <div key={cat.id}
           className={`category-${categoryOrientationClass}`}>

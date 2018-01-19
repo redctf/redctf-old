@@ -18,17 +18,13 @@ export default class ChallengeRowCol extends Component {
     const direction = this.props.vertical ? 'vertical' : 'horizontal';  
 
     const challengeData = challenges.filter((challenge) => {
-      console.log('challenge.category', challenge.category);
-      console.log('this.props.categoryId', this.props.categoryId);
       if (challenge.category == this.props.categoryId) {
         return challenge;
       }
     });
-    console.log('challengeData', challengeData);
 
     // Map over JSON challenge data
     const challengeRowCol = challengeData.map((challenge) => {
-      console.log('challenge', challenge);
       return (
         <JeopardyButton key={`${challenge.id}`}
           value={challenge.points}
