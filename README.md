@@ -46,6 +46,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Choose team / multiple logins per team
   - [ ] Choose different scss modes (i.e. Vanilla Mode, Midnight Mode, Custom Mode, etc)
 - [ ] Complete Documentation
+- [ ] Flash challenges
 
 
 ## Composition
@@ -68,7 +69,9 @@ The most customizeable CTF Framework built with modern technologies.
 ## Requirements
 * Horizon
 * Rethinkdb
+* Django (`redctf/server/`)
 
+    `sudo pip3 install --upgrade --no-deps  --force-reinstall -r requirements.txt`
 
 ## To Develop on Project
 
