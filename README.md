@@ -74,20 +74,20 @@ The most customizeable CTF Framework built with modern technologies.
 
 Run the following (in order):
 
-1) To Start Rethinkdb
-
+1) To Start Rethinkdb (`redctf/client/`)
+    
     `rethinkdb`
 
-2) To Run Horizon Server
-
+2) To Run Horizon Server (`redctf/client/`)
+    
     `hz serve --dev`
 
-3) To Start Server
-
+3) To Start Server (`redctf/server/`)
+    
     `python3 manage.py runserver`
 
-4) To Start Client
-
+4) To Start Client (`redctf/client/`)
+    
     `npm start`
 
 
