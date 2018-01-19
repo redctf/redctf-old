@@ -1,0 +1,4 @@
+Django==2.0
+graphene==2.0.1
+graphene_django==2.0.0
+rethinkdb==2.3.0.post6
