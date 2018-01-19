@@ -45,6 +45,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Choose email verification (i.e. send pwd, force pwd change or email verification link)
   - [ ] Choose team / multiple logins per team
   - [ ] Choose different scss modes (i.e. Vanilla Mode, Midnight Mode, Custom Mode, etc)
+  - [ ] First blood points
 - [ ] Complete Documentation
 - [ ] Flash challenges
 
