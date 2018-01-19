@@ -17,10 +17,22 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [ ] Challenge Modals
+    - [ ] Appearance
+    - [ ] Pass in Functions for submission
+    - [ ] Flag Check
+    - [ ] Sucess or Failure Toasts - should exit on success?
+    - [ ] Number Solves so far
+    - [ ] Handle large code swaths (e.g. cipher text)
   - [x] Flag Check in Django
   - [ ] Live Challenge Score Update thru Rethinkdb/Horizon
 - [ ] Scoreboard Page
+  - [ ] Graphs
+  - [ ] Table of competitors
 - [ ] Team Page
+  - [ ] Accessible from top nav bar
+  - [ ] Accessible from scoreboard
+  - [ ] Graph
+  - [ ] Table for Challenges solved (and times solved)
 
 
 ## Phase Two

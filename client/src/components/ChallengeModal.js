@@ -41,13 +41,6 @@ export default class ChallengeModal extends Component {
         <h2>{this.props.name}</h2>
         <small>{this.props.value} Points</small>
         <p>{this.props.description}</p>
-        <input type="text"
-          id="challengeFlag"
-          className="temp-input"
-          placeholder="flag"
-          onChange={this.handleFieldChanged}/>
-        <button type="button"
-          onClick={this.onSubmit}>Submit</button>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
-import Button from '../Button';
+import Button from './ModalButton';
 
 export default class ModalFooter extends Component {
   static displayName = 'ModalFooter';
@@ -9,6 +9,7 @@ export default class ModalFooter extends Component {
     confirmDisabled: PropTypes.bool,
     cancelButton: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
+    flagSubmissionInput: PropTypes.bool,
     cancel: PropTypes.func,
     confirm: PropTypes.func,
     confirmText: PropTypes.string,
@@ -16,10 +17,11 @@ export default class ModalFooter extends Component {
     cancelText: PropTypes.string
   };
   static defaultProps = {
-    cancelButton: true,
+    cancelButton: false,
     confirmButton: true,
     cancelDisabled: false,
     confirmDisabled: false,
+    flagSubmissionInput: true,
     cancel() {},
     confirm() {},
     confirmText: 'Confirm',
@@ -33,11 +35,18 @@ export default class ModalFooter extends Component {
     this.handleCancel = this.handleCancel.bind(this);
   }
   render() {
+    console.log('this.props.cancelText', this.props.cancelText);
     return (
       <div className='modal-footer'>
         {(this.props.cancelButton) ?
           <Button disabled={this.props.cancelDisabled}
             onClick={this.handleCancel}>{this.props.cancelText}</Button> : null}
+        {(this.props.flagSubmissionInput) ?
+          <input type="text"
+            id="challengeFlag"
+            className="temp-input"
+            placeholder="flag"
+            onChange={this.handleFieldChanged}/> : null }
         {(this.props.confirmButton) ?
           <Button onClick={this.handleConfirm}
             disabled={this.props.confirmDisabled}

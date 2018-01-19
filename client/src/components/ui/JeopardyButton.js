@@ -50,8 +50,7 @@ export default class JeopardyButton extends Component {
               value={this.props.value}
               description={this.props.description}/>
           </ModalContent>
-          <ModalFooter confirmText='Done'
-            cancel={this.handleCloseModal}/>
+          <ModalFooter confirmText='Submit'/>
         </Modal>
       </div>
     );
