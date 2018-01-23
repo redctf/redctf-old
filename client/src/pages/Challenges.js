@@ -6,9 +6,11 @@ import Protected from "../components/Protected";
 import DataWrapper from "../components/DataWrapper";
 
 import ChallengeRowCol from '../components/ChallengeRowCol';
+//import axios from "axios";
 
 @Protected
 @DataWrapper
+@inject("store")
 @observer
 export default class Challenges extends Component {
   constructor(props) {
@@ -19,7 +21,8 @@ export default class Challenges extends Component {
     const { 
       categories,
       items,
-      verticalChallengeOrientation
+      verticalChallengeOrientation,
+      team
     } = this.store.appState;
     const categoryOrientationClass = verticalChallengeOrientation ? 'vertical' : 'horizontal';
 

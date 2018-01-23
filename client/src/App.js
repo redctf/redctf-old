@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, withRouter, Redirect } fr
 import { inject, observer } from 'mobx-react';
 import LazyRoute from 'lazy-route';
 import DevTools from 'mobx-react-devtools';
+import axios from "axios";
 
 /* Horizon */
 import Horizon from '@horizon/client';
@@ -10,6 +11,7 @@ const horizon = new Horizon({host: 'localhost:8181'});
 const users_collection = horizon('users');
 const categories_collection = horizon('categories');
 const challenges_collection = horizon('challenges');
+const teams_collection = horizon('teams');
 
 /* Components */
 import TopBar from './components/TopBar';
@@ -48,11 +50,40 @@ export default class App extends Component {
       console.log({horizon_challenges: allChallenges}), error => console.error(error);
       this.store.appState.challenges = allChallenges;
     });
+    teams_collection.order('id').watch().subscribe(allTeams=> {
+      console.log({teams_challenges: allTeams}), error => console.error(error);
+      this.store.appState.teams = allTeams;
+    });
+    this.getTeamInfo();
 	}
 	authenticate(e) {
 		if (e) e.preventDefault();
 		//this.store.appState.authenticate();
 	}
+
+  getTeamInfo() {
+    const port = 8000;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.withCredentials = true;
+    const query = this.queryTeam();
+    axios.post('/graphql/',
+      {
+        query: query,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log('team information:', response);
+      this.store.appState.team = response.data.data.team;
+    })
+  }
+
+  queryTeam() {
+    return `query { team {id name points users {id username}}}`;
+  }
 
 	render() {
 		const {

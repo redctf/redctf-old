@@ -37,7 +37,9 @@ export default class Login extends Component {
 
 		    if (res.data.login !== null) {
 		    	this.props.store.appState.isSuperuser = res.data.login.isSuperuser;
-		    	this.props.store.appState.authenticate(this.state.team).then(() => {
+
+		    	// TODO - need to get teamInfo here
+		    	this.props.store.appState.authenticate().then(() => {
 		    		this.props.history.push('/');
 		    	});
 		    } else {

@@ -7,16 +7,20 @@ export default class AppState {
   @observable items;
   @observable item;
   @observable team;
+  @observable teams;
+  @observable categories;
+  @observable challenges;
   @observable testval;
 
   constructor() {
     this.authenticated = false;
-    this.team = '';
+    this.team = {};
     this.items = [];
     this.item = {};
     this.isSuperuser = false;
     this.categories = [];
     this.challenges = [];
+    this.teams = [];
 
     // footer value
     this.testval = "Cobbled together by ";
@@ -25,13 +29,13 @@ export default class AppState {
     this.verticalChallengeOrientation = false;
   }
 
-  async fetchData(pathname, id) {
-    let { data } = await axios.get(
-      `https://jsonplaceholder.typicode.com${pathname}`
-    );
-    console.log(data);
-    data.length > 0 ? this.setData(data) : this.setSingle(data);
-  }
+  // async fetchData(pathname, id) {
+  //   let { data } = await axios.get(
+  //     `https://jsonplaceholder.typicode.com${pathname}`
+  //   );
+  //   console.log(data);
+  //   data.length > 0 ? this.setData(data) : this.setSingle(data);
+  // }
 
   @action setData(data) {
     this.items = data;
@@ -46,8 +50,13 @@ export default class AppState {
     this.item = {};
   }
 
-  @action authenticate(team) {
-    this.team = team ? team : '';
+  @action filterSingleTeam(id) {
+    return this.teams.filter((team) => {
+      return team.sid == id;
+    });
+  }
+
+  @action authenticate() {
     return new Promise((resolve, reject) => {
       this.authenticating = true;
       setTimeout(() => {

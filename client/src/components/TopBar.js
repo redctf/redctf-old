@@ -25,7 +25,7 @@ export default class TopBar extends Component {
 		return (
 			<div className="topbar">
 				{authenticated && <TopNav location={this.props.location} />}
-				{authenticated && <span className='team-name'><ActiveLink to="/team">{this.store.team}</ActiveLink></span>}
+				{authenticated && <span className='team-name'><ActiveLink to="/team">{this.store.team.name}</ActiveLink></span>}
 				{authenticated && isSuperuser && <span className='team-name'><ActiveLink to="/admin">Admin</ActiveLink></span>}
 				{authenticated && <Button
 					onClick={this.authenticate.bind(this)}

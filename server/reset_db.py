@@ -80,7 +80,7 @@ def insertCategories():
     miscellaneous.save()
     pwn = Category(name="Pwn")
     pwn.save()
-    crypto = Category(name="Miscellaneous")
+    crypto = Category(name="Crypto")
     crypto.save()
 
     # Push test categories to rethinkdb database

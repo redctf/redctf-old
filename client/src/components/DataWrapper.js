@@ -15,7 +15,6 @@ export default function DataWrapper(WrappedComponent) {
 			console.log(this.props);
 			let pathname = this.props.match.url;
 			let id = this.props.match.id ? this.props.match.id : null;
-			this.store.fetchData(pathname, id);
 		}
 
 		componentWillUnmount() {
