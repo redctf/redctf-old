@@ -13,49 +13,7 @@ const styles = {
     fontSize: '11px',
     cursor: 'pointer'
   },
-  default: {
-    background: '#f4f4f4',
-    borderColor: '#999999',
-    ':hover': {
-      borderColor: '#0285fc',
-      color: '#0285fc'
-    }
-  },
-  primary: {
-    background: '#52a6fa',
-    borderColor: '#0285fc',
-    color: '#fff',
-    ':hover': {
-      background: '#0285fc',
-      borderColor: '#0285fc'
-    }
-  },
-  // need better names for green and red
-  green: {
-    background: '#8cc63f',
-    borderColor: '#7db038',
-    ':hover': {
-      background: '#7eb239',
-      borderColor: '#71a033'
-    }
-  },
-  red: {
-    background: '#e80a40',
-    borderColor: '#ca0938',
-    color: '#fff',
-    ':hover': {
-      color: '#fff',
-      background: '#d00939',
-      borderColor: '#bb0833'
-    }
-  },
-  disabled: {
-    opacity: '0.4',
-    cursor: 'default',
-    pointerEvents: 'none'
-  }
 };
-
 
 export default class ModalButton extends Component {
   static displayName = 'ModalButton';
@@ -68,7 +26,7 @@ export default class ModalButton extends Component {
     class: PropTypes.string
   };
   static defaultProps = {
-    dataAuto: 'sgButton',
+    dataAuto: 'button',
     onClick: function onClick() {},
     type: 'default',
     disabled: false
@@ -81,8 +39,9 @@ export default class ModalButton extends Component {
   render() {
     return (
       <button data-auto={this.props.dataAuto}
+        type='button'
         onClick={!this.props.disabled && this.handleClick}
-        className={this.props.class}>{this.props.children}</button>
+        className={`btn ${this.props.class}`}>{this.props.children}</button>
     );
   }
   handleClick(evt) {

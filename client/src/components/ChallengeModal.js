@@ -38,8 +38,12 @@ export default class ChallengeModal extends Component {
   render() {
     return (
       <div className='challenge-modal'>
-        <h2>{this.props.name}</h2>
-        <small>{this.props.value} Points</small>
+        <div className='title-bar'>
+          <div className='title'>{this.props.name}</div>
+          <div className='points'>{this.props.value} Points</div>
+        </div>
+
+
         <p>{this.props.description}</p>
       </div>
     );

@@ -108,11 +108,13 @@ export default class Login extends Component {
 					<div className='login-window'>
 						<div className='login-inputs'>
 							<input type="text"
+								className="form-control"
 								placeholder="team name"
 								onChange={this.handleTeamNameChanged}/>
 						</div>
 						<div className='login-inputs'>
 							<input type="password"
+								className="form-control"
 								placeholder="password"
 								onChange={this.handlePasswordChaned}/>
 						</div>

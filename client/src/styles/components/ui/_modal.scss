@@ -81,4 +81,22 @@
 .challenge-modal {
   padding:20px;
   height: 400px;
+
+  .title-bar {
+    border-bottom: solid 1px #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 15px;
+
+    .title {
+      color: #000;
+      font-size: 20px;
+    }
+    .points {
+      width: 100px;
+      text-align: right;
+    }
+  }
 }
+

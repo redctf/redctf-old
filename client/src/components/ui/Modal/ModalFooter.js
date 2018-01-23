@@ -43,12 +43,19 @@ export default class ModalFooter extends Component {
           <Button disabled={this.props.cancelDisabled}
             onClick={this.handleCancel}>{this.props.cancelText}</Button> : null}
         {(this.props.flagSubmissionInput) ?
-          <input type="text"
-            id="challengeFlag"
-            className="temp-input"
-            placeholder="flag"
-            onChange={this.handleFieldChanged}/> : null }
-        {(this.props.confirmButton) ?
+          <div className='input-group'>
+            <input type="text"
+              id="challengeFlag"
+              className="form-control"
+              placeholder="Enter flag"
+              onChange={this.handleFieldChanged}/>
+            <span className='input-group-btn'>
+              <Button onClick={this.handleConfirm}
+                disabled={this.props.confirmDisabled}
+                type={this.props.confirmType}>{this.props.confirmText}</Button>
+            </span>
+          </div> : null }
+        {(this.props.confirmButton && !(this.props.flagSubmissionInput)) ?
           <Button onClick={this.handleConfirm}
             disabled={this.props.confirmDisabled}
             type={this.props.confirmType}>{this.props.confirmText}</Button> : null}
