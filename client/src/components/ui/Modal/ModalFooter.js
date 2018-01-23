@@ -14,7 +14,8 @@ export default class ModalFooter extends Component {
     confirm: PropTypes.func,
     confirmText: PropTypes.string,
     confirmType: PropTypes.string,
-    cancelText: PropTypes.string
+    cancelText: PropTypes.string,
+    flag: PropTypes.string
   };
   static defaultProps = {
     cancelButton: false,
@@ -31,11 +32,11 @@ export default class ModalFooter extends Component {
   constructor(props) {
     super(props);
 
+    this.handleFieldChanged = this.handleFieldChanged.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
   render() {
-    console.log('this.props.cancelText', this.props.cancelText);
     return (
       <div className='modal-footer'>
         {(this.props.cancelButton) ?
@@ -58,6 +59,11 @@ export default class ModalFooter extends Component {
     this.props.cancel(evt);
   }
   handleConfirm(evt) {
-    this.props.confirm(evt);
+    this.props.confirm(evt, this.state.flag);
+  }
+  handleFieldChanged(evt) {
+    this.setState({
+      flag: evt.currentTarget.value
+    })
   }
 };

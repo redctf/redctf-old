@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import Modal from 'react-modal';
+import axios from "axios";
 
 import ChallengeModal from '../ChallengeModal';
 import ModalHeader from './Modal/ModalHeader';
@@ -14,6 +15,7 @@ export default class JeopardyButton extends Component {
       showModal: false
     };
 
+    this.onSubmit = this.onSubmit.bind(this);
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
   }
@@ -24,6 +26,38 @@ export default class JeopardyButton extends Component {
 
   handleCloseModal() {
     this.setState({showModal: false});
+  }
+
+  onSubmit(e, flag) {
+    // flag check
+    const port = 8000;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.withCredentials = true;
+    const mutation = this.postFlag(flag);
+    axios.post('/graphql/',
+      {
+        query: mutation,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log('flag submitted:', flag, response);
+      const status = response.data.data.checkFlag.status;
+
+      if (status === "Correct Flag") {
+        alert('Correct Flag');    // TODO:  Make better notifications for correct/incorrect flags
+        this.handleCloseModal();
+      } else {
+        alert('Wrong Flag');
+      }
+    })
+  }
+
+  postFlag(flag) {
+    return `mutation { checkFlag ( flag: "${flag}") { status } }`;
   }
 
   render () {
@@ -50,7 +84,8 @@ export default class JeopardyButton extends Component {
               value={this.props.value}
               description={this.props.description}/>
           </ModalContent>
-          <ModalFooter confirmText='Submit'/>
+          <ModalFooter confirmText='Submit'
+            confirm={this.onSubmit}/>
         </Modal>
       </div>
     );

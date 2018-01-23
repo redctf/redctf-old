@@ -86,11 +86,11 @@ def insertCategories():
     # Push test categories to rethinkdb database
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     try:
-        r.db(CTF_DB).table('categories').insert({'sid': web.id, 'name': web.name }).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': forensics.id, 'name': forensics.name }).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': miscellaneous.id, 'name': miscellaneous.name }).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': pwn.id, 'name': pwn.name }).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name }).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': web.id, 'name': web.name, 'id': web.id }).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': forensics.id, 'name': forensics.name, 'id': forensics.id }).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': miscellaneous.id, 'name': miscellaneous.name, 'id': miscellaneous.id }).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': pwn.id, 'name': pwn.name, 'id': pwn.id }).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name, 'id': crypto.id }).run(connection)
     except RqlRuntimeError as e:
         raise Exception('Error adding categories to realtime database: %s' % (e))
     finally:
@@ -127,11 +127,11 @@ def insertChallengeBoard():
             challenge_500.save()
             i+=1
 
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description' }).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description' }).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description' }).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description' }).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description' }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'id': challenge_100.id }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'id': challenge_200.id }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'id': challenge_300.id }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'id': challenge_400.id }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'id': challenge_500.id }).run(connection)
 
 
     except RqlRuntimeError as e:

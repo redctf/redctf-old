@@ -153,7 +153,7 @@ export default class App extends Component {
 				/>
 				<Route
 					exact
-					path='/team/:id'
+					path='/team'
 					render={props => (
 						authenticated ? (
 							<LazyRoute {...props} component={import('./pages/Team')}/>
