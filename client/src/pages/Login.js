@@ -16,6 +16,30 @@ export default class Login extends Component {
     this.handleKeyPress = ::this.handleKeyPress;
 	}
 
+  getTeamInfo() {
+    const port = 8000;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.withCredentials = true;
+    const query = this.queryTeam();
+    axios.post('/graphql/',
+      {
+        query: query,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log('team information:', response);
+      this.props.store.appState.team = response.data.data.team;
+    })
+  }
+
+  queryTeam() {
+    return `query { team {id name points users {id username}}}`;
+  }
+
 	onSubmit() {
 		if (this.state.team !== '' && this.state.password !== '') {
 			const port = 8000;
@@ -37,8 +61,8 @@ export default class Login extends Component {
 
 		    if (res.data.login !== null) {
 		    	this.props.store.appState.isSuperuser = res.data.login.isSuperuser;
+					this.getTeamInfo();
 
-		    	// TODO - need to get teamInfo here
 		    	this.props.store.appState.authenticate().then(() => {
 		    		this.props.history.push('/');
 		    	});
