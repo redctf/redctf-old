@@ -51,7 +51,7 @@ export default class App extends Component {
       this.store.appState.challenges = allChallenges;
     });
     teams_collection.order('id').watch().subscribe(allTeams=> {
-      console.log({teams_challenges: allTeams}), error => console.error(error);
+      console.log({horizon_teams: allTeams}), error => console.error(error);
       this.store.appState.teams = allTeams;
     });
     this.getTeamInfo();
