@@ -5,6 +5,7 @@
 .login-inputs {
   input {
     width: 268px;
+    margin-bottom: 15px;
   }
 }
 
@@ -38,7 +39,6 @@
 .login-button-row {
   display: flex;
   justify-content: space-between;
-  margin-top:15px;
 }
 
 .error-message {

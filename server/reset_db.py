@@ -33,7 +33,7 @@ def resetRethinkDB():
         connection.close()
 
 
-def resetDjangoDB(admin_name, admin_email, admin_password):
+def resetDjangoDB():
     # Remove database file if exists
     with contextlib.suppress(FileNotFoundError):
         os.remove(DATABASES['default']['NAME'])
@@ -46,6 +46,8 @@ def resetDjangoDB(admin_name, admin_email, admin_password):
     os.system('python3 manage.py makemigrations')
     os.system('python3 manage.py migrate')   
 
+    
+def makeAdminUser(admin_name, admin_email, admin_password):
     # Validate admin user command line arguments
     validate_username(admin_name)
     validate_email(admin_email)
@@ -69,7 +71,8 @@ def resetDjangoDB(admin_name, admin_email, admin_password):
         raise Exception('Error adding admin team to realtime database: %s' % (e))
     finally:
         connection.close()
-    
+
+
 def insertCategories():
     # Save the category
     web = Category(name="Web")
@@ -151,7 +154,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     resetRethinkDB()
-    resetDjangoDB(args.admin_name, args.admin_email, args.admin_password)
+    resetDjangoDB()
+    makeAdminUser(args.admin_name, args.admin_email, args.admin_password)
+    makeAdminUser('team2', 'team2@gmail.com', 'Password123!')
+    makeAdminUser('team3', 'team3@gmail.com', 'Password123!')
+    makeAdminUser('team4', 'team4@gmail.com', 'Password123!')
+    makeAdminUser('team5', 'team5@gmail.com', 'Password123!')
 
     if args.cats:
         insertCategories()
