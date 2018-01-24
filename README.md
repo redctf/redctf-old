@@ -17,9 +17,9 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [ ] Challenge Modals
-    - [ ] Appearance
-    - [ ] Pass in Functions for submission
-    - [ ] Flag Check
+    - [x] Appearance
+    - [x] Pass in Functions for submission
+    - [x] Flag Check
     - [ ] Sucess or Failure Toasts - should exit on success?
     - [ ] Number Solves so far
     - [ ] Handle large code swaths (e.g. cipher text)
