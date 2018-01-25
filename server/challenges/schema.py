@@ -3,11 +3,13 @@ import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
+from django.utils.dateformat import format
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description
 from categories.validators import validate_category_exists
 from categories.models import Category
 from challenges.models import Challenge
+from teams.models import SolvedChallenge
 
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
@@ -41,13 +43,11 @@ class AddChallenge(graphene.Mutation):
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': category, 'title': title, 'points': points, 'description': description }).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description, 'created': format(challenge.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding challenge to realtime database: %s' % (e))
         finally:
             connection.close()
-
-        # save_to_rethinkdb(challenge.id, category, title, points, description)
 
         return AddChallenge(status='Challenge Created')
 
@@ -69,21 +69,28 @@ class CheckFlag(graphene.Mutation):
         correct = False
         if Challenge.objects.filter(flag__iexact=flag).exists():
             chal = Challenge.objects.get(flag__iexact=flag)
-            if chal not in user.team.solved.all():
+            if chal.id not in user.team.solved.all().values_list('challenge_id', flat=True):
                 user.team.points += chal.points
                 user.team.correct_flags += 1
-                user.team.solved.add(chal)
+                sc = SolvedChallenge(challenge=chal)
+                sc.save()
+                user.team.solved.add(sc)
                 user.team.save()
             correct = True
         else:
             user.team.wrong_flags += 1    
             user.team.save()
             correct = False
+
+        # Create list of solved challenges
+        solved = []
+        for sc in user.team.solved.all().order_by('timestamp'):
+            solved.append({'id': sc.challenge.id, 'points': sc.challenge.points, 'timestamp': format(sc.timestamp, 'U')})
              
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update({'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': list(user.team.solved.all().values_list('id', flat=True))}).run(connection)
+            r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update({'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding category to realtime database: %s' % (e))
         finally:

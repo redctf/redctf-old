@@ -10,3 +10,4 @@ class Challenge(models.Model):
   category = models.ForeignKey(Category, default=None, null=True, on_delete=models.CASCADE, related_name='categories')
   points = models.IntegerField(default=0)
   flag = models.CharField(max_length=100)
+  created = models.DateTimeField(auto_now_add=True)

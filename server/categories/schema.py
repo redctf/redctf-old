@@ -3,6 +3,7 @@ import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
+from django.utils.dateformat import format
 from users.validators import validate_user_is_admin
 from categories.validators import validate_name, validate_name_unique
 from categories.models import Category
@@ -30,7 +31,7 @@ class AddCategory(graphene.Mutation):
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('categories').insert({ 'sid': category.id, 'name': name }).run(connection)
+            r.db(CTF_DB).table('categories').insert({ 'sid': category.id, 'name': category.name, 'created': format(category.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding category to realtime database: %s' % (e))
         finally:
