@@ -20,12 +20,13 @@ export default class ChallengeRowCol extends Component {
 
     // Default to horizontal challenge orientation unless 'vertical' is passed in as a prop
     const direction = this.props.vertical ? 'vertical' : 'horizontal';  
-
     const challengeData = challenges.filter((challenge) => {
       if (challenge.category == this.props.categoryId) {
         return challenge;
       }
     });
+
+    challengeData.sort(function(a,b){return (a.points > b.points) ? 1 : ((b.points > a.points) ? -1 : 0); } );
 
     // Get array of solved challenges
     const solved = this.store.appState.filterSingleTeam(team.id)[0].solved;
@@ -33,11 +34,14 @@ export default class ChallengeRowCol extends Component {
     // Map over JSON challenge data
     const challengeRowCol = challengeData.map((challenge) => {
       let challengeSolved = false;
-      if (solved.includes(challenge.sid)) {
-        challengeSolved = true;
-      }
+      solved.forEach((solve) => {
+        if (solve.id == challenge.sid) {
+          challengeSolved = true;
+        }
+      });
+
       return (
-        <JeopardyButton key={`${challenge.id}`}
+        <JeopardyButton key={`${challenge.sid}`}
           value={challenge.points}
           name={challenge.title}
           category={this.props.category}

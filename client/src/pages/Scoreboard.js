@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-
+import { XYFrame } from "semiotic";
 @inject("store")
 @observer
 export default class Scoreboard extends Component {
@@ -9,9 +9,13 @@ export default class Scoreboard extends Component {
     this.store = this.props.store;
   }
 
-  sortByPoints(teams) {
+  sortByPointsAndTimes(teams) {
+    // primary sort is points
+    // secondary sort is the earliest timestamp on the last challenge solve.
     const sortedTeams = teams.sort((a,b) => {
-      return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
+      return (+(b.points > a.points) || +(b.points === a.points) - 1) ||
+        (+(a.solved[a.solved.length-1].timestamp > b.solved[b.solved.length-1].timestamp) || 
+        +(a.solved[a.solved.length-1].timestamp === b.solved[b.solved.length-1].timestamp) - 1);
     });
     return sortedTeams;
   }
@@ -24,6 +28,7 @@ export default class Scoreboard extends Component {
           <td className='temp-td'>{team.name}</td>
           <td className='temp-td'>{team.points}</td>
           <td className='temp-td'>{`${team.correct_flags}/${totalChallenges}`}</td>
+          <td className='temp-td'>{team.timestamp}</td>
         </tr>
       );
     });
@@ -36,12 +41,14 @@ export default class Scoreboard extends Component {
       teams
     } = this.store.appState;
 
-    const teamRows = this.getTeamRows(this.sortByPoints(teams), challenges);
+    const teamRows = this.getTeamRows(this.sortByPointsAndTimes(teams), challenges);
 
     return (
       <div className="page posts">
 
         <div>Scoreboard</div>
+
+
 
         <table>
           <thead>

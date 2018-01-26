@@ -52,7 +52,7 @@ export default class AppState {
 
   @action filterSingleTeam(id) {
     return this.teams.filter((team) => {
-      return team.sid == id;
+      return (team.sid == id);
     });
   }
 

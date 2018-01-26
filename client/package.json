@@ -63,7 +63,6 @@
     "react-dom": "^15.3.2",
     "react-modal": "^3.1.8",
     "react-router-dom": "latest",
-    "rfx-core": "^1.5.3",
-    "whatwg-fetch": "^2.0.3"
+    "rfx-core": "^1.5.3"
   }
 }

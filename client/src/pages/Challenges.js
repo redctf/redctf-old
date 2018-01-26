@@ -31,7 +31,7 @@ export default class Challenges extends Component {
     }
     const categoryMap = categories.map((cat) => {
       return (
-        <div key={cat.id}
+        <div key={cat.sid}
           className={`category-${categoryOrientationClass}`}>
           <ChallengeRowCol category={cat.name}
             categoryId={cat.sid}
