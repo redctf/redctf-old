@@ -51,8 +51,32 @@ export default class App extends Component {
       this.store.appState.challenges = allChallenges;
     });
     teams_collection.order('id').watch().subscribe(allTeams=> {
-      console.log({horizon_teams: allTeams}), error => console.error(error);
-      this.store.appState.teams = allTeams;
+	    // add asolute 0 in teams
+	    const teams = allTeams.map((team) => {
+	    	const d = new Date(1516946000 * 1000)    // TODO ctf.start_time
+	    	if (team.solved.length === 0) {
+		      team.solved.unshift({
+		        time: d,    
+		        points: 0
+		      });
+		    }
+		    return team;
+		  });
+
+			// primary sort is points
+			// secondary sort is the earliest timestamp on the last challenge solve
+			// third is simple alphabetic sort
+			const sortedTeams = teams.sort((a,b) => {
+			  return (+(b.points > a.points) || +(b.points === a.points) - 1) ||
+			    (+(a.solved[a.solved.length-1].timestamp > b.solved[b.solved.length-1].timestamp) || 
+			    +(a.solved[a.solved.length-1].timestamp === b.solved[b.solved.length-1].timestamp) - 1) ||
+			    (+(a.name > b.name) || +(a.name === b.name) - 1);
+			});
+
+
+
+      console.log({horizon_teams: sortedTeams}), error => console.error(error);
+      this.store.appState.teams = sortedTeams;
     });
     this.getTeamInfo();
 	}

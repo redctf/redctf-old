@@ -1,4 +1,32 @@
 .recharts-surface {
   position: inherit !important;
   width: fit-content !important;
+  height: unset;
+}
+
+.chart, .table-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.graph-container {
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+
+  svg {
+    position: relative;
+  }
+}
+
+.recharts-wrapper {
+  width: unset !important;
+}
+.recharts-legend-wrapper {
+  width: 100% !important;
+}
+
+.VictoryContainer {
+  height: 350px !important;
 }

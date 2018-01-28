@@ -1,60 +1,128 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import { inject, observer } from "mobx-react";
-import axios from "axios";
+import { VictoryChart, VictoryGroup, VictoryTheme, VictoryLine, VictoryScatter, VictoryAxis, VictoryTooltip, VictoryLabel } from 'victory';
 
+@inject('store')
 @observer
 export default class Team extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      teamId: null,
-      teamName: '',
-      teamPoints: 0
-    };
     this.store = this.props.store;
   }
 
-  getTeamInfo(e, flag) {
-    // flag check
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-    axios.defaults.withCredentials = true;
-    const query = this.queryTeam();
-    axios.post('/graphql/',
-      {
-        query: query,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .then((response) => {
-      console.log('team information:', response);
+  getTeamRows(teams, challenges) {
+    const totalChallenges = challenges.length;
+    const teamRows = teams.map((team) => {
+      return (
+        <tr onClick={() => this.viewTeam(team.sid)}>
+          <td>{team.name}</td>
+          <td className='temp-td'>{team.points}</td>
+          <td className='temp-td'>{`${team.correct_flags}/${totalChallenges}`}</td>
+        </tr>
+      );
+    });
+    return teamRows;
+  }
 
-      this.setState({
-        teamId: response.data.data.team.id,
-        teamName: response.data.data.team.name,
-        teamPoints: response.data.data.team.points
+  getGraphData() {
+    // Only show top ten teams
+    const teams = this.store.appState.teams.sort((a,b) => {
+      return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
+    }).slice(0,10);
+    const series = teams.map((team, i) => {
+      let points = 0;
+      const preferredColors = ['red', 'blue', 'green', 'orange', 'purple', 'deeppink', 'lightseagreen', 'navy', 'tomato', 'sienna'];  //TODO - more colors!
+      const data = team.solved.map((challengeSolved) => {
+        return {
+          x: new Date(challengeSolved.timestamp * 1000),
+          y: points += challengeSolved.points
+        }
       });
-    })
-  }
 
-  queryTeam() {
-    return `query { team {id name points users {id username}}}`;
-  }
+      return (
+        <VictoryGroup data={data}>
+          <VictoryLine
+            style={{
+              data: { stroke: preferredColors[i] },
+              parent: { border: "1px solid #ccc"}
+            }}
+          />
+          <VictoryScatter
+            style={{ data: { 
+              fill: preferredColors[i],
+              fillOpacity: ".7",
+              stroke: preferredColors[i],
+              strokeWidth: 1
+            }}}
+            labelComponent={<VictoryTooltip />}
+            size={3}
+          />
+        </VictoryGroup>
+      );
+    });
 
-  componentWillMount() {
-    // occurs directly before render method\
-    this.getTeamInfo();
+    return series;
   }
 
   render() {
+    const teamId = new URLSearchParams(location.search).get('id');
+    const { challenges } = this.store.appState;
+
+    const team = this.store.appState.filterSingleTeam(teamId)[0];
+    //const teamRows = this.getTeamRows(teams, challenges);
+    const series = this.getGraphData();
+
+    console.log('team NOW', team);
+
+    const challengeRows='';
+
     return (
-      <div className="page posts">
-        <h1>Team: {this.state.teamName}</h1>
-        <h3>TeamId: {this.state.teamId}</h3>
-        <h3>Points: {this.state.teamPoints}</h3>
+      <div className='page posts'>
+        <div className='graph-container'>
+          <h2>{team.name}</h2>
+
+          <VictoryChart
+            animate={{
+              duration: 2000,
+              onLoad: { duration: 1000 }
+            }}
+            theme={VictoryTheme.material}
+            width={600}
+          >
+            {series}
+            <VictoryAxis fixLabelOverlap
+              label="time (CST)"
+              scale="time"
+              style={{
+                fontSize: 20,
+                axisLabel: {padding: 36}
+              }}
+            />
+            <VictoryAxis dependentAxis
+              label="points"
+              style={{
+                fontSize: 20,
+                axisLabel: {padding: 55}
+              }}
+            />
+          </VictoryChart>
+
+          <div className='table-container'>
+            <table className='table table-bordered table-hover'>
+              <thead>
+                <tr>
+                  <th className='temp-td'>Challenge Name</th>
+                  <th className='temp-td'>Score</th>
+                  <th className='temp-td'>Time Solved</th>
+                </tr>
+              </thead>
+              <tbody>
+                {challengeRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     );
   }

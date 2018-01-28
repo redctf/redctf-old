@@ -161,6 +161,14 @@ if __name__ == "__main__":
     makeAdminUser('team3', 'team3@gmail.com', 'Password123!')
     makeAdminUser('team4', 'team4@gmail.com', 'Password123!')
     makeAdminUser('team5', 'team5@gmail.com', 'Password123!')
+    makeAdminUser('team6', 'team6@gmail.com', 'Password123!')
+    makeAdminUser('team7', 'team7@gmail.com', 'Password123!')
+    makeAdminUser('team8', 'team8@gmail.com', 'Password123!')
+    makeAdminUser('team9', 'team9@gmail.com', 'Password123!')
+    makeAdminUser('team10', 'team10@gmail.com', 'Password123!')
+    makeAdminUser('team11', 'team11@gmail.com', 'Password123!')
+    makeAdminUser('team12', 'team12@gmail.com', 'Password123!')
+    makeAdminUser('team13', 'team13@gmail.com', 'Password123!')
 
     if args.cats:
         insertCategories()
