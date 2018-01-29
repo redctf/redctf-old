@@ -25,14 +25,14 @@ The most customizeable CTF Framework built with modern technologies.
     - [ ] Handle large code swaths (e.g. cipher text)
   - [x] Flag Check in Django
   - [ ] Live Challenge Score Update thru Rethinkdb/Horizon
-- [ ] Scoreboard Page
-  - [ ] Graphs
-  - [ ] Table of competitors
-- [ ] Team Page
-  - [ ] Accessible from top nav bar
-  - [ ] Accessible from scoreboard
-  - [ ] Graph
-  - [ ] Table for Challenges solved (and times solved)
+- [x] Scoreboard Page
+  - [x] Graphs
+  - [x] Table of competitors
+- [x] Team Page
+  - [x] Accessible from top nav bar
+  - [x] Accessible from scoreboard
+  - [x] Graph
+  - [x] Table for Challenges solved (and times solved)
 
 
 ## Phase Two
