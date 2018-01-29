@@ -11,58 +11,61 @@ export default class Team extends Component {
     this.store = this.props.store;
   }
 
-  getTeamRows(teams, challenges) {
-    const totalChallenges = challenges.length;
-    const teamRows = teams.map((team) => {
+  getTeamRows(data) {
+    const categories = this.store.appState.categories;
+    const teamRows = data.map((ele) => {
+      const date = new Date(ele.timestamp * 1000);
+      const categoryName = categories.map((cat) => {
+        if (cat.sid === ele.category) {
+          return cat.name;
+        }
+      });
+
+      console.log('categoryName', categoryName);
       return (
         <tr onClick={() => this.viewTeam(team.sid)}>
-          <td>{team.name}</td>
-          <td className='temp-td'>{team.points}</td>
-          <td className='temp-td'>{`${team.correct_flags}/${totalChallenges}`}</td>
+          <td>{categoryName}</td>
+          <td>{ele.title}</td>
+          <td className='temp-td'>{ele.points}</td>
+          <td className='temp-td'>{`${date}`}</td>
         </tr>
       );
     });
     return teamRows;
   }
 
-  getGraphData() {
-    // Only show top ten teams
-    const teams = this.store.appState.teams.sort((a,b) => {
-      return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
-    }).slice(0,10);
-    const series = teams.map((team, i) => {
-      let points = 0;
-      const preferredColors = ['red', 'blue', 'green', 'orange', 'purple', 'deeppink', 'lightseagreen', 'navy', 'tomato', 'sienna'];  //TODO - more colors!
-      const data = team.solved.map((challengeSolved) => {
-        return {
-          x: new Date(challengeSolved.timestamp * 1000),
-          y: points += challengeSolved.points
+  getTeamData(team, challenges) {
+    const data = [];
+    team.solved.map((solve) => {
+      challenges.forEach((challenge) => {
+        if (challenge.sid === solve.id) {
+          data.push({
+            id: challenge.sid,
+            category: challenge.category,
+            title: challenge.title,
+            points: solve.points,
+            timestamp: solve.timestamp
+          });
         }
       });
-
-      return (
-        <VictoryGroup data={data}>
-          <VictoryLine
-            style={{
-              data: { stroke: preferredColors[i] },
-              parent: { border: "1px solid #ccc"}
-            }}
-          />
-          <VictoryScatter
-            style={{ data: { 
-              fill: preferredColors[i],
-              fillOpacity: ".7",
-              stroke: preferredColors[i],
-              strokeWidth: 1
-            }}}
-            labelComponent={<VictoryTooltip />}
-            size={3}
-          />
-        </VictoryGroup>
-      );
     });
+    return data;
+  }
 
-    return series;
+  getGraphData(data) {
+    const graphData = [{
+      x: new Date(1517004800 * 1000),    // TODO horizon.ctf.start_time
+      y: 0
+    }];
+    let points = 0;
+    data.forEach((ele) => {
+      points += ele.points;
+      graphData.push({
+        x: new Date(ele.timestamp * 1000),
+        y: points
+      })
+    });
+    return graphData;
   }
 
   render() {
@@ -70,12 +73,9 @@ export default class Team extends Component {
     const { challenges } = this.store.appState;
 
     const team = this.store.appState.filterSingleTeam(teamId)[0];
-    //const teamRows = this.getTeamRows(teams, challenges);
-    const series = this.getGraphData();
-
-    console.log('team NOW', team);
-
-    const challengeRows='';
+    const data = this.getTeamData(team, challenges);
+    const graphData = this.getGraphData(data);
+    const challengeRows=this.getTeamRows(data);
 
     return (
       <div className='page posts'>
@@ -90,7 +90,24 @@ export default class Team extends Component {
             theme={VictoryTheme.material}
             width={600}
           >
-            {series}
+            <VictoryGroup data={graphData}>
+              <VictoryLine
+                style={{
+                  data: { stroke: 'red' },
+                  parent: { border: "1px solid #ccc"}
+                }}
+              />
+              <VictoryScatter
+                style={{ data: { 
+                  fill: 'red',
+                  fillOpacity: ".7",
+                  stroke: 'red',
+                  strokeWidth: 1
+                }}}
+                labelComponent={<VictoryTooltip />}
+                size={3}
+              />
+            </VictoryGroup>
             <VictoryAxis fixLabelOverlap
               label="time (CST)"
               scale="time"
@@ -109,9 +126,10 @@ export default class Team extends Component {
           </VictoryChart>
 
           <div className='table-container'>
-            <table className='table table-bordered table-hover'>
+            <table className='table table-bordered table-hover team-table'>
               <thead>
                 <tr>
+                  <th>Category</th>
                   <th className='temp-td'>Challenge Name</th>
                   <th className='temp-td'>Score</th>
                   <th className='temp-td'>Time Solved</th>

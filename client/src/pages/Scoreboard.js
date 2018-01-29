@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { Link } from "react-router-dom";
 import { VictoryChart, VictoryGroup, VictoryTheme, VictoryLine, VictoryScatter, VictoryAxis, VictoryTooltip, VictoryLabel } from 'victory';
 
 @inject('store')
@@ -11,7 +12,7 @@ export default class Scoreboard extends Component {
   }
 
   viewTeam(teamId) {
-    console.log('clicked:', teamId);
+    this.props.history.push(`/team?id=${teamId}`);
   }
 
   getTeamRows(teams, challenges) {
@@ -44,7 +45,8 @@ export default class Scoreboard extends Component {
       });
 
       return (
-        <VictoryGroup data={data}>
+        <VictoryGroup data={data}
+          key={`${team.name}-${i}`}>
           <VictoryLine
             style={{
               data: { stroke: preferredColors[i] },
@@ -109,7 +111,7 @@ export default class Scoreboard extends Component {
           </VictoryChart>
 
           <div className='table-container'>
-            <table className='table table-bordered table-hover'>
+            <table className='table table-bordered table-hover scoreboard-table'>
               <thead>
                 <tr>
                   <th className='temp-td'>Team Name</th>

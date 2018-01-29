@@ -53,7 +53,7 @@ export default class App extends Component {
     teams_collection.order('id').watch().subscribe(allTeams=> {
 	    // add asolute 0 in teams
 	    const teams = allTeams.map((team) => {
-	    	const d = new Date(1516946000 * 1000)    // TODO ctf.start_time
+	    	const d = new Date(1517004800 * 1000)    // TODO ctf.start_time
 	    	if (team.solved.length === 0) {
 		      team.solved.unshift({
 		        time: d,    
@@ -72,8 +72,6 @@ export default class App extends Component {
 			    +(a.solved[a.solved.length-1].timestamp === b.solved[b.solved.length-1].timestamp) - 1) ||
 			    (+(a.name > b.name) || +(a.name === b.name) - 1);
 			});
-
-
 
       console.log({horizon_teams: sortedTeams}), error => console.error(error);
       this.store.appState.teams = sortedTeams;
