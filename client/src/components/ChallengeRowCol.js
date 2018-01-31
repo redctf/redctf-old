@@ -46,6 +46,7 @@ export default class ChallengeRowCol extends Component {
           name={challenge.title}
           category={this.props.category}
           description={challenge.description}
+          solves={challenge.solved_count}
           solved={challengeSolved}
         />
       )

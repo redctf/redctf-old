@@ -81,6 +81,7 @@ export default class JeopardyButton extends Component {
             handleClose={this.handleCloseModal}/>
           <ModalContent>
             <ChallengeModal name={this.props.name}
+              solves={this.props.solves}
               value={this.props.value}
               description={this.props.description}/>
           </ModalContent>

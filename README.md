@@ -20,7 +20,7 @@ The most customizeable CTF Framework built with modern technologies.
     - [x] Pass in Functions for submission
     - [x] Flag Check
     - [ ] Sucess or Failure Toasts - should exit on success?
-    - [ ] Number Solves so far
+    - [x] Number Solves so far
     - [ ] Handle large code swaths (e.g. cipher text) - Probably fix as comes up.
   - [x] Flag Check in Django
 - [ ] Scoreboard Page
@@ -35,7 +35,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [x] Graph
   - [x] Table for Challenges solved (and times solved)
 - [ ] Live Updates
-  - [ ] Challenge color switch
+  - [x] Challenge color switch
   - [ ] Add categories through admin page
   - [ ] Add challenges through admin page
   - [x] Scoreboard color and graph switch

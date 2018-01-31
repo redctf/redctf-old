@@ -23,7 +23,7 @@ export default class TopBar extends Component {
 	render() {
 		const { authenticated, isSuperuser } = this.store;
 		const teamName = this.store.team ? this.store.team.name : '';
-		const teamIdParam = `id=${this.store.team.id}`;
+		const teamIdParam = this.store.team ? `id=${this.store.team.id}` : '';
 
 		return (
 			<div className="topbar">
