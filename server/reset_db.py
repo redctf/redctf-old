@@ -182,11 +182,11 @@ def insertChallengeBoard():
             challenge_500.save()
             i+=1
 
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'created': format(challenge_100.created, 'U')}).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'created': format(challenge_200.created, 'U')}).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'created': format(challenge_300.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_100.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_200.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_300.created, 'U')}).run(connection)
             r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'created': format(challenge_400.created, 'U')}).run(connection)
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'created': format(challenge_500.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_500.created, 'U')}).run(connection)
 
 
     except RqlRuntimeError as e:

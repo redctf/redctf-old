@@ -91,6 +91,8 @@ class CheckFlag(graphene.Mutation):
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update({'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
+            if correct:
+                r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update({'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding category to realtime database: %s' % (e))
         finally:
