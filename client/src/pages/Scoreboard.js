@@ -52,6 +52,7 @@ export default class Scoreboard extends Component {
         }
       });
 
+      console.log('data from getGraphData:', data);
       return (
         <VictoryGroup data={data}
           key={`${team.name}-${i}`}>

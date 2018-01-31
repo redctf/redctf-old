@@ -28,6 +28,14 @@ export default class JeopardyButton extends Component {
     this.setState({showModal: false});
   }
 
+  popCorrectFlag(eleId) {
+    var x = document.getElementById(eleId)
+    x.className = "show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+  }
+
   onSubmit(e, flag) {
     // flag check
     const port = 8000;
@@ -48,10 +56,10 @@ export default class JeopardyButton extends Component {
       const status = response.data.data.checkFlag.status;
 
       if (status === "Correct Flag") {
-        alert('Correct Flag');    // TODO:  Make better notifications for correct/incorrect flags
+        this.popCorrectFlag('correct-flag');
         this.handleCloseModal();
       } else {
-        alert('Wrong Flag');
+        this.popCorrectFlag('incorrect-flag');
       }
     })
   }
@@ -88,6 +96,9 @@ export default class JeopardyButton extends Component {
           <ModalFooter confirmText='Submit'
             confirm={this.onSubmit}/>
         </Modal>
+
+        <div id="correct-flag">Correct Flag!</div>
+        <div id="incorrect-flag">Incorrect Flag</div>
       </div>
     );
   }

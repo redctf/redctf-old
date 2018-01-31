@@ -19,7 +19,7 @@ The most customizeable CTF Framework built with modern technologies.
     - [x] Appearance
     - [x] Pass in Functions for submission
     - [x] Flag Check
-    - [ ] Sucess or Failure Toasts - should exit on success?
+    - [x] Sucess or Failure Toasts - should exit on success?
     - [x] Number Solves so far
     - [ ] Handle large code swaths (e.g. cipher text) - Probably fix as comes up.
   - [x] Flag Check in Django

@@ -53,10 +53,10 @@ export default class App extends Component {
     teams_collection.order('id').watch().subscribe(allTeams=> {
 	    // add asolute 0 in teams
 	    const teams = allTeams.map((team) => {
-	    	const d = new Date(1517004800 * 1000)    // TODO ctf.start_time
+	    	const d = '1517004800';    // TODO ctf.start_time
 	    	if (team.solved.length === 0) {
 		      team.solved.unshift({
-		        time: d,    
+		        timestamp: d,    
 		        points: 0
 		      });
 		    }

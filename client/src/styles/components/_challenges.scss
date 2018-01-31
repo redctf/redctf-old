@@ -5,7 +5,9 @@
       .horizontal {
         flex-direction: row;
         display: flex;
-        align-items: center;
+        align-items: center;   
+        max-width: 735px;
+        flex-wrap: wrap;
       }
     }
   }
@@ -20,7 +22,7 @@
 }
 
 .challengeCategory {
-  min-width: 150px;
+  min-width: 200px;
 }
 
 
