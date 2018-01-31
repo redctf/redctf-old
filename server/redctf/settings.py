@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'teams',
     'categories',
+    'ctfs',
     'corsheaders'
 ]
 

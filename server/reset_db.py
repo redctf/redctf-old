@@ -8,11 +8,14 @@ import argparse, contextlib, uuid
 import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from django.utils.dateformat import format
+from django.utils import timezone
+from datetime import timedelta
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB, DATABASES
 from users.models import User
 from teams.models import Team
 from categories.models import Category
 from challenges.models import Challenge
+from ctfs.models import Ctf
 from users.validators import validate_username, validate_password, validate_email
 
 def resetRethinkDB():
@@ -27,6 +30,7 @@ def resetRethinkDB():
         r.db(CTF_DB).table_create('challenges').run(connection)
         r.db(CTF_DB).table_create('categories').run(connection)
         r.db(CTF_DB).table_create('teams').run(connection)
+        r.db(CTF_DB).table_create('ctfs').run(connection)
         print('Realtime database setup complete')
     except RqlRuntimeError as e:
         print('Error during database setup: %s' % (e))
@@ -56,6 +60,8 @@ def makeAdminUser(admin_name, admin_email, admin_password):
 
     # Create team for admin user
     token = str(uuid.uuid4())
+    while Team.objects.filter(token__iexact=token).exists():
+        token = str(uuid.uuid4())
     admin_team = Team(name=admin_name, token=token)
     admin_team.save()
 
@@ -70,6 +76,51 @@ def makeAdminUser(admin_name, admin_email, admin_password):
         r.db(CTF_DB).table('teams').insert({ 'sid': admin.team.id, 'name': admin.team.name, 'points': admin.team.points, 'correct_flags': admin.team.correct_flags, 'wrong_flags': admin.team.wrong_flags, 'solved': [], 'created': format(admin.team.created, 'U')}).run(connection)
     except RqlRuntimeError as e:
         raise Exception('Error adding admin team to realtime database: %s' % (e))
+    finally:
+        connection.close()
+
+def makeUser(user_name, user_email, user_password):
+    # Validate admin user command line arguments
+    validate_username(user_name)
+    validate_email(user_email)
+    validate_password(user_password)
+
+    # Create team for admin user
+    token = str(uuid.uuid4())
+    while Team.objects.filter(token__iexact=token).exists():
+        token = str(uuid.uuid4())
+
+    user_team = Team(name=user_name, token=token)
+    user_team.save()
+
+    user = User(
+            username=user_name,
+            email=user_email,
+            team=user_team,
+        )
+    user.set_password(user_password)
+    user.save()
+
+    # Push admin team to rethinkdb database
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        r.db(CTF_DB).table('teams').insert({ 'sid': user.team.id, 'name': user.team.name, 'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': [], 'created': format(user.team.created, 'U')}).run(connection)
+    except RqlRuntimeError as e:
+        raise Exception('Error adding user team to realtime database: %s' % (e))
+    finally:
+        connection.close()
+
+def insertCtfs(start, end):
+    # Save the challenge flag to the database
+    ctf = Ctf(start=start, end=end)
+    ctf.save()
+
+    # Push the realtime data to rethinkdb
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        r.db(CTF_DB).table('ctfs').insert({ 'sid': ctf.id, 'start': format(ctf.start, 'U'), 'end': format(ctf.end, 'U'), 'created': format(ctf.created, 'U')}).run(connection)
+    except RqlRuntimeError as e:
+        raise Exception('Error adding ctf to realtime database: %s' % (e))
     finally:
         connection.close()
 
@@ -157,18 +208,20 @@ if __name__ == "__main__":
     resetRethinkDB()
     resetDjangoDB()
     makeAdminUser(args.admin_name, args.admin_email, args.admin_password)
-    makeAdminUser('team2', 'team2@gmail.com', 'Password123!')
-    makeAdminUser('team3', 'team3@gmail.com', 'Password123!')
-    makeAdminUser('team4', 'team4@gmail.com', 'Password123!')
-    makeAdminUser('team5', 'team5@gmail.com', 'Password123!')
-    makeAdminUser('team6', 'team6@gmail.com', 'Password123!')
-    makeAdminUser('team7', 'team7@gmail.com', 'Password123!')
-    makeAdminUser('team8', 'team8@gmail.com', 'Password123!')
-    makeAdminUser('team9', 'team9@gmail.com', 'Password123!')
-    makeAdminUser('team10', 'team10@gmail.com', 'Password123!')
-    makeAdminUser('team11', 'team11@gmail.com', 'Password123!')
-    makeAdminUser('team12', 'team12@gmail.com', 'Password123!')
-    makeAdminUser('team13', 'team13@gmail.com', 'Password123!')
+    makeUser('team2', 'team2@gmail.com', 'Password123!')
+    makeUser('team3', 'team3@gmail.com', 'Password123!')
+    makeUser('team4', 'team4@gmail.com', 'Password123!')
+    makeUser('team5', 'team5@gmail.com', 'Password123!')
+    makeUser('team6', 'team6@gmail.com', 'Password123!')
+    makeUser('team7', 'team7@gmail.com', 'Password123!')
+    makeUser('team8', 'team8@gmail.com', 'Password123!')
+    makeUser('team9', 'team9@gmail.com', 'Password123!')
+    makeUser('team10', 'team10@gmail.com', 'Password123!')
+    makeUser('team11', 'team11@gmail.com', 'Password123!')
+    makeUser('team12', 'team12@gmail.com', 'Password123!')
+    makeUser('team13', 'team13@gmail.com', 'Password123!')
+
+    insertCtfs(start=timezone.now(), end=timezone.now() + timedelta(days=30))
 
     if args.cats:
         insertCategories()
