@@ -10,10 +10,9 @@ The most customizeable CTF Framework built with modern technologies.
   - [x] Login - no access with proper login
   - [x] Register
   - [x] Hide/Show Admin page based on rights
-- [ ] Admin Page
+- [x] Admin Page
   - [x] Create Category
   - [x] Create Challenge
-  - [ ] Release Hints
 - [ ] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [ ] Challenge Modals
@@ -22,17 +21,24 @@ The most customizeable CTF Framework built with modern technologies.
     - [x] Flag Check
     - [ ] Sucess or Failure Toasts - should exit on success?
     - [ ] Number Solves so far
-    - [ ] Handle large code swaths (e.g. cipher text)
+    - [ ] Handle large code swaths (e.g. cipher text) - Probably fix as comes up.
   - [x] Flag Check in Django
-  - [ ] Live Challenge Score Update thru Rethinkdb/Horizon
-- [x] Scoreboard Page
-  - [x] Graphs
+- [ ] Scoreboard Page
+  - [ ] Graphs
+    - [ ] Legend
+    - [ ] Tooltip
+    - [x] Coloring in Tables
   - [x] Table of competitors
 - [x] Team Page
   - [x] Accessible from top nav bar
   - [x] Accessible from scoreboard
   - [x] Graph
   - [x] Table for Challenges solved (and times solved)
+- [ ] Live Updates
+  - [ ] Challenge color switch
+  - [ ] Add categories through admin page
+  - [ ] Add challenges through admin page
+  - [x] Scoreboard color and graph switch
 
 
 ## Phase Two
@@ -42,6 +48,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Setup Basis for Theming in Phase Three
 - [ ] Admin Page
   - [ ] Add CTFs
+  - [ ] Release Hints
   - [ ] Complete Control of Challenges - Create/Edit/Delete
 - [ ] Large Scale Documentation
 - [ ] Input Validation (Only Numbers here, Valid Email there, etc)

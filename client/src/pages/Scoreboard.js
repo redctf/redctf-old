@@ -17,10 +17,18 @@ export default class Scoreboard extends Component {
 
   getTeamRows(teams, challenges) {
     const totalChallenges = challenges.length;
-    const teamRows = teams.map((team) => {
+    const teamRows = teams.map((team, idx) => {
+      const preferredColors = ['red', 'blue', 'green', 'orange', 'purple', 'deeppink', 'lightseagreen', 'navy', 'tomato', 'sienna'];  //TODO - more colors!
+      const rowStyle = preferredColors[idx];
+
       return (
-        <tr onClick={() => this.viewTeam(team.sid)}>
-          <td>{team.name}</td>
+        <tr onClick={() => this.viewTeam(team.sid)}
+          key={team.sid}>
+          <td>
+            <span>{team.name}</span>
+            <span style={{backgroundColor: rowStyle}}
+              className='team-table-color'></span>
+          </td>
           <td className='temp-td'>{team.points}</td>
           <td className='temp-td'>{`${team.correct_flags}/${totalChallenges}`}</td>
         </tr>
@@ -86,7 +94,7 @@ export default class Scoreboard extends Component {
 
           <VictoryChart
             animate={{
-              duration: 2000,
+              duration: 5000,
               onLoad: { duration: 1000 }
             }}
             theme={VictoryTheme.material}

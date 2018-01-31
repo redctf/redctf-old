@@ -4,6 +4,7 @@ export default class ChallengeModal extends Component {
   static displayName='ChallengeModal';
   constructor(props) {
     super(props);
+    this.store = this.props.store;
     this.state = {
       challenge: {
         flag: ''
@@ -36,6 +37,15 @@ export default class ChallengeModal extends Component {
   }
 
   render() {
+    // const {
+    //   challenges,
+    //   categories,
+    //   team
+    // } = this.store.appState;
+
+
+
+
     return (
       <div className='challenge-modal'>
         <div className='title-bar'>
@@ -43,8 +53,13 @@ export default class ChallengeModal extends Component {
           <div className='points'>{this.props.value} Points</div>
         </div>
 
+        <div className='challenge-modal-content'>
+          <p>{this.props.description}</p>
 
-        <p>{this.props.description}</p>
+          <div className='footer-bar'>
+            <p>X Solves</p>
+          </div>
+        </div>
       </div>
     );
   }

@@ -21,12 +21,11 @@ export default class Team extends Component {
         }
       });
 
-      console.log('categoryName', categoryName);
       return (
-        <tr onClick={() => this.viewTeam(team.sid)}>
+        <tr key={ele.id}>
           <td>{categoryName}</td>
-          <td>{ele.title}</td>
           <td className='temp-td'>{ele.points}</td>
+          <td>{ele.title}</td>
           <td className='temp-td'>{`${date}`}</td>
         </tr>
       );
@@ -88,7 +87,7 @@ export default class Team extends Component {
               onLoad: { duration: 1000 }
             }}
             theme={VictoryTheme.material}
-            width={600}
+            width={700}
           >
             <VictoryGroup data={graphData}>
               <VictoryLine
@@ -130,8 +129,8 @@ export default class Team extends Component {
               <thead>
                 <tr>
                   <th>Category</th>
-                  <th className='temp-td'>Challenge Name</th>
                   <th className='temp-td'>Score</th>
+                  <th className='temp-td'>Challenge Name</th>
                   <th className='temp-td'>Time Solved</th>
                 </tr>
               </thead>

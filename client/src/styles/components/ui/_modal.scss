@@ -79,8 +79,17 @@
 
 
 .challenge-modal {
-  padding:20px;
-  height: 400px;
+  padding:20px 20px 3px;
+  /*height: 400px;    TODO - setup max-height*/
+  display: flex;
+  flex-direction: column;
+
+  .challenge-modal-content {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 
   .title-bar {
     border-bottom: solid 1px #eee;
@@ -98,5 +107,9 @@
       text-align: right;
     }
   }
-}
 
+  .footer-bar {
+    align-self: flex-end;
+    font-size: 14px;
+  }
+}
