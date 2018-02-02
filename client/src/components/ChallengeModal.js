@@ -36,7 +36,8 @@ export default class ChallengeModal extends Component {
   }
 
   render() {
-    const solves = this.props.solves === 1 ? `${this.props.solves} Solve` : `${this.props.solves} Solves`;
+    const solveString = this.props.solves ? this.props.solves : 0;
+    const solves = solveString === 1 ? `${solveString} Solve` : `${solveString} Solves`;
     return (
       <div className='challenge-modal'>
         <div className='title-bar'>
@@ -45,7 +46,7 @@ export default class ChallengeModal extends Component {
         </div>
 
         <div className='challenge-modal-content'>
-          <p>{this.props.description}</p>
+          <a href={this.props.description} target="_blank">Click here</a>
 
           <div className='footer-bar'>
             <p>{solves}</p>

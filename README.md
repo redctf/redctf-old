@@ -15,7 +15,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [x] Create Challenge
 - [ ] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
-  - [ ] Challenge Modals
+  - [x] Challenge Modals
     - [x] Appearance
     - [x] Pass in Functions for submission
     - [x] Flag Check
@@ -48,8 +48,14 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Setup Basis for Theming in Phase Three
 - [ ] Admin Page
   - [ ] Add CTFs
+  - [ ] Fix up Admin Panel to be useable
   - [ ] Release Hints
-  - [ ] Complete Control of Challenges - Create/Edit/Delete
+  - [ ] Complete CTF control
+    - [ ] Ability to set future start time (with no errors in performance)
+    - [ ] Ability to set future end time (and have it automatically stop CTF)
+  - [ ] Complete ontrol of Challenges
+    - [ ] Better creation - html, more smooth transitions between making challenges
+    - [ ] Live Edit/Delete
 - [ ] Large Scale Documentation
 - [ ] Input Validation (Only Numbers here, Valid Email there, etc)
 

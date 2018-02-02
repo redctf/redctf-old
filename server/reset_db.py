@@ -161,19 +161,19 @@ def insertChallengeBoard():
     try:
         for category in Category.objects.all():
             if (category.id == 4):
-                for j in range(0,6):
+                for j in range(0,4):
                     # Save the challenge flag to the database
-                    challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=50)
+                    challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=25)
                     challenge_50.save()
                     i+=1
                     r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_50.id, 'category': challenge_50.category.id, 'title': 'Test Title', 'points': challenge_50.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_50.created, 'U')}).run(connection)
             elif (category.id == 5):
                 for j in range(0,6):
                     # Save the challenge flag to the database
-                    challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=50)
-                    challenge_50.save()
+                    challenge_75 = Challenge(category=category, flag="flag{0}".format(i), points=75)
+                    challenge_75.save()
                     i+=1
-                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_50.id, 'category': challenge_50.category.id, 'title': 'Test Title', 'points': challenge_50.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_50.created, 'U')}).run(connection)
+                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_75.id, 'category': challenge_75.category.id, 'title': 'Test Title', 'points': challenge_75.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_75.created, 'U')}).run(connection)
             else:
                 # Save the challenge flag to the database
                 challenge_100 = Challenge(category=category, flag="flag{0}".format(i), points=100)
@@ -196,15 +196,15 @@ def insertChallengeBoard():
                 i+=1
 
                 # Save the challenge flag to the database
-                challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500)
-                challenge_500.save()
-                i+=1
+                # challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500)
+                # challenge_500.save()
+                # i+=1
 
                 r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_100.created, 'U')}).run(connection)
                 r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_200.created, 'U')}).run(connection)
                 r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_300.created, 'U')}).run(connection)
                 r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'created': format(challenge_400.created, 'U')}).run(connection)
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_500.created, 'U')}).run(connection)
+                # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_500.created, 'U')}).run(connection)
 
 
     except RqlRuntimeError as e:

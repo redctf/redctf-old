@@ -24,9 +24,13 @@ export default class Admin extends Component {
     this.getCategories = ::this.getCategories;
   }
 
-  addChallenge() {
+  addChallenge() {   
+    // TODO - this is goofy logic, but works
+    const categories = this.store.appState.categories;
+    categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
     const c = this.state.challenge;
-    return `mutation { addChallenge(flag: "${c.flag}" category: ${c.category} title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
+    const category = categories[c.category].sid;
+    return `mutation { addChallenge(flag: "${c.flag}" category: ${category} title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
   }
 
   addCategory() {
@@ -100,7 +104,6 @@ export default class Admin extends Component {
         sid: 0
       });
     }
-    console.log('getCategories', categories);
 
     if (categories.length !== 0) {
       categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
@@ -109,7 +112,7 @@ export default class Admin extends Component {
         return (
           <DropDownItem onClick={this.handleSelection.bind(this, ele)}
             key={ele.sid}
-            value={ele.sid}>
+            value={idx}>
             <span>{ele.name}</span>
           </DropDownItem>
         );
@@ -137,7 +140,6 @@ export default class Admin extends Component {
     return (
       <div className="page posts">
         <div className="page-header">Admin Panel</div>
-
 
         {/* temporary section for creating categories */}
         <div className="temp-section">

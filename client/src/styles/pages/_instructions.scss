@@ -1,0 +1,33 @@
+.instructions {
+  padding: 20px;
+  line-height: 28px;
+
+  h2 {
+    font-weight: 900;
+    font-size: 2.3em;
+    color: #222;
+    text-align:center;
+  }
+
+  code {
+    font-family: monospace, Courier-New;
+    background-color: #ddd;
+    color: #d90707ba;
+    padding: 2px 5px;
+  }
+
+  .instruction-heading {
+    padding: 10px 0px 0px;
+    font-weight: 600;
+    font-size: 1.5em;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  .instruction-sub-heading {
+    font-size: 1.25em;
+    font-weight: 600;
+    padding: 10px 0px 3px;
+  }
+}

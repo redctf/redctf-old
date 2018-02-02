@@ -36,6 +36,11 @@ export default class ModalFooter extends Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
+
+  componentDidMount() {
+    this.refs.flagInput.focus();
+  }
+
   render() {
     return (
       <div className='modal-footer'>
@@ -45,6 +50,7 @@ export default class ModalFooter extends Component {
         {(this.props.flagSubmissionInput) ?
           <div className='input-group'>
             <input type="text"
+              ref="flagInput"
               id="challengeFlag"
               className="form-control"
               placeholder="Enter flag"

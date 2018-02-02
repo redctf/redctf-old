@@ -135,9 +135,6 @@ export default class DropDown extends Component {
 				</div>
 			</Portal>);
 
-		console.log('this.props.children', this.props.children);
-		console.log('this.props.selectedItem', this.props.selectedItem);
-
 		// The current item in displayed in the dropbox
 		const selectedItem = React.cloneElement(
 													this.props.children[this.props.selectedItem],

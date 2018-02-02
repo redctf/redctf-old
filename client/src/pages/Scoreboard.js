@@ -38,6 +38,10 @@ export default class Scoreboard extends Component {
   }
 
   getGraphData() {
+    const graphData = [{
+      x: new Date(this.store.appState.ctfs[0].created * 1000),    // TODO horizon.ctf.start_time
+      y: 0
+    }];
     // Only show top ten teams
     const teams = this.store.appState.teams.sort((a,b) => {
       return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
@@ -52,7 +56,8 @@ export default class Scoreboard extends Component {
         }
       });
 
-      console.log('data from getGraphData:', data);
+      data.unshift(graphData[0]);
+
       return (
         <VictoryGroup data={data}
           key={`${team.name}-${i}`}>

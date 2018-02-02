@@ -8,6 +8,7 @@ import axios from "axios";
 /* Horizon */
 import Horizon from '@horizon/client';
 const horizon = new Horizon({host: 'localhost:8181'});
+const ctf_collection = horizon('ctfs');
 const users_collection = horizon('users');
 const categories_collection = horizon('categories');
 const challenges_collection = horizon('challenges');
@@ -37,6 +38,12 @@ export default class App extends Component {
       console.info('Disconnected from Horizon server');
     });
 
+    ctf_collection.order('id').watch().subscribe(allCtfs => {
+      console.log({horizon_ctf: allCtfs}),
+      error => console.error(error);
+      this.store.appState.ctfs = allCtfs;
+    })
+
     users_collection.order('id').watch().subscribe(allItems => {
       console.log({horizon_users: allItems}),
       error => console.error(error)	
@@ -53,7 +60,7 @@ export default class App extends Component {
     teams_collection.order('id').watch().subscribe(allTeams=> {
 	    // add asolute 0 in teams
 	    const teams = allTeams.map((team) => {
-	    	const d = '1517004800';    // TODO ctf.start_time
+	    	const d = this.store.appState.ctfs[0].created;    // TODO ctf.start_time
 	    	if (team.solved.length === 0) {
 		      team.solved.unshift({
 		        timestamp: d,    
@@ -182,17 +189,28 @@ export default class App extends Component {
 						)
 					)}
 				/>
-				<Route
-					exact
-					path='/challenges'
-					render={props => (
-						authenticated ? (
-							<LazyRoute {...props} component={import('./pages/Challenges')} />
-						) : (
-							<Redirect to="/login"/>
-						)
-					)}
-				/>
+        <Route
+          exact
+          path='/challenges'
+          render={props => (
+            authenticated ? (
+              <LazyRoute {...props} component={import('./pages/Challenges')} />
+            ) : (
+              <Redirect to="/login"/>
+            )
+          )}
+        />
+        <Route
+          exact
+          path='/instructions'
+          render={props => (
+            authenticated ? (
+              <LazyRoute {...props} component={import('./pages/Instructions')} />
+            ) : (
+              <Redirect to="/login"/>
+            )
+          )}
+        />
 				<Route
 					exact
 					path='/scoreboard'
