@@ -46,7 +46,8 @@ export default class ChallengeModal extends Component {
         </div>
 
         <div className='challenge-modal-content'>
-          <a href={this.props.description} target="_blank">Click here</a>
+          <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
+    
 
           <div className='footer-bar'>
             <p>{solves}</p>

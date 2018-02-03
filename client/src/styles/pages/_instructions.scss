@@ -11,9 +11,13 @@
 
   code {
     font-family: monospace, Courier-New;
-    background-color: #ddd;
-    color: #d90707ba;
+    background-color: #eee;
+    color: rgb(255, 25, 25);
     padding: 2px 5px;
+  }
+
+  a {
+    color: rgb(255, 25, 25);
   }
 
   .instruction-heading {
