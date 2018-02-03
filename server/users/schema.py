@@ -80,6 +80,23 @@ class CreateUser(graphene.Mutation):
 
         return CreateUser(status='User account created')
 
+class ChangePassword(graphene.Mutation):
+    status = graphene.String()
+
+    class Arguments:
+        password = graphene.String(required=True)
+
+    def mutate(self, info, password):
+        user = info.context.user
+        # Validate user is authenticated
+        validate_user_is_authenticated(user)
+        validate_password(password)
+
+        user.set_password(password)
+        user.save()
+
+        return ChangePassword(status='User password changed')
+
 
 class LogIn(graphene.Mutation):
     id = graphene.Int()
@@ -122,5 +139,6 @@ class Query(object):
 
 class Mutation(object):
     create_user = CreateUser.Field()
+    change_password = ChangePassword.Field()
     login = LogIn.Field()
     logout = LogOut.Field()
