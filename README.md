@@ -121,6 +121,11 @@ Run the following (in order):
 
 
 
+## Configuration 
+* Edit IP Options in `redctf/client/.hz/config.toml`.
+* Edit RethinkDB Options in `redctf/client/.hz/config.toml`.
+* Edit RDB_HOST in `redctf/server/redctf/settings.py`.
+* Edit CORS_ORIGIN_WHITELIST in `redctf/server/redctf/settings.py`.
 
 
 ## Sources
