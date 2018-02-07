@@ -53,11 +53,27 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Complete CTF control
     - [ ] Ability to set future start time (with no errors in performance)
     - [ ] Ability to set future end time (and have it automatically stop CTF)
-  - [ ] Complete ontrol of Challenges
+  - [ ] Complete control of Challenges
     - [ ] Better creation - html, more smooth transitions between making challenges
-    - [ ] Live Edit/Delete
+    - [ ] Admin panel
+      - [ ] Challenge Row
+        - [ ] Edit Challenge - popup with all challenge features for edit
+        - [ ] Delete Challenge
+        - [ ] Clone Challenge - useful if adding several similar challenges
+        - [ ] Number solves per challenge
+        - [ ] Submitted correct / incorrect flags
+        - [ ] Track the amount of times the modal is opened (don't know if it'd be interesting or not)
+        - [ ] Graph button - see solves over time of competition
+        - [ ] Release hint button
 - [ ] Large Scale Documentation
+  - [ ] Code Documentation
+  - [ ] Process Documentation
+  - [ ] Public Consumption Documentation
+- [ ] Single Sign On Integrations
 - [ ] Input Validation (Only Numbers here, Valid Email there, etc)
+- [ ] Dockerize
+- [ ] Auto-deployment of challenges (into containers possibly)?
+- [ ] Possible logging of django commands into run-script?  (i.e. Challenge gets created, put line of python into file. User gets created, put line of python into file.  Challenge gets solved, put line of python into file.  This would preserve the history of the CTF. If something catastrophic were to happen, you could theoretically spin up the exact same CTF with exact same user/challenge status by running a single script.  Just a thought.)
 
 
 ## Phase Three
@@ -73,6 +89,8 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] First blood points
 - [ ] Complete Documentation
 - [ ] Flash challenges
+- [ ] Linting
+- [ ] Testing?  (i.e. Unit testing, Integration testing, Acceptance testing)
 
 
 ## Composition
