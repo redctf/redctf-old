@@ -73,6 +73,7 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Input Validation (Only Numbers here, Valid Email there, etc)
 - [ ] Dockerize
 - [ ] Auto-deployment of challenges (into containers possibly)?
+- [ ] Link writeups to challenges post-ctf.  Just an idea, but we could have a folder structure, in which `.md` files are rendered into writeups, and we can auto-link challenges based on a configuration flag. For example, when generating a category, we could also trigger scaffolding and a base `/writeups/category/point_value/writeup.md` file. Then in each challenge modal, we check configuration and render a writeup link if configured. Another option - we could make these immediately available after close of CTF.
 - [ ] Possible logging of django commands into run-script?  (i.e. Challenge gets created, put line of python into file. User gets created, put line of python into file.  Challenge gets solved, put line of python into file.  This would preserve the history of the CTF. If something catastrophic were to happen, you could theoretically spin up the exact same CTF with exact same user/challenge status by running a single script.  Just a thought.)
 
 
