@@ -37,6 +37,54 @@ export default class Admin extends Component {
     return `mutation { addCategory(name: "${this.state.category}") { status } }`;
   }
 
+  getChallengeRows() {
+    const categories = this.store.appState.categories;
+    const challengeRows = this.store.appState.challenges.map((challenge) => {
+      const categoryName = categories.filter((cat) => {
+        if (cat.sid === challenge.category) {
+          return cat;
+        }
+      });
+
+      return (
+        <tr key={challenge.id}>
+          <td>{categoryName[0].name}</td>
+          <td style={{textAlign: 'center'}}>{challenge.points}</td>
+          <td>{challenge.title}</td>
+          <td style={{textAlign: 'center'}}>{challenge.solved_count}</td>
+          <td><button type="button">Edit</button></td>
+          <td><button type="button">Delete</button></td>
+          <td><button type="button">Clone</button></td>
+        </tr>
+      );
+    });
+
+    return challengeRows;
+  }
+
+  getChallengeTable() {
+    const challengeRows = this.getChallengeRows();
+
+    return (
+      <table className='table table-hover table-admin'>
+        <thead>
+          <tr>
+            <th>Challenge</th>
+            <th style={{textAlign: 'center'}}>Points</th>
+            <th>Title</th>
+            <th style={{textAlign: 'center'}}>Solves</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {challengeRows}
+        </tbody>
+      </table>
+    );
+  }
+
   onSubmit(e) {
     if (this.state.challenge.category) {
       const port = 8000;
@@ -135,11 +183,15 @@ export default class Admin extends Component {
   }
 
   render() {
+    const challengeTable = this.getChallengeTable();
     const categories = this.getCategories();
     categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
     return (
       <div className="page posts">
         <div className="page-header">Admin Panel</div>
+
+        {challengeTable}
+
 
         {/* temporary section for creating categories */}
         <div className="temp-section">
