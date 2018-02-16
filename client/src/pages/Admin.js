@@ -47,41 +47,56 @@ export default class Admin extends Component {
       });
 
       return (
-        <tr key={challenge.id}>
-          <td>{categoryName[0].name}</td>
-          <td style={{textAlign: 'center'}}>{challenge.points}</td>
-          <td>{challenge.title}</td>
-          <td style={{textAlign: 'center'}}>{challenge.solved_count}</td>
-          <td><button type="button">Edit</button></td>
-          <td><button type="button">Delete</button></td>
-          <td><button type="button">Clone</button></td>
-        </tr>
+
+        <div key={challenge.id}
+          className='challenge-row'>
+
+          <div className='challenge-row-problem'>
+            <span>{challenge.points}</span>
+            <span>{categoryName[0].name}</span>
+          </div>
+          <div>
+            <div className='challenge-row-heading'>TITLE</div>
+            <div className='challenge-row-title'>{challenge.title}</div>
+          </div>
+          <div>
+            <div className='challenge-row-heading'>SOLVES</div>
+            <div className='challenge-row-score'>{challenge.solved_count}</div>
+          </div>
+          <div>
+            <span><button type="button">Edit</button></span>
+            <span><button type="button">Delete</button></span>
+            <span><button type="button">Clone</button></span>
+          </div>
+
+        </div>
+
+
       );
     });
 
     return challengeRows;
   }
 
+
+
+        // <tr key={challenge.id}>
+        //   <td>{categoryName[0].name}</td>
+        //   <td style={{textAlign: 'center'}}>{challenge.points}</td>
+        //   <td>{challenge.title}</td>
+        //   <td style={{textAlign: 'center'}}>{challenge.solved_count}</td>
+        //   <td><button type="button">Edit</button></td>
+        //   <td><button type="button">Delete</button></td>
+        //   <td><button type="button">Clone</button></td>
+        // </tr>
+
+
+
   getChallengeTable() {
     const challengeRows = this.getChallengeRows();
 
     return (
-      <table className='table table-hover table-admin'>
-        <thead>
-          <tr>
-            <th>Challenge</th>
-            <th style={{textAlign: 'center'}}>Points</th>
-            <th>Title</th>
-            <th style={{textAlign: 'center'}}>Solves</th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {challengeRows}
-        </tbody>
-      </table>
+      {challengeRows}
     );
   }
 
@@ -183,7 +198,7 @@ export default class Admin extends Component {
   }
 
   render() {
-    const challengeTable = this.getChallengeTable();
+    const challengeTable = this.getChallengeRows();
     const categories = this.getCategories();
     categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
     return (
