@@ -183,7 +183,7 @@ export default class App extends Component {
 					path='/admin'
 					render={props => (
 						(authenticated && isSuperuser) ? (
-							<LazyRoute {...props} component={import('./pages/Admin')} />
+							<LazyRoute {...props} component={import('./pages/Admin/Admin')} />
 						) : (
 							<Redirect to="/login"/>
 						)
@@ -234,7 +234,7 @@ export default class App extends Component {
 					)}
 				/>
 
-				<footer>
+				<footer className='footer'>
 					{testval}
 					<a href='https://twitter.com/redctf' target='_blank'>
 						@red_ctf

@@ -36,6 +36,7 @@
     "postcss-loader": "^2.0.6",
     "pure-render-decorator": "^0.2.0",
     "react-hot-loader": "next",
+    "react-web-tabs": "^0.4.3",
     "resolve-url-loader": "^2.1.0",
     "rimraf": "^2.5.4",
     "sass-loader": "^6.0.6",

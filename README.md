@@ -23,10 +23,7 @@ The most customizeable CTF Framework built with modern technologies.
     - [x] Number Solves so far
     - [ ] Handle large code swaths (e.g. cipher text) - Probably fix as comes up.
   - [x] Flag Check in Django
-- [ ] Scoreboard Page
-  - [ ] Graphs
-    - [ ] Legend
-    - [ ] Tooltip
+- [x] Scoreboard Page
     - [x] Coloring in Tables
   - [x] Table of competitors
 - [x] Team Page
@@ -34,10 +31,10 @@ The most customizeable CTF Framework built with modern technologies.
   - [x] Accessible from scoreboard
   - [x] Graph
   - [x] Table for Challenges solved (and times solved)
-- [ ] Live Updates
+- [x] Live Updates
   - [x] Challenge color switch
-  - [ ] Add categories through admin page
-  - [ ] Add challenges through admin page
+  - [x] Add categories through admin page
+  - [x] Add challenges through admin page
   - [x] Scoreboard color and graph switch
 
 
@@ -45,10 +42,12 @@ The most customizeable CTF Framework built with modern technologies.
 #### Improvement Phase
 
 - [ ] CSS Improvements
-  - [ ] Setup Basis for Theming in Phase Three
+  - [ ] Fix up components to look better
+  - [ ] Move CSS colors to SASS variables
+  - [x] Setup Basis for Theming in Phase Three
 - [ ] Admin Page
   - [ ] Add CTFs
-  - [ ] Fix up Admin Panel to be useable
+  - [x] Fix up Admin Panel to be useable
   - [ ] Release Hints
   - [ ] Complete CTF control
     - [ ] Ability to set future start time (with no errors in performance)
@@ -60,11 +59,14 @@ The most customizeable CTF Framework built with modern technologies.
         - [ ] Edit Challenge - popup with all challenge features for edit
         - [ ] Delete Challenge
         - [ ] Clone Challenge - useful if adding several similar challenges
-        - [ ] Number solves per challenge
+        - [x] Number solves per challenge
         - [ ] Submitted correct / incorrect flags
         - [ ] Track the amount of times the modal is opened (don't know if it'd be interesting or not)
         - [ ] Graph button - see solves over time of competition
         - [ ] Release hint button
+- [ ] Graphs
+  - [ ] Legend
+  - [ ] Tooltip
 - [ ] Large Scale Documentation
   - [ ] Code Documentation
   - [ ] Process Documentation
@@ -88,6 +90,7 @@ The most customizeable CTF Framework built with modern technologies.
   - [ ] Choose team / multiple logins per team
   - [ ] Choose different scss modes (i.e. Vanilla Mode, Midnight Mode, Custom Mode, etc)
   - [ ] First blood points
+  - [ ] Points decrease by number of solves
 - [ ] Complete Documentation
 - [ ] Flash challenges
 - [ ] Linting
