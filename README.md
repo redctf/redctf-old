@@ -3,10 +3,9 @@
 The most customizeable CTF Framework built with modern technologies.
 
 
-## Phase One
-#### Minimum functionality phase.
+### ~Phase One~  (complete)
 
-<details><summary>View contents</summary>
+<details><summary>Minimum functionality phase.</summary>
   
 - [x] Auth
   - [x] Login - no access with proper login
@@ -40,10 +39,9 @@ The most customizeable CTF Framework built with modern technologies.
   
 </details>
 
-## Phase Two
-#### Improvement Phase
+### Phase Two
 
-<details><summary>View contents</summary>
+<details><summary>Improvement Phase</summary>
   
 - [ ] CSS Improvements
   - [ ] Fix up components to look better
@@ -85,10 +83,9 @@ The most customizeable CTF Framework built with modern technologies.
 
 </details>
 
-## Phase Three
-#### Configuration Phase
+### Phase Three
 
-<details><summary>View contents</summary>
+<details><summary>Configuration Phase</summary>
 
 - [ ] Admin Page
   - [ ] Allow upload custom HTML/CSS
