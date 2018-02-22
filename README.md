@@ -6,6 +6,8 @@ The most customizeable CTF Framework built with modern technologies.
 ## Phase One
 #### Minimum functionality phase.
 
+<details><summary>View contents</summary>
+  
 - [x] Auth
   - [x] Login - no access with proper login
   - [x] Register
@@ -13,7 +15,7 @@ The most customizeable CTF Framework built with modern technologies.
 - [x] Admin Page
   - [x] Create Category
   - [x] Create Challenge
-- [ ] Challenge Board
+- [x] Challenge Board
   - [x] Iterate and display categories and challenges from rethinkdb/horizon
   - [x] Challenge Modals
     - [x] Appearance
@@ -21,7 +23,6 @@ The most customizeable CTF Framework built with modern technologies.
     - [x] Flag Check
     - [x] Sucess or Failure Toasts - should exit on success?
     - [x] Number Solves so far
-    - [ ] Handle large code swaths (e.g. cipher text) - Probably fix as comes up.
   - [x] Flag Check in Django
 - [x] Scoreboard Page
     - [x] Coloring in Tables
@@ -36,11 +37,14 @@ The most customizeable CTF Framework built with modern technologies.
   - [x] Add categories through admin page
   - [x] Add challenges through admin page
   - [x] Scoreboard color and graph switch
-
+  
+</details>
 
 ## Phase Two
 #### Improvement Phase
 
+<details><summary>View contents</summary>
+  
 - [ ] CSS Improvements
   - [ ] Fix up components to look better
   - [ ] Move CSS colors to SASS variables
@@ -79,8 +83,12 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Possible logging of django commands into run-script?  (i.e. Challenge gets created, put line of python into file. User gets created, put line of python into file.  Challenge gets solved, put line of python into file.  This would preserve the history of the CTF. If something catastrophic were to happen, you could theoretically spin up the exact same CTF with exact same user/challenge status by running a single script.  Just a thought.)
 
 
+</details>
+
 ## Phase Three
 #### Configuration Phase
+
+<details><summary>View contents</summary>
 
 - [ ] Admin Page
   - [ ] Allow upload custom HTML/CSS
@@ -96,6 +104,8 @@ The most customizeable CTF Framework built with modern technologies.
 - [ ] Linting
 - [ ] Testing?  (i.e. Unit testing, Integration testing, Acceptance testing)
 
+
+</details>
 
 ## Composition
 
