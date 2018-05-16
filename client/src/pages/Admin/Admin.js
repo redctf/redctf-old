@@ -7,6 +7,7 @@ import DropDown from '../../components/ui/DropDown/DropDown';
 import DropDownItem from '../../components/ui/DropDown/DropDownItem';
 import SelectedItem from '../../components/ui/DropDown/SelectedItem';
 import ChallengeStatus from './components/ChallengeStatus';
+import Icon from "../../components/ui/SvgIcon/Icon";
 
 @inject("store")
 @observer
@@ -145,7 +146,9 @@ export default class Admin extends Component {
 
         <Tabs defaultTab="vertical-tab-one" vertical>
           <TabList>
-            <Tab tabFor="vertical-tab-one">Challenges</Tab>
+            <Tab tabFor="vertical-tab-one">
+              <Icon className="Icon" type="CHALLENGES" />
+            </Tab>
             <Tab tabFor="vertical-tab-two">Create Category</Tab>
             <Tab tabFor="vertical-tab-three">Create Challenge</Tab>
           </TabList>

@@ -3,7 +3,7 @@
 The most customizeable CTF Framework built with modern technologies.
 
 
-### ~Phase One~  (complete)
+## ~Phase One~  (complete)
 
 <details><summary>Minimum functionality phase.</summary>
   
@@ -39,7 +39,7 @@ The most customizeable CTF Framework built with modern technologies.
   
 </details>
 
-### Phase Two
+## Phase Two
 
 <details><summary>Improvement Phase</summary>
   
@@ -83,7 +83,7 @@ The most customizeable CTF Framework built with modern technologies.
 
 </details>
 
-### Phase Three
+## Phase Three
 
 <details><summary>Configuration Phase</summary>
 
