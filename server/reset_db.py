@@ -5,6 +5,7 @@ django.setup()
 
 # Imports
 import argparse, contextlib, uuid
+import json
 import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from django.utils.dateformat import format
@@ -131,28 +132,46 @@ def insertCategories():
     web.save()
     rookie = Category(name="Rookie")
     rookie.save()
-    miscellaneous = Category(name="Miscellaneous")
-    miscellaneous.save()
-    code = Category(name="Code Analysis")
-    code.save()
-    code2 = Category(name="Code Analysis Advanced")
-    code2.save()
-    crypto = Category(name="Data")
+    programming = Category(name="Programming")
+    programming.save()
+    crypto = Category(name="Crypto & Puzzles")
     crypto.save()
+    advanced = Category(name="Advanced")
+    advanced.save()
+    data = Category(name="Data")
+    data.save()
 
     # Push test categories to rethinkdb database
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     try:
         r.db(CTF_DB).table('categories').insert({'sid': web.id, 'name': web.name, 'created': format(web.created, 'U')}).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': forensics.id, 'name': forensics.name, 'created': format(forensics.created, 'U')}).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': miscellaneous.id, 'name': miscellaneous.name, 'created': format(miscellaneous.created, 'U')}).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': code.id, 'name': code.name, 'created': format(code.created, 'U')}).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': code2.id, 'name': code2.name, 'created': format(code2.created, 'U')}).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': rookie.id, 'name': rookie.name, 'created': format(rookie.created, 'U')}).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': programming.id, 'name': programming.name, 'created': format(programming.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name, 'created': format(crypto.created, 'U')}).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': advanced.id, 'name': advanced.name, 'created': format(advanced.created, 'U')}).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': data.id, 'name': data.name, 'created': format(data.created, 'U')}).run(connection)
     except RqlRuntimeError as e:
         raise Exception('Error adding categories to realtime database: %s' % (e))
     finally:
         connection.close()
+
+def insertRealTeams():
+    with open('teams.json') as f:
+        data = json.load(f)
+
+        for team in data:
+            print team["username"]
+
+
+
+def insertRealChallenges():
+    with open('challenges.json') as f:
+        data = json.load(f)
+
+        for challenge in data:
+            print "test"
+
+
 
 def insertChallengeBoard():
     i = 1
@@ -220,25 +239,14 @@ if __name__ == "__main__":
     parser.add_argument('--password', action="store", dest="admin_password", help='Password of admin user', default="Password123!")
     parser.add_argument('--cats', action="store_true", dest="cats", help='Insert Test Categories')
     parser.add_argument('--chals', action="store_true", dest="chals", help='Insert Test Challenges')
+    parser.add_argument('--rteams', action="store_true", dest="rteams", help='Insert Real Users')
+    parser.add_argument('--rchals', action="store_true", dest="rchals", help='Insert Real Challenges')
 
     args = parser.parse_args()
 
     resetRethinkDB()
     resetDjangoDB()
     makeAdminUser(args.admin_name, args.admin_email, args.admin_password)
-    makeUser('team2', 'team2@gmail.com', 'Password123!')
-    makeUser('team3', 'team3@gmail.com', 'Password123!')
-    makeUser('team4', 'team4@gmail.com', 'Password123!')
-    makeUser('team5', 'team5@gmail.com', 'Password123!')
-    makeUser('team6', 'team6@gmail.com', 'Password123!')
-    makeUser('team7', 'team7@gmail.com', 'Password123!')
-    makeUser('team8', 'team8@gmail.com', 'Password123!')
-    makeUser('team9', 'team9@gmail.com', 'Password123!')
-    makeUser('team10', 'team10@gmail.com', 'Password123!')
-    makeUser('team11', 'team11@gmail.com', 'Password123!')
-    makeUser('team12', 'team12@gmail.com', 'Password123!')
-    makeUser('team13', 'team13@gmail.com', 'Password123!')
-
     insertCtfs(start=timezone.now(), end=timezone.now() + timedelta(days=30))
 
     if args.cats:
@@ -246,6 +254,24 @@ if __name__ == "__main__":
 
     if args.chals:
         insertChallengeBoard()
+
+    if args.rteams:
+        # you must have a teams.json file in same directory
+        insertRealTeams()
+    else:
+        makeUser('team2', 'team2@gmail.com', 'Password123!')
+        makeUser('team3', 'team3@gmail.com', 'Password123!')
+        makeUser('team4', 'team4@gmail.com', 'Password123!')
+        makeUser('team5', 'team5@gmail.com', 'Password123!')
+        makeUser('team6', 'team6@gmail.com', 'Password123!')
+        makeUser('team7', 'team7@gmail.com', 'Password123!')
+        makeUser('team8', 'team8@gmail.com', 'Password123!')
+        makeUser('team9', 'team9@gmail.com', 'Password123!')
+        makeUser('team10', 'team10@gmail.com', 'Password123!')
+
+    if args.rchals:
+        # you must have a challenge.json file in same directory
+        insertRealChallenges()
 
     
     
