@@ -25,7 +25,7 @@ SECRET_KEY = '21amv(3e6m^n%)9qbftq92hzke8#r#kz#c6lvckdk!kl=do%q8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -139,5 +139,7 @@ GRAPHENE = {
 
 AUTH_USER_MODEL = 'users.User'
 
-CORS_ORIGIN_WHITELIST = ( 'localhost:3000', 'localhost:8000', )
+CORS_ORIGIN_WHITELIST = ( 'localhost:3000', 'localhost:8000', 'ctf.csgidev.com:8181',
+'ctf.csgidev.com:3000', 'ctf.csgidev.com:8000')
 CORS_ALLOW_CREDENTIALS=True
+CORS_ORIGIN_ALLOW_ALL=True

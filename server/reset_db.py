@@ -129,8 +129,8 @@ def insertCategories():
     # Save the category
     web = Category(name="Web")
     web.save()
-    forensics = Category(name="Forensics & Learning")
-    forensics.save()
+    rookie = Category(name="Rookie")
+    rookie.save()
     miscellaneous = Category(name="Miscellaneous")
     miscellaneous.save()
     code = Category(name="Code Analysis")

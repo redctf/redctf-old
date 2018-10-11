@@ -26,6 +26,7 @@ export default class Challenges extends Component {
     } = this.store.appState;
     const categoryOrientationClass = verticalChallengeOrientation ? 'vertical' : 'horizontal';
 
+    console.log('cats', categories);
     if (categories && categories[0].id == 'test') {
       categories.shift();
     }
