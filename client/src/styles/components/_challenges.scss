@@ -13,6 +13,7 @@
   }
   &-vertical .challengeRowCol { 
     margin-top: 60px;   
+    width: calc(100vw/7);
     .vertical {
       flex-direction: column;
       display: flex;
@@ -24,8 +25,6 @@
 .challengeCategory {
   min-width: 200px;
 }
-
-
 .post-vertical {
   display: flex;
   flex-direction: row;

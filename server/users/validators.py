@@ -2,7 +2,7 @@ import re
 from users.models import User
 
 def validate_username(value):
-    if not re.match(r"^[a-zA-Z0-9_]{1,150}$", value):
+    if not re.match(r"^[a-zA-Z0-9_\s]{1,150}$", value):
         raise Exception("Username invalid")
 
 def validate_user_is_authenticated(user):

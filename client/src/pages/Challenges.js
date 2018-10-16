@@ -42,12 +42,14 @@ export default class Challenges extends Component {
     });
 
     return (
-      <div className={`page posts post-${categoryOrientationClass}`}>
-        {categoryMap}
-        <span className='legend'>
+      <div>
+        <div className={`page posts post-${categoryOrientationClass}`}>
+          {categoryMap}
+        </div>
+        <div className='legend'>
           <span className='solved-key'/> Solved
           <span className='unsolved-key'/> Unsolved
-        </span>
+        </div>
       </div>
     );
   }

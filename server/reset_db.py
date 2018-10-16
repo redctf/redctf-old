@@ -140,6 +140,8 @@ def insertCategories():
     advanced.save()
     data = Category(name="Data")
     data.save()
+    bonus = Category(name="_Bonus")
+    bonus.save()
 
     # Push test categories to rethinkdb database
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
@@ -150,27 +152,37 @@ def insertCategories():
         r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name, 'created': format(crypto.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': advanced.id, 'name': advanced.name, 'created': format(advanced.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': data.id, 'name': data.name, 'created': format(data.created, 'U')}).run(connection)
+        r.db(CTF_DB).table('categories').insert({'sid': bonus.id, 'name': bonus.name, 'created': format(bonus.created, 'U')}).run(connection)
     except RqlRuntimeError as e:
         raise Exception('Error adding categories to realtime database: %s' % (e))
     finally:
         connection.close()
 
 def insertRealTeams():
-    with open('teams.json') as f:
-        data = json.load(f)
-
-        for team in data:
-            print team["username"]
-
+    try:
+        with open('teams.json') as f:
+            data = json.load(f)
+            for team in data:
+                makeUser(team['username'], team['email'], team['password'])
+    except RqlRuntimeError as e:
+        raise Exception('Error adding teams to realtime database: %s' % (e))
 
 
 def insertRealChallenges():
-    with open('challenges.json') as f:
-        data = json.load(f)
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        with open('challenges.json') as f:
+            data = json.load(f)
+            for c in data:
+                category = Category.objects.filter(name__icontains = c['category'])
+                challenge = Challenge(category=category[0], flag=c['flag'], points=c['points'])
+                challenge.save()
+                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'created': format(challenge.created, 'U')}).run(connection)
 
-        for challenge in data:
-            print "test"
-
+    except RqlRuntimeError as e:
+        raise Exception('Error adding challenges to realtime database: %s' % (e))
+    finally:
+        connection.close()
 
 
 def insertChallengeBoard():
@@ -179,51 +191,42 @@ def insertChallengeBoard():
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     try:
         for category in Category.objects.all():
-            if (category.id == 4):
-                for j in range(0,4):
-                    # Save the challenge flag to the database
-                    challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=25)
-                    challenge_50.save()
-                    i+=1
-                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_50.id, 'category': challenge_50.category.id, 'title': 'Test Title', 'points': challenge_50.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_50.created, 'U')}).run(connection)
-            elif (category.id == 5):
-                for j in range(0,6):
-                    # Save the challenge flag to the database
-                    challenge_75 = Challenge(category=category, flag="flag{0}".format(i), points=75)
-                    challenge_75.save()
-                    i+=1
-                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_75.id, 'category': challenge_75.category.id, 'title': 'Test Title', 'points': challenge_75.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_75.created, 'U')}).run(connection)
-            else:
-                # Save the challenge flag to the database
-                challenge_100 = Challenge(category=category, flag="flag{0}".format(i), points=100)
-                challenge_100.save()
-                i+=1
+            # Save the challenge flag to the database
+            challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=50)
+            challenge_50.save()
+            i+=1
 
-                # Save the challenge flag to the database
-                challenge_200 = Challenge(category=category, flag="flag{0}".format(i), points=200)
-                challenge_200.save()
-                i+=1
+            # Save the challenge flag to the database
+            challenge_100 = Challenge(category=category, flag="flag{0}".format(i), points=100)
+            challenge_100.save()
+            i+=1
 
-                # Save the challenge flag to the database
-                challenge_300 = Challenge(category=category, flag="flag{0}".format(i), points=300)
-                challenge_300.save()
-                i+=1
+            # Save the challenge flag to the database
+            challenge_200 = Challenge(category=category, flag="flag{0}".format(i), points=200)
+            challenge_200.save()
+            i+=1
 
-                # Save the challenge flag to the database
-                challenge_400 = Challenge(category=category, flag="flag{0}".format(i), points=400)
-                challenge_400.save()
-                i+=1
+            # Save the challenge flag to the database
+            challenge_300 = Challenge(category=category, flag="flag{0}".format(i), points=300)
+            challenge_300.save()
+            i+=1
 
-                # Save the challenge flag to the database
-                # challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500)
-                # challenge_500.save()
-                # i+=1
+            # Save the challenge flag to the database
+            challenge_400 = Challenge(category=category, flag="flag{0}".format(i), points=400)
+            challenge_400.save()
+            i+=1
 
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_100.created, 'U')}).run(connection)
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_200.created, 'U')}).run(connection)
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_300.created, 'U')}).run(connection)
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_400.created, 'U')}).run(connection)
-                # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_500.created, 'U')}).run(connection)
+            # Save the challenge flag to the database
+            challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500)
+            challenge_500.save()
+            i+=1
+
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_50.id, 'category': challenge_50.category.id, 'title': 'Test Title', 'points': challenge_50.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_50.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_100.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_200.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_300.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_400.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'created': format(challenge_500.created, 'U')}).run(connection)
 
 
     except RqlRuntimeError as e:

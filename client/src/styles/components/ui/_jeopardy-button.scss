@@ -1,13 +1,17 @@
 .jeopardy-button {
   display: flex;
-  padding: 10px 20px;
+  padding: 12px 30px;
   justify-content: center;
+  min-width: 90px;
   max-width: 120px;
-  margin: 15px;
-  border-radius: 5px;
+  margin: 10px 15px;
+  border-radius: 3px;
 
   &:hover {
     cursor: pointer;
+    background-color: darken(blue, 20%) !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: opacity 0.3s ease-in-out;
   }
 
   .button {

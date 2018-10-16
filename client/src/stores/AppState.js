@@ -26,7 +26,7 @@ export default class AppState {
     this.testval = "Cobbled together by ";
 
     // if you want vertical orientation on your challenge board, set this to true.
-    this.verticalChallengeOrientation = false;
+    this.verticalChallengeOrientation = true;
   }
 
   // async fetchData(pathname, id) {

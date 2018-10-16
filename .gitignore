@@ -6,4 +6,4 @@ node_modules/
 rethinkdb_data/
 server/challenges.json
 server/teams.json
-
+server/challenges/migrations/*
