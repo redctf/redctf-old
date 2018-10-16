@@ -19,8 +19,9 @@ class CreateTeam(graphene.Mutation):
 
     class Arguments:
         teamname = graphene.String(required=True)
+        hidden = graphene.String(required=True)
 
-    def mutate(self, info, teamname):
+    def mutate(self, info, teamname, hidden):
         # Validate teamname
         validate_teamname(teamname) 
         validate_teamname_unique(teamname)
@@ -29,10 +30,10 @@ class CreateTeam(graphene.Mutation):
         while Team.objects.filter(token__iexact=token).exists():
             token = str(uuid.uuid4())
 
-        team = Team(name=teamname, token=token)
+        team = Team(name=teamname, token=token, hidden=hidden)
         team.save()
 
-        return CreateTeam(token=team.token)
+        return CreateTeam(token=team.token, hidden=team.hidden)
 
 
 class JoinTeam(graphene.Mutation):

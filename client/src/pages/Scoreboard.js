@@ -17,7 +17,8 @@ export default class Scoreboard extends Component {
 
   getTeamRows(teams, challenges) {
     const totalChallenges = challenges.length;
-    const teamRows = teams.map((team, idx) => {
+    const teamsFiltered = teams.filter(t => !t.hidden);
+    const teamRows = teamsFiltered.map((team, idx) => {
       const preferredColors = ['red', 'blue', 'green', 'orange', 'purple', 'deeppink', 'lightseagreen', 'navy', 'tomato', 'sienna'];  //TODO - more colors!
       const rowStyle = preferredColors[idx];
 
@@ -43,7 +44,8 @@ export default class Scoreboard extends Component {
       y: 0
     }];
     // Only show top ten teams
-    const teams = this.store.appState.teams.sort((a,b) => {
+    const teamsFiltered = this.store.appState.teams.filter(t => t.hidden);
+    const teams = teamsFiltered.sort((a,b) => {
       return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
     }).slice(0,10);
     const series = teams.map((team, i) => {

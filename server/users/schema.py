@@ -33,8 +33,9 @@ class CreateUser(graphene.Mutation):
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
+        hidden = graphene.String(required=True)
 
-    def mutate(self, info, username, password, email):
+    def mutate(self, info, username, password, email, hidden):
         # Validate username, password, and email
         validate_username(username) 
         validate_username_unique(username) 
@@ -49,7 +50,7 @@ class CreateUser(graphene.Mutation):
         while Team.objects.filter(token__iexact=token).exists():
             token = str(uuid.uuid4())
 
-        team = Team(name=username, token=token)
+        team = Team(name=username, token=token, hidden=hidden)
         team.save()
         # ======================== #
         # Temp fix for stage 1 dev #
@@ -59,6 +60,7 @@ class CreateUser(graphene.Mutation):
             username=username,
             email=email,
             team=team,
+            hidden=hidden
         )
         user.set_password(password)
         user.save()
@@ -69,7 +71,7 @@ class CreateUser(graphene.Mutation):
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('teams').insert({ 'sid': user.team.id, 'name': user.team.name, 'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': [], 'created': format(user.team.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('teams').insert({ 'sid': user.team.id, 'name': user.team.name, 'points': user.team.points, 'hidden': user.team.hidden, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': [], 'created': format(user.team.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding team to realtime database: %s' % (e))
         finally:

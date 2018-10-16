@@ -61,6 +61,7 @@ export default class App extends Component {
     teams_collection.order('id').watch().subscribe(allTeams=> {
 	    // add asolute 0 in teams
 	    const teams = allTeams.map((team) => {
+        console.log('teammmm', team);
 	    	const d = this.store.appState.ctfs[0].created;    // TODO ctf.start_time
 	    	if (team.solved.length === 0) {
 		      team.solved.unshift({
