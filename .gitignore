@@ -4,3 +4,6 @@
 *.sqlite3
 node_modules/
 rethinkdb_data/
+server/challenges.json
+server/teams.json
+

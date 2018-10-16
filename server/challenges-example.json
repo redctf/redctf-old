@@ -1,0 +1,21 @@
+[
+	{
+		"category": "web",
+		"points": 50,
+		"title": "Labyrinth",
+		"description": "<a href='http://10.65.188.138:31337/' style='color: blue'>Escape from Minotaur</a>",
+		"flag": "ctf{md5}"
+	}, {
+		"category": "web",
+		"points": 100,
+		"title": "The Time Traveler",
+		"description": "<a href='http://10.65.188.117:3380/' style='color: blue'>The Time Traveler</a>",
+		"flag": "ctf{md5}"
+	}, {
+		"category": "web",
+		"points": 200,
+		"title": "Lost Parrot",
+		"description": "<a href='http://10.65.188.211/LongJohnSilver/' style='color: blue'>Find the Parrot!</a>",
+		"flag": "ctf{md5}"
+	}
+]

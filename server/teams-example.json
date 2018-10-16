@@ -1,0 +1,23 @@
+[
+	{
+		"username": "Vandelay Industries", 
+		"email": "vandelay.industries@gmail.com",
+		"password": "ElectricBoogaloo"
+	}, {
+		"username": "Victorious Secret", 
+		"email": "vicky.secret@gmail.com",
+		"password": "TroubleInLittleChina"
+	}, {
+		"username": "Team Ramrod", 
+		"email": "ram.rod@gmail.com",
+		"password": "RoaringTwenties"
+	}, {
+		"username": "Golden Oldies", 
+		"email": "gold.old@gmail.com",
+		"password": "PollyParrotCracker"
+	}, {
+		"username": "Bad Intentions", 
+		"email": "bad.intentions@gmail.com",
+		"password": "LuckyNumberSlevin"
+	}
+]
