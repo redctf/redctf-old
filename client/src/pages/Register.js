@@ -9,8 +9,13 @@ export default class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      regNewTeam: false,
+      regJoinTeam: false, 
       team: '',
+      username: '',
+      teamId: '',
       password: '',
+      passwordConfirmed: '',
       email: '',
       isRegistrationError: false,
       errorMessage: 'Error',
@@ -55,65 +60,207 @@ export default class Register extends Component {
     })
   }
 
-  registerUser() {
-    return `mutation { createUser ( username: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}") { status } }`;
+  onBack(event) {
+    this.setState({
+      regNewTeam: false,
+      regJoinTeam: false,
+      regNewTeam: false,
+      regJoinTeam: false, 
+      team: '',
+      username: '',
+      teamId: '',
+      password: '',
+      passwordConfirmed: '',
+      email: '',
+      isRegistrationError: false,
+      errorMessage: 'Error',
+      isRegistrationSuccess: false,
+      successMessage: 'Success'
+    });
   }
 
-  handleTeamNameChaned = (e) => {
+  onNewRegistration(event) {
+    this.setState({
+      regNewTeam: true
+    });
+  }
+
+  onJoinRegistration(event) {
+    this.setState({
+      regJoinTeam: true
+    });
+  }
+
+  onBackSubmit(event) {
+    this.props.history.push('/login');
+    this.setState({
+      regNewTeam: false,
+      regJoinTeam: false,
+      regNewTeam: false,
+      regJoinTeam: false, 
+      team: '',
+      username: '',
+      teamId: '',
+      password: '',
+      passwordConfirmed: '',
+      email: '',
+      isRegistrationError: false,
+      errorMessage: 'Error',
+      isRegistrationSuccess: false,
+      successMessage: 'Success'
+    });
+  }
+
+  registerUser() {
+    return `mutation { createUser ( username: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}", hidden: "false") { status } }`;
+  }
+
+  handleTeamNameChanged = (e) => {
     this.setState({
       team: e.currentTarget.value,
+      reqTeam: !!e.currentTarget.value,
       isRegistrationError: false
     });
   }
 
-  handlePasswordChaned = (e) => {
+  handleUsernameChanged = (e) => {
+    this.setState({
+      username: e.currentTarget.value,
+      reqUsername: !!e.currentTarget.value,
+      isRegistrationError: false
+    });
+  }
+
+  handleTeamIdChanged = (e) => {
+    this.setState({
+      teamId: e.currentTarget.value,
+      reqTeamId: !!e.currentTarget.value,
+      isRegistrationError: false
+    });
+  }
+
+  handlePasswordChanged = (e) => {
     this.setState({
       password: e.currentTarget.value,
+      reqPassword: !!e.currentTarget.value,
       isRegistrationError: false
     });
   }
 
-  handleEmailChaned = (e) => {
+  handlePasswordConfirmChanged = (e) => {
+    this.setState({
+      passwordConfirmed: e.currentTarget.value,
+      reqPasswordConf: !!e.currentTarget.value,
+      isRegistrationError: false
+    });
+  }
+
+  handleEmailChanged = (e) => {
     this.setState({
       email: e.currentTarget.value,
+      reqEmail: !!e.currentTarget.value,
       isRegistrationError: false
     });
   }
 
   render() {
+    const pwdConfirmed = (this.state.password === this.state.passwordConfirmed && this.state.password !== '') ? true : false;
+    const registrationDisabled = (pwdConfirmed && this.state.username !== '' && this.state.email !== '' && (this.state.team !== '' || this.state.teamId !== '')) ? '' : 'disabled';
     return (
       <div className="page login">
         <main>
-          <div className='login-window'>
-            <div className='login-inputs'>
-              <input type="text"
-                placeholder="team name"
-                onChange={this.handleTeamNameChaned}/>
+          {
+            (this.state.regNewTeam || this.state.regJoinTeam) &&
+            <div className='login-window'>
+              {this.state.regNewTeam &&
+                <div className='login-inputs'>
+                  <input type="text"
+                    className="form-control input-req"
+                    placeholder="Team Name"
+                    onChange={this.handleTeamNameChanged}/>
+                  {!this.state.team && <span className='req-input'>*</span>}
+                </div>
+              }
+              <div className='login-inputs'>
+                <input type="text"
+                  className="form-control input-req"
+                  placeholder="Username"
+                  onChange={this.handleUsernameChanged}/>
+                  {!this.state.username && <span className='req-input'>*</span>}
+              </div>
+              {this.state.regJoinTeam && 
+                <div className='login-inputs'>
+                  <input type="text"
+                    className="form-control input-req"
+                    placeholder="Team ID"
+                    onChange={this.handleTeamIdChanged}/>
+                  {!this.state.teamId && <span className='req-input'>*</span>}
+                </div>
+              }
+              <div className='login-inputs'>
+                <input type="password"
+                  className="form-control input-req"
+                  placeholder="Password"
+                  onChange={this.handlePasswordChanged}/>
+                  {!this.state.password && <span className='req-input'>*</span>}
+              </div>
+              <div className='login-inputs'>
+                <input type="password"
+                  className="form-control input-req"
+                  placeholder="Confirm Password"
+                  onChange={this.handlePasswordConfirmChanged}/>
+                  {!this.state.passwordConfirmed && <span className='req-input'>*</span>}
+              </div>
+              <div className='login-inputs'>
+                <input type="text"
+                  className="form-control input-req"
+                  placeholder="Email Address"
+                  onChange={this.handleEmailChanged}/>
+                  {!this.state.email && <span className='req-input'>*</span>}
+              </div>
+              <div>
+                  <span className='req-text'>* required</span>
+              </div>
+              {this.state.isRegistrationError && <div className='error-message'>
+                {this.state.errorMessage}
+              </div>}
+              {this.state.isRegistrationSuccess && <div className='success-message'>
+                {this.state.successMessage}
+              </div>}
+              <div className='login-button-row'>
+                <button type="button"
+                  className='back-button'
+                  onClick={this.onBack.bind(this)}>
+                  Back
+                </button>
+                <button type="button"
+                  className={`login-button ${registrationDisabled}`}
+                  onClick={this.onSubmit.bind(this)}>
+                  Register
+                </button>
+              </div>
             </div>
-            <div className='login-inputs'>
-              <input type="password"
-                placeholder="password"
-                onChange={this.handlePasswordChaned}/>
-            </div>
-            <div className='login-inputs'>
-              <input type="text"
-                placeholder="email address"
-                onChange={this.handleEmailChaned}/>
-            </div>
-            {this.state.isRegistrationError && <div className='error-message'>
-              {this.state.errorMessage}
-            </div>}
-            {this.state.isRegistrationSuccess && <div className='success-message'>
-              {this.state.successMessage}
-            </div>}
-            <div className='login-button-row'>
-              <button type="button"
-                className='login-button'
-                onClick={this.onSubmit.bind(this)}>
-                Register
+          }
+          {
+            (!this.state.regNewTeam && !this.state.regJoinTeam) &&
+            <div className='choose-window'>
+              <button type='button'
+                className='choose-button choose-new-team'
+                onClick={this.onNewRegistration.bind(this)}>
+                Register a New Team
+              </button>
+              <button type='button'
+                className='choose-button choose-join-team'
+                onClick={this.onJoinRegistration.bind(this)}>
+                Register and Join Existing Team
+              </button>
+              <button type='button'
+                className='choose-button choose-back'
+                onClick={this.onBackSubmit.bind(this)}>
+                Back to Login
               </button>
             </div>
-          </div>
+          }
         </main>
       </div>
     );

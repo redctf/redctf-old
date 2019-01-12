@@ -109,13 +109,13 @@ export default class Login extends Component {
 						<div className='login-inputs'>
 							<input type="text"
 								className="form-control"
-								placeholder="team name"
+								placeholder="Team Name"
 								onChange={this.handleTeamNameChanged}/>
 						</div>
 						<div className='login-inputs'>
 							<input type="password"
 								className="form-control"
-								placeholder="password"
+								placeholder="Password"
 								onChange={this.handlePasswordChaned}/>
 						</div>
 						{this.state.isLoginError && <div className='error-message'>

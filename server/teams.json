@@ -1,23 +1,257 @@
 [
-	{
-		"username": "Vandelay Industries", 
-		"email": "vandelay.industries@gmail.com",
-		"password": "ElectricBoogaloo"
-	}, {
-		"username": "Victorious Secret", 
-		"email": "vicky.secret@gmail.com",
-		"password": "TroubleInLittleChina"
-	}, {
-		"username": "Team Ramrod", 
-		"email": "ram.rod@gmail.com",
-		"password": "RoaringTwenties"
-	}, {
-		"username": "Golden Oldies", 
-		"email": "gold.old@gmail.com",
-		"password": "PollyParrotCracker"
-	}, {
-		"username": "Bad Intentions", 
-		"email": "bad.intentions@gmail.com",
-		"password": "LuckyNumberSlevin"
-	}
+    {
+        "username": "#U703_^;GLqm", 
+        "password": "Y66ZI!kvhfb4", 
+        "email": "Tharaka.Mahabage@csgi.com;Yugendra.Naidoo@csgi.com;daniel.walden@csgi.com;WinMya.Aung@csgi.com;"
+    }, 
+    {
+        "username": "404BrainNotFound!", 
+        "password": "RJD5O!l3in45", 
+        "email": "Vinjoy.rego@csgi.com;Deepak.panjikar@csgi.com;Vishnu.Tellakula@csgi.com;Abhijeet.Chandel@csgi.com;"
+    }, 
+    {
+        "username": "ABSD", 
+        "password": "4P5VW!c04vmo", 
+        "email": "rashmi.manjunath@csgi.com;shyam.kanakadandi@csgi.com;divya.nair@csgi.com;"
+    }, 
+    {
+        "username": "Ama-Zing", 
+        "password": "S4IDV!9ijo5s", 
+        "email": "Mawabo.Nkewana@csgi.com;Sinethemba.Mbhamali@csgi.com;wilfred.samuels@csgi.com;Bhashitha.Priya@csgi.com;"
+    }, 
+    {
+        "username": "Anti-SDK 1.0", 
+        "password": "4I4YT!googv1", 
+        "email": "Davis.Abraham@csgi.com;Krithika.Krishnamurthy@csgi.com;Anthony.MariaClaret@csgi.com;Srikanth.AyanurHarirao@csgi.com;"
+    }, 
+    {
+        "username": "Bad Intentions", 
+        "password": "FZ487!mn2ymd", 
+        "email": "theuns.steyn@csgi.com;arun.nair@csgi.com;kruti.sharma@csgi.com;rajasekhar.duddu@csgi.com;"
+    }, 
+    {
+        "username": "Bits N' Bytes", 
+        "password": "ORC3Q!krxrus", 
+        "email": "Vandana.Khampa@csgi.com;Bhushan.Jagadish@csgi.com;Ajith.Chandran@csgi.com;Srinivasan.Krishna@csgi.com;"
+    }, 
+    {
+        "username": "BPM BI Team", 
+        "password": "YVN4O!ekf7n2", 
+        "email": "andy.hinton@csgi.com;leonie.swart@csgi.com;resham.thapa@csgi.com;sarah.little@csgi.com;"
+    }, 
+    {
+        "username": "BRAZA", 
+        "password": "YWW1N!9z2hho", 
+        "email": "bruno.santos@csgi.com;henri.pietersen@csgi.com;"
+    }, 
+    {
+        "username": "Cool Jolly Puzzle Decoders", 
+        "password": "MUQSQ!y0y7jy", 
+        "email": "jill.timmerman@csgi.com;douglas.vogelsang@csgi.com;Charlis.PerezHeredia@csgi.com;praj.dakhave@csgi.com;"
+    }, 
+    {
+        "username": "Fearsome Four", 
+        "password": "S8LLG!fqh4ye", 
+        "email": "waikeen.wong@csgi.com;aikun.tan@csgi.com;keeghi.renandy@csgi.com;Fransiska.Handoko@csgi.com;"
+    }, 
+    {
+        "username": "Giggling Dolphins", 
+        "password": "UWSHV!m9hrtt", 
+        "email": "Sean.Rich@csgi.com;sharon.zimmerman@csgi.com;harsha.nooka@csgi.com;philip.kellner@csgi.com;"
+    }, 
+    {
+        "username": "git push --force, Assemble!", 
+        "password": "4SEQG!el77da", 
+        "email": "Matt.Anderson@csgi.com;Abdullah.Elagha@csgi.com;Zachary.Morgan@csgi.com;eldon.taylor@csgi.com;"
+    }, 
+    {
+        "username": "Got No STEM", 
+        "password": "KO4Y5!x41af9", 
+        "email": "jane.williams@csgi.com;patty.nogg@csgi.com;matt.geer@csgi.com;dawn.spencer@csgi.com;"
+    }, 
+    {
+        "username": "Hawks", 
+        "password": "IS2ST!x7v7jg", 
+        "email": "Ravivarman.Muthaiyal@csgi.com;abhijeet.baranwal@csgi.com;puneet.singh@csgi.com;vikash.kumarsharma@csgi.com;"
+    }, 
+    {
+        "username": "I'll Be Your Snowflake", 
+        "password": "78K6P!gwflro", 
+        "email": "Chris.Seipp@csgi.com;Dae.Decker@csgi.com;Tom.Elliott@csgi.com;Jason.Hill@csgi.com;"
+    }, 
+    {
+        "username": "Interhactive Messaging", 
+        "password": "FL6WB!ooy5o6", 
+        "email": "Joe.Grasse@csgi.com;Josh.Stortz@csgi.com;Gabriel.Sjoberg@csgi.com;Nick.Volenec@csgi.com;"
+    }, 
+    {
+        "username": "Just In Time", 
+        "password": "R7B3Q!mjo7ni", 
+        "email": "KwokFu.Heng@csgi.com;Jeannie.Leong@csgi.com;Alvin.Ang@csgi.com;Hezry.Harihodin@csgi.com;"
+    }, 
+    {
+        "username": "LaFamilia", 
+        "password": "A56W9!8sofmw", 
+        "email": "biswaranjan.misra@csgi.com;Prashant.kushwaha@csgi.com;Shardul.Singh@csgi.com;Ashwani.Mishra@csgi.com;"
+    }, 
+    {
+        "username": "Myrmidon", 
+        "password": "XXUIK!0bs2ih", 
+        "email": "Yeshas.Siddi@csgi.com;sandesh.shivaraju@csgi.com;Manoj.Ramakrishna@csgi.com;"
+    }, 
+    {
+        "username": "Ninja Turtles", 
+        "password": "ZIM5R!mgvilu", 
+        "email": "evangeline.rosemond@csgi.com;amit.kayal@csgi.com;naveen.kumar@csgi.com;Rakesh.sahu@csgi.com;"
+    }, 
+    {
+        "username": "NP Warriors", 
+        "password": "FLONU!fparb7", 
+        "email": "antonio.serini@csgi.com;Tanveer.Ahmad@csgi.com;Vidya.Jayaraman@csgi.com;"
+    }, 
+    {
+        "username": "Old SMs", 
+        "password": "M8MNP!a0i0lv", 
+        "email": "stephen.morrison@csgi.com;leon.mcdonald@csgi.com;kanchan.kaur@csgi.com;richard.rayner@csgi.com;"
+    }, 
+    {
+        "username": "Output Solutions Bangalore", 
+        "password": "SIETD!2bgabg", 
+        "email": "Mayank.Sharma@csgi.com;Kumar.Ambuj@csgi.com;"
+    }, 
+    {
+        "username": "Pathfinders", 
+        "password": "OIV2P!mjb9dx", 
+        "email": "Vinothkumar.m@csgi.com;praveensriram.rajasekaran@csgi.com;"
+    }, 
+    {
+        "username": "PCDDS Alpha", 
+        "password": "TXE7G!shas3y", 
+        "email": "chris.hobbs@csgi.com;bidisha.roy@csgi.com;avinash.maduri@csgi.com;azam.khan@csgi.com;"
+    }, 
+    {
+        "username": "PCDDS Beta", 
+        "password": "1GNGF!bim4hn", 
+        "email": "Todd.Gallatin@csgi.com;Mitchell.Markin@csgi.com;Mark.Naughton@csgi.com;Kumar.Jha@csgi.com;"
+    }, 
+    {
+        "username": "PipeGrep", 
+        "password": "KUSYW!3xiohw", 
+        "email": "cezar.bastos@csgi.com;michel.lara@csgi.com;gabriela.souza@csgi.com;marcos.david@csgi.com;"
+    }, 
+    {
+        "username": "PMO Team 1", 
+        "password": "WWLGM!etdpu9", 
+        "email": "dawn.elton@csgi.com;chris.johnson@csgi.com;don.koubsky@csgi.com;lexie.eker@csgi.com;"
+    }, 
+    {
+        "username": "PMO Team 2", 
+        "password": "0TNEH!1cfoq1", 
+        "email": "shiraaz.moollatjie@csgi.com;zachary.larson@csgi.com;jessica.trader@csgi.com;jesse.schmidt@csgi.com;"
+    }, 
+    {
+        "username": "ramuhsab", 
+        "password": "YWIZ9!nmgtxv", 
+        "email": "umar.khan@csgi.com;bashierah.arnold@csgi.com;"
+    }, 
+    {
+        "username": "Robert'); DROP TABLE Students; --", 
+        "password": "13LKK!58fdei", 
+        "email": "Vijay.Bhaskar@csgi.com;Akhilesh.Kasibatla@csgi.com;Dan.Singer@csgi.com;Jason.Tremblett@csgi.com;"
+    }, 
+    {
+        "username": "Rottweiler", 
+        "password": "07QE8!uh9uph", 
+        "email": "mohan.shankar@csgi.com;safdar.matcheswala@csgi.com;gerhard.olivier@csgi.com;Santosh.Ranade@csgi.com;"
+    }, 
+    {
+        "username": "SAC", 
+        "password": "A1EYV!cgege2", 
+        "email": "Obakeng.Ntshoe@csgi.com;malusi.ninela@csgi.com;njabulo.ngubane@csgi.com;malibongwe.busakwe@csgi.com;"
+    }, 
+    {
+        "username": "SecCap", 
+        "password": "PHALD!b22qdi", 
+        "email": "Mike.Ranallo@csgi.com;Steve.McCoy@csgi.com;Norm.Wallace@csgi.com;krista.freimuth@csgi.com;"
+    }, 
+    {
+        "username": "SkyLanders", 
+        "password": "W5UMM!dc8ue3", 
+        "email": "durgesh.kumaryadav@csgi.com;piyush.kumar2@csgi.com;ravali.madabhushanam@csgi.com;bhargava.raju@csgi.com;"
+    }, 
+    {
+        "username": "Stormbreaker", 
+        "password": "C8QEY!4xzvia", 
+        "email": "Arun.Sachithanandam@csgi.com;Raymund.Kubassek@csgi.com;Wasim.Rangoonwala@csgi.com;sankeerth.nyalakonda@csgi.com;"
+    }, 
+    {
+        "username": "Team AIM", 
+        "password": "4OPTP!655xlx", 
+        "email": "vignesh.sankaranarayanan@csgi.com;ravikiran.basavarajappa@csgi.com;itumeleng.ntshoe@csgi.com;kokyee.chee@csgi.com;"
+    }, 
+    {
+        "username": "Team Guinness", 
+        "password": "S3HYI!l87n5p", 
+        "email": "Hennie.Kloppers@csgi.com;Daniel.Stakem@csgi.com;Marcus.Kelly@csgi.com;David.Gregory@csgi.com;"
+    }, 
+    {
+        "username": "Team MacGruber", 
+        "password": "RCK0P!xy3fm9", 
+        "email": "Pedro.Urdaibay2@csgi.com;Dan.Russell@csgi.com;Paul.Fitzpatrick@csgi.com;Andreas.Eichholz@csgi.com;"
+    }, 
+    {
+        "username": "Team-GOC", 
+        "password": "9KSW3!n27qf4", 
+        "email": "Rohin.Sidharth@csgi.com;Mounika.Aenugu@csgi.com;Prashant.KumarGogoi@csgi.com;antony.rajamanickam@csgi.com;"
+    }, 
+    {
+        "username": "TeamXtreme", 
+        "password": "R9RTS!sqc2mq", 
+        "email": "Bhavana.Setty@csgi.com;Dayalin.Govender@csgi.com;SidharthaShankar.Das@csgi.com;Keressa.Jeevarathanam@csgi.com;"
+    }, 
+    {
+        "username": "The Colombian Connection", 
+        "password": "FH2SX!8ci9k4", 
+        "email": "bryan.gonzalez@csgi.com;richard.abuabara@csgi.com;david.canon@csgi.com;"
+    }, 
+    {
+        "username": "The Infinite Loops", 
+        "password": "BI8G0!7wd7k8", 
+        "email": "Jalan.Macherla@csgi.com;kim.scott@csgi.com;vikas.thotakuri@csgi.com;gus.kohtz@csgi.com;"
+    }, 
+    {
+        "username": "The Rascals", 
+        "password": "WA3NL!liqhfx", 
+        "email": "Thato.Pebane@csgi.com;Josia.engelbrecht@csgi.com;Shaun.Moodley@csgi.com;Brandon.May@csgi.com;"
+    }, 
+    {
+        "username": "Thundercats", 
+        "password": "7OJH7!m759so", 
+        "email": "shalini.singh@csgi.com;pratiksha.singh@csgi.com;nikita.chaudhary@csgi.com;ankita.ranjan@csgi.com;"
+    }, 
+    {
+        "username": "TnZ_CinnerZ", 
+        "password": "5QVBU!kd45k0", 
+        "email": "Ielhaam.Williams@csgi.com;Twaha.Nzeyimana@csgi.com;Ferin.Taylor@csgi.com;Faith.Agwang@csgi.com;"
+    }, 
+    {
+        "username": "Trial & Error", 
+        "password": "LZTQV!qxj8il", 
+        "email": "brian.lunsford@csgi.com;casey.largent@csgi.com;sarah.bernal@csgi.com;Michael.Spencer@csgi.com;"
+    }, 
+    {
+        "username": "Vandelay Industries", 
+        "password": "EYF7Q!qr1mv1", 
+        "email": "vardan.kumar@csgi.com;gautam.pai@csgi.com;trishan.valodia@csgi.com;"
+    }, 
+    {
+        "username": "We Talk A Lot", 
+        "password": "LHPLS!snddty", 
+        "email": "Shashank.Katiyar@csgi.com;Abhishek.Garg@csgi.com;BharatRanjan.Raul@csgi.com;"
+    }, 
+    {
+        "username": "Yggdrasil", 
+        "password": "D9IM1!ubfq61", 
+        "email": "daniel.cavallaro@csgi.com;ellis.johnson@csgi.com;wade.smith@csgi.com;karthik.perumal@csgi.com;"
+    }
 ]

@@ -2,8 +2,9 @@ import re
 from users.models import User
 
 def validate_username(value):
-    if not re.match(r"^[a-zA-Z0-9_\s]{1,150}$", value):
-        raise Exception("Username invalid")
+    return True
+    #if not re.match(r"^[a-zA-Z0-9_\s]{1,150}$", value):
+    #    raise Exception("Username invalid: ", value)
 
 def validate_user_is_authenticated(user):
     if user.is_anonymous:
@@ -19,8 +20,9 @@ def validate_username_unique(value):
         raise Exception('Username not available')
 
 def validate_email(value):
-    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", value):
-        raise Exception("Email invalid")
+    return True
+    # if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", value):
+    #     raise Exception("Email invalid")
 
 def validate_email_unique(value):
     if User.objects.filter(email__iexact=value).exists():

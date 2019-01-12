@@ -147,8 +147,9 @@ Run the following (in order):
         `python3 reset_db.py --cats --chals && python3 manage.py runserver`
     
     * Simple development
-
+    
         `python3 manage.py runserver`
+
     
 4) To Start Client (`redctf/client/`)
     
