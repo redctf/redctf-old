@@ -141,9 +141,15 @@ Run the following (in order):
     `hz serve --dev`
 
 3) To Start Server (`redctf/server/`)
-    
-    `python3 manage.py runserver`
 
+    * Fresh install, start server with test categories and challenges
+    
+        `python3 reset_db.py --cats --chals && python3 manage.py runserver`
+    
+    * Simple development
+
+        `python3 manage.py runserver`
+    
 4) To Start Client (`redctf/client/`)
     
     `npm start`
