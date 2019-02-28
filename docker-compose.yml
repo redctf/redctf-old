@@ -2,17 +2,17 @@ version: '3'
 
 services:
   rethinkdb:
-    # TODO: do we need this service if horizon is already running ?
     image: rethinkdb
+    container_name: rethinkdb
     ports:
       - "28015:28015"
       - "8088:8080"
-      #TODO volume for this image.
-    volumes:
-        ./rethinkdb
+    #volumes:
+     # - ./client/rethinkdb:/data
   horizon:
     image: rethinkdb/horizon
-    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app && npm run start"
+    container_name: horizon
+    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
     # TODO do we need this command to run or should it be on the rethink container? I think so - because it was on the horizon example from github.
     volumes:
       - ./client:/usr/app
@@ -20,12 +20,25 @@ services:
       - rethinkdb
     ports:
       - "8181:8181"
+    depends_on:
+      - rethinkdb
   django:
-    build: ./server
-    command: bash -c "python3 manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    build: ./server/
+    container_name: django
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./server:/code
     ports:
       - "8000:8000"
     depends_on:
-      - rethinkdb
+      - horizon
+  react:
+    build: ./client/
+    container_name: react
+    volumes:
+      - ./client:/code
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django

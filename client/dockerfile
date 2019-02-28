@@ -1,0 +1,3 @@
+FROM node:latest
+# get react running then run htis command manually to start.
+#RUN yarn install && yarn start
