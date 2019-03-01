@@ -30,6 +30,9 @@ services:
       - ./server:/code
     ports:
       - "8000:8000"
+    environment:
+      - RDB_HOST=rethinkdb
+      - RDB_PORT=28015
     depends_on:
       - horizon
   react:
