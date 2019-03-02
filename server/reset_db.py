@@ -49,8 +49,8 @@ def resetDjangoDB():
     os.system('find . -path "*/migrations/*.pyc"  -delete')
 
     # Rebuild database
-    os.system('python3.6-32 manage.py makemigrations')
-    os.system('python3.6-32 manage.py migrate')   
+    os.system('python3 manage.py makemigrations')
+    os.system('python3 manage.py migrate')   
 
     
 def makeAdminUser(admin_name, admin_email, admin_password, hidden):
