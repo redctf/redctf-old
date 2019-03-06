@@ -74,18 +74,17 @@ class portainer:
 
         return r
 
-    def updateDockerServiceByID(self, endpointID, serviceID):
+    def updateDockerServiceByID(self, endpointID, serviceID, replicas):
         """
         Update Docker Services from Portainer API reverse proxy - need ID and previous version of service to increment version number
         """
         # first need to get the current service to find its version, and then do updates.
         serviceSpecObject = self.getDockerServicesByID(endpointID, serviceID).text
         version = json.loads(serviceSpecObject)['Version']['Index']
-        nextVersion = int(version + 1)
-
-        # TODO: only pass parameters that we need to update.
-        serviceSpecObject = self.getDockerServicesByID(endpointID, serviceID).text
-
+        name = json.loads(serviceSpecObject)['Spec']['Name']
+        image = json.loads(serviceSpecObject)['Spec']['TaskTemplate']['ContainerSpec']['Image']
+        replicas2 = int(replicas)
+        replicas = json.loads(serviceSpecObject)['Spec']['Mode']['Replicated']['Replicas']
 
         # set api endpoint
         endpoint = ('/endpoints/{0}/docker/services/{1}/update').format(endpointID, serviceID)
@@ -93,8 +92,9 @@ class portainer:
         # create request
         r_url = self.portainerURL + endpoint
         r_headers = {'Authorization': self.apiKey}
-        r_params = json.dumps({'version': version})
-        r_data = serviceSpecObject
+        r_params = {'version': str(version)}
+        r_data = json.dumps({"Name": name, "TaskTemplate": {"ContainerSpec": {"Image": image}},  "Mode": {"Replicated": {"Replicas": replicas2}}})
+
         # send request
         r = requests.post(r_url, headers=r_headers, params=r_params, data=r_data)
 
