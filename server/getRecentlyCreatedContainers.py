@@ -20,13 +20,14 @@ args = parser.parse_args()
 try:
     r = pt.getRecentlyCreatedContainers(args.endpointID, args.limit, args.label)
     i = 0
-
     r_list = json.loads(r.text)
-    for container in r_list:  # error when reaching end of list.
-        print json.dumps(container, indent=2, sort_keys=True)
-        IPv4 = container.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
 
-        print ("IPv4 address of container: " + IPv4)
+    for container in r_list:
+        IPv4 = container.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
+        name = container.get("Names", {})[0]
+        id = container.get("Id")
+        print ("container name: \"{0}\", container ID: {1}, IPv4 address: {2} ".format(name, id, IPv4))
+        #print ("IPv4 address of container: {0}".format(IPv4))
         i += 1
     print ('total number of containers: ' + str(i))
 
