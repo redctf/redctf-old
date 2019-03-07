@@ -1,4 +1,4 @@
-import json, requests, docker, config
+import json, requests, config
 
 
 
@@ -6,7 +6,6 @@ class portainer:
     def __init__(self):
         self.portainerURL = 'http://red-ctf.woodnbottle.com:9000/api'
         self.apiKey = config.apiKey
-        self.util = docker.client.api.service.utils
 
     """
     this wil receive a request from the API and assign the requesting user a cookie value.
@@ -76,15 +75,13 @@ class portainer:
 
     def updateDockerServiceByID(self, endpointID, serviceID, replicas):
         """
-        Update Docker Services from Portainer API reverse proxy - need ID and previous version of service to increment version number
+        Update Docker Services from Portainer API reverse proxy - need ID and current version of service, and number of replicas to set.
         """
         # first need to get the current service to find its version, and then do updates.
-        serviceSpecObject = self.getDockerServicesByID(endpointID, serviceID).text
-        version = json.loads(serviceSpecObject)['Version']['Index']
-        name = json.loads(serviceSpecObject)['Spec']['Name']
-        image = json.loads(serviceSpecObject)['Spec']['TaskTemplate']['ContainerSpec']['Image']
-        replicas2 = int(replicas)
-        replicas = json.loads(serviceSpecObject)['Spec']['Mode']['Replicated']['Replicas']
+        serviceObject = json.loads(self.getDockerServicesByID(endpointID, serviceID).text)
+        serviceSpecObject = serviceObject.get('Spec', {})
+        version = serviceObject.get('Version', {}).get('Index', {})
+        serviceSpecObject['Mode']['Replicated']['Replicas'] = int(replicas)
 
         # set api endpoint
         endpoint = ('/endpoints/{0}/docker/services/{1}/update').format(endpointID, serviceID)
@@ -92,10 +89,44 @@ class portainer:
         # create request
         r_url = self.portainerURL + endpoint
         r_headers = {'Authorization': self.apiKey}
-        r_params = {'version': str(version)}
-        r_data = json.dumps({"Name": name, "TaskTemplate": {"ContainerSpec": {"Image": image}},  "Mode": {"Replicated": {"Replicas": replicas2}}})
+        r_params = {'version': version}
+        r_data = json.dumps(serviceSpecObject)
 
         # send request
         r = requests.post(r_url, headers=r_headers, params=r_params, data=r_data)
+
+        return r
+
+    def increaseDockerServiceReplicaCountBy1(self, endpointID, serviceID):
+        """
+        Update a service to have one more replica.
+        """
+        # get current number of replicas for the service
+        serviceSpecObject = self.getDockerServicesByID(endpointID, serviceID).text
+        replicas = json.loads(serviceSpecObject).get('Spec', {}).get('Mode', {}).get('Replicated', {}).get('Replicas', {}) # ['Spec']['Mode']['Replicated']['Replicas']
+
+        # call the update and pass n +1 replica count in.
+        r = self.updateDockerServiceByID(endpointID, serviceID, replicas + 1)
+
+
+
+        return r
+
+    def getRecentlyCreatedContainers(self, endpointID, limit, label=None):
+        """
+        Get newly created container. Label of swarm service name is exact match. returns container list, can be used to find container objects.
+        """
+        # set api endpoint
+        endpoint = ('/endpoints/{0}/docker/containers/json').format(endpointID)
+        # create request
+        r_url = self.portainerURL + endpoint
+        r_headers = {'Authorization': self.apiKey}
+        r_params = {'limit': int(limit)}
+        if label is None:
+            print ('no filter applied for label')
+        else:
+            r_params["filters"] = json.dumps({"label": [label]})
+        # send request
+        r = requests.get(r_url, headers=r_headers, params=r_params)
 
         return r

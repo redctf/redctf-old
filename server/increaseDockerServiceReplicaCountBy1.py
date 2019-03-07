@@ -11,13 +11,13 @@ pt = portainer()
 parser = argparse.ArgumentParser(description='Get Docker Service object by ID.')
 parser.add_argument('endpointID', metavar='Portainer endpoint ID', help='The Portainer endpoint ID to get from.')
 parser.add_argument('serviceID', metavar='Docker Service ID', help='The Docker Service ID to get.')
-parser.add_argument('replicas', metavar='Docker Service Replica count', help='The Docker Service number of replicas.')
 args = parser.parse_args()
 
 # execute update and report any exceptions
 try:
-    r = pt.updateDockerServiceByID(args.endpointID, args.serviceID, args.replicas)
-    print r.text
+    r = pt.increaseDockerServiceReplicaCountBy1(args.endpointID, args.serviceID)
+    print r.request.body
+
 
 except Exception as ex:
     print('error: {0}').format(ex)

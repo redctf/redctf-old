@@ -10,18 +10,20 @@ pt = portainer()
 # program arguments
 parser = argparse.ArgumentParser(description='Get Docker Service object by ID.')
 parser.add_argument('endpointID', metavar='Portainer endpoint ID', help='The Portainer endpoint ID to get from.')
-parser.add_argument('serviceID', metavar='Docker Service ID', help='The Docker Service ID to get.')
-parser.add_argument('replicas', metavar='Docker Service Replica count', help='The Docker Service number of replicas.')
+parser.add_argument('--limit', metavar='Limit results', help='Return this number of most recently created containers, including non-running ones.')
+parser.add_argument('--label', metavar='Service Name Label', help='Service Name Label exact match')
+
+
 args = parser.parse_args()
 
 # execute update and report any exceptions
 try:
-    r = pt.updateDockerServiceByID(args.endpointID, args.serviceID, args.replicas)
-    print r.text
+    r = pt.getRecentlyCreatedContainers(args.endpointID, args.limit, args.label)
+    r_dict = json.loads(r.text)[0]
+    print json.dumps(r_dict, indent=2, sort_keys=True)
+    IPv4 = r_dict.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
+    print ("IPv4 Address of new Container: " + IPv4)
+
 
 except Exception as ex:
     print('error: {0}').format(ex)
-
-
-
-
