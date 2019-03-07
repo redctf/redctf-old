@@ -19,11 +19,15 @@ args = parser.parse_args()
 # execute update and report any exceptions
 try:
     r = pt.getRecentlyCreatedContainers(args.endpointID, args.limit, args.label)
-    r_dict = json.loads(r.text)[0]
-    print json.dumps(r_dict, indent=2, sort_keys=True)
-    IPv4 = r_dict.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
-    print ("IPv4 Address of new Container: " + IPv4)
+    i = 0
 
+    for container in r:  # error when reaching end of list.
+        r_dict = json.loads(r.text)[i]
+        print json.dumps(r_dict, indent=2, sort_keys=True)
+        IPv4 = r_dict.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
+        print ("IPv4 address of container: " + IPv4)
+        i += 1
+    #print ('total number of containers: ' + i)
 
 except Exception as ex:
     print('error: {0}').format(ex)

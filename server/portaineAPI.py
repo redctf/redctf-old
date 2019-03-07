@@ -112,7 +112,7 @@ class portainer:
 
         return r
 
-    def getRecentlyCreatedContainers(self, endpointID, limit, label=None):
+    def getRecentlyCreatedContainers(self, endpointID, limit=None, label=None):
         """
         Get newly created container. Label of swarm service name is exact match. returns container list, can be used to find container objects.
         """
@@ -121,11 +121,15 @@ class portainer:
         # create request
         r_url = self.portainerURL + endpoint
         r_headers = {'Authorization': self.apiKey}
-        r_params = {'limit': int(limit)}
-        if label is None:
-            print ('no filter applied for label')
-        else:
+        r_params = {}
+        if limit is not None:
+            r_params['limit'] = {'limit': int(limit)}
+        if label is not None:
             r_params["filters"] = json.dumps({"label": [label]})
+        else:
+            print ('no label or limit specified. gathering all running containers')
+
+
         # send request
         r = requests.get(r_url, headers=r_headers, params=r_params)
 
