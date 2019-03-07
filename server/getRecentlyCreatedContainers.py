@@ -1,5 +1,5 @@
 from portaineAPI import *
-import argparse
+import argparse, itertools
 
 # this wil receive a request from the API and assign the requesting user a cookie value.
 # It will also spin up a new container to replace the one in reserve
@@ -21,13 +21,14 @@ try:
     r = pt.getRecentlyCreatedContainers(args.endpointID, args.limit, args.label)
     i = 0
 
-    for container in r:  # error when reaching end of list.
-        r_dict = json.loads(r.text)[i]
-        print json.dumps(r_dict, indent=2, sort_keys=True)
-        IPv4 = r_dict.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
+    r_list = json.loads(r.text)
+    for container in r_list:  # error when reaching end of list.
+        print json.dumps(container, indent=2, sort_keys=True)
+        IPv4 = container.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
+
         print ("IPv4 address of container: " + IPv4)
         i += 1
-    #print ('total number of containers: ' + i)
+    print ('total number of containers: ' + str(i))
 
 except Exception as ex:
     print('error: {0}').format(ex)
