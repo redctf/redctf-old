@@ -16,7 +16,7 @@ args = parser.parse_args()
 # execute update and report any exceptions
 try:
     r = pt.increaseDockerServiceReplicaCountBy1(args.endpointID, args.serviceID)
-    print r.request.body
+    print r
 
 
 except Exception as ex:

@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 # execute update and report any exceptions
 try:
-    r = pt.stopContainerByID(args.endpointID)
+    r = pt.pruneStoppedContainers(args.endpointID)
     print r.request.body
 
 
