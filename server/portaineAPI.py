@@ -108,7 +108,17 @@ class portainer:
         # call the update and pass n +1 replica count in.
         r = self.updateDockerServiceByID(endpointID, serviceID, replicas + 1)
 
+    def decreaseDockerServiceReplicaCountBy1(self, endpointID, serviceID):
+        """
+        Update a service to have one more replica.
+        """
+        # get current number of replicas for the service
+        serviceSpecObject = self.getDockerServicesByID(endpointID, serviceID).text
+        replicas = json.loads(serviceSpecObject).get('Spec', {}).get('Mode', {}).get('Replicated', {}).get(
+            'Replicas', {})  # ['Spec']['Mode']['Replicated']['Replicas']
 
+        # call the update and pass n -1 replica count in.
+        r = self.updateDockerServiceByID(endpointID, serviceID, replicas - 1)
 
         return r
 
@@ -134,3 +144,4 @@ class portainer:
         r = requests.get(r_url, headers=r_headers, params=r_params)
 
         return r
+

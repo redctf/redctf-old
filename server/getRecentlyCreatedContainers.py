@@ -23,12 +23,14 @@ try:
     r_list = json.loads(r.text)
 
     for container in r_list:
+        # parse container name, id, and IP address out of request.
         IPv4 = container.get("NetworkSettings", {}).get("Networks", {}).get("ingress", {}).get("IPAMConfig", {}).get("IPv4Address", {})
         name = container.get("Names", {})[0]
         id = container.get("Id")
+
         print ("container name: \"{0}\", container ID: {1}, IPv4 address: {2} ".format(name, id, IPv4))
-        #print ("IPv4 address of container: {0}".format(IPv4))
         i += 1
+
     print ('total number of containers: ' + str(i))
 
 except Exception as ex:
