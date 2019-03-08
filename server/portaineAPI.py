@@ -145,3 +145,21 @@ class portainer:
 
         return r
 
+    def stopContainerByID(self, endpointID, containerID, scaleDown=None,serviceID=None):
+        """
+        Stops a container by its ID, will scale down service if scaleDown is True. 15 seconds to scale down - it will recreate container otherwise.
+        """
+        # set api endpoint
+        endpoint = ('/endpoints/{0}/docker/containers/{1}/stop').format(endpointID, containerID)
+
+        # create request
+        r_url = self.portainerURL + endpoint
+        r_headers = {'Authorization': self.apiKey}
+
+        # send request
+        r = requests.post(r_url, headers=r_headers)
+
+        if scaleDown:
+            self.decreaseDockerServiceReplicaCountBy1(endpointID, serviceID)
+
+        return r
