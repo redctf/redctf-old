@@ -163,3 +163,19 @@ class portainer:
             self.decreaseDockerServiceReplicaCountBy1(endpointID, serviceID)
 
         return r
+
+    def pruneStoppedContainers(self, endpointID):
+        """
+        prune Docker containers that are stopped.
+        """
+        # set api endpoint
+        endpoint = ('/endpoints/{0}/docker/containers/prune'.format(endpointID))
+
+        # create request
+        r_url = self.portainerURL + endpoint
+        r_headers = {'Authorization': self.apiKey}
+
+        # send request
+        r = requests.post(r_url, headers=r_headers)
+        return r
+
