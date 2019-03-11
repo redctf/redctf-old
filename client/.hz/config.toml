@@ -5,7 +5,7 @@
 # 'bind' controls which local interfaces will be listened on
 # 'port' controls which port will be listened on
 #------------------------------------------------------------------------------
-bind = [ "localhost" ]
+bind = [ "0.0.0.0" ]
 port = 8181
 
 
@@ -49,7 +49,7 @@ project_name = "redctf"
 # 'start_rethinkdb' will run an internal RethinkDB instance
 # 'rdb_timeout' is the number of seconds to wait when connecting to RethinkDB
 #------------------------------------------------------------------------------
-connect = "localhost:28015"
+connect = "rethinkdb:28015"
 start_rethinkdb = false
 rdb_timeout = 30
 
@@ -58,7 +58,7 @@ rdb_timeout = 30
 # Debug Options
 # 'debug' enables debug log statements
 #------------------------------------------------------------------------------
-# debug = false
+#  debug = true
 
 
 ###############################################################################
