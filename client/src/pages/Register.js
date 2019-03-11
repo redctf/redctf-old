@@ -25,9 +25,17 @@ export default class Register extends Component {
   }
 
   onSubmit(event) {
+    let mutation;
+    if (this.state.regNewTeam) {
+      mutation  = this.registerTeam();
+    } else {
+      mutation  = this.joinTeam();
+    }
+
+    console.log('mutation', mutation);
+
     const port = 8000;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-    const mutation = this.registerUser();
     axios.post('/graphql/',
       {
         query: mutation,
@@ -41,17 +49,17 @@ export default class Register extends Component {
       console.log(response);
       const res = response.data;
 
-      if (res.data.createUser !== null) {
-        console.log('success' + res.data.createUser.status);
+      if (res.data.createTeam !== null) {
+        console.log('success', res.data.createTeam.status);
         this.setState({
           isRegistrationSuccess: true,
-          successMessage: res.data.createUser.status
+          successMessage: res.data.createTeam.status
         }, () => {
           setTimeout(() => {
             this.props.history.push('/login');
           }, 200);
         });
-      } else {
+      } else if(res.errors) {
         this.setState({
           isRegistrationError: true,
           errorMessage: res.errors[0].message
@@ -111,8 +119,11 @@ export default class Register extends Component {
     });
   }
 
-  registerUser() {
-    return `mutation { createUser ( username: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}", hidden: "false") { status } }`;
+  registerTeam() {
+    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+  }
+  joinTeam() {
+    return `mutation { joinTeam ( token: "${this.state.teamId}", "username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
   }
 
   handleTeamNameChanged = (e) => {

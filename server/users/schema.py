@@ -9,14 +9,14 @@ from teams.models import Team
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
 from django.contrib.auth import authenticate, login, logout
 
-# ======================== #
-# Temp fix for stage 1 dev #
-# ======================== # 
-import uuid
-from teams.models import Team
-# ======================== #
-# Temp fix for stage 1 dev #
-# ======================== #
+# # ======================== #
+# # Temp fix for stage 1 dev #
+# # ======================== # 
+# import uuid
+# from teams.models import Team
+# # ======================== #
+# # Temp fix for stage 1 dev #
+# # ======================== #
 
 
 class Me(DjangoObjectType):
@@ -28,14 +28,16 @@ class Me(DjangoObjectType):
 
 class CreateUser(graphene.Mutation):
     status = graphene.String()
+    user = graphene.Field(Me) 
 
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
         hidden = graphene.String(required=True)
+        token = graphene.String(required=True)
 
-    def mutate(self, info, username, password, email, hidden):
+    def mutate(self, info, username, password, email, hidden, token):
         # Validate username, password, and email
         validate_username(username) 
         validate_username_unique(username) 
@@ -80,7 +82,7 @@ class CreateUser(graphene.Mutation):
         # # Temp fix for stage 1 dev #
         # # ======================== # 
 
-        return CreateUser(status='User account created')
+        return CreateUser(status='User account created', user=user)
 
 class ChangePassword(graphene.Mutation):
     status = graphene.String()
@@ -109,12 +111,18 @@ class LogIn(graphene.Mutation):
         password = graphene.String(required=True)
 
     def mutate(self, info, username, password):
+
+        print('\n\ngets here\n\n')
+
         # Validate username and password
         validate_username(username)
         validate_password(password)
 
+        print (username)
+        print (password)
         user = authenticate(username=username, password=password)
 
+        print (user)
         if not user:
             raise Exception('Invalid username or password')
 

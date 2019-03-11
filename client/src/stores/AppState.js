@@ -57,6 +57,7 @@ export default class AppState {
   }
 
   @action authenticate() {
+    console.log('gets to authenticate in AppState')
     return new Promise((resolve, reject) => {
       this.authenticating = true;
       setTimeout(() => {
