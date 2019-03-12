@@ -2,7 +2,7 @@ version: '3'
 
 services:
   rethinkdb:
-    image: rethinkdb
+    image: rethinkdb:2.3.6
     container_name: rethinkdb
     ports:
       - "28015:28015"
@@ -15,8 +15,6 @@ services:
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
     volumes:
       - ./client:/usr/app
-    links:
-      - rethinkdb
     ports:
       - "8181:8181"
     depends_on:
