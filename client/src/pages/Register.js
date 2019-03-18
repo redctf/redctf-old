@@ -49,21 +49,45 @@ export default class Register extends Component {
       console.log(response);
       const res = response.data;
 
+      console.log('res', res);
+
       if (res.data.createTeam !== null) {
         console.log('success', res.data.createTeam.status);
-        this.setState({
-          isRegistrationSuccess: true,
-          successMessage: res.data.createTeam.status
-        }, () => {
-          setTimeout(() => {
-            this.props.history.push('/login');
-          }, 200);
-        });
-      } else if(res.errors) {
-        this.setState({
-          isRegistrationError: true,
-          errorMessage: res.errors[0].message
-        });
+
+        mutation = this.registerUser();
+
+        const port = 8000;
+        axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+        axios.post('/graphql/',
+          {
+            query: mutation,
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          const res = response.data;
+
+          if (res.data.createUser !== null) {
+            console.log('success', res.data.createUser.status);
+            this.setState({
+              isRegistrationSuccess: true,
+              successMessage: res.data.createUser.status
+            }, () => {
+              setTimeout(() => {
+                this.props.history.push('/login');
+              }, 200);
+            });
+          } else if(res.errors) {
+            this.setState({
+              isRegistrationError: true,
+              errorMessage: res.errors[0].message
+            });
+          }
+        })
       }
     })
   }
@@ -121,6 +145,9 @@ export default class Register extends Component {
 
   registerTeam() {
     return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+  }
+  registerUser() {
+    return `mutation { createUser ( username: "${this.state.username}", team: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}", hidden: "${this.state.hidden}", token: "${this.state.token}") { status } }`;
   }
   joinTeam() {
     return `mutation { joinTeam ( token: "${this.state.teamId}", "username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
