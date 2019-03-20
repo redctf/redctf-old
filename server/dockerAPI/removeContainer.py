@@ -9,7 +9,6 @@ parser.add_argument('containerName', metavar='container name', help='The contain
 
 args = parser.parse_args()
 
-
 try:
 	r = d.removeContainer(args.containerName)
 	print(r)

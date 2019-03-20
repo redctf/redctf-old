@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 try:
 	r = d.createContainer(args.user, args.imageName, args.ports, args.pathPrefix)
-	print(r)
+	print(r.attrs)
 
 except Exception as ex:
 	print(ex)
