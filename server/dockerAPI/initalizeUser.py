@@ -9,13 +9,15 @@ parser.add_argument('user', metavar='username', help='The username to initialize
 args = parser.parse_args()
 
 username = args.user
-d.createTraefikContainer()
+# d.createTraefikContainer()
 try:
 	r = d.createNetwork(username)
-	print(r)
-	net = d.getNetworkObject(username)
-	print(net.attrs)
-	# connect traefik container to newly create user network
+	print("created network {0}".format(r))
+	# net = d.getNetworkObject(username)
+	# if net is False:
+	# 	print("network doesnt exist")
+	# print(net.attrs)
+	# connect traefik container to newly created user network
 	connect = d.connectNetwork(username, 'traefik')
 	print(connect)
 except Exception as ex:

@@ -18,26 +18,26 @@ class dockerAPI:
 
         return r
 
-    def initializeUser(self, username):
-        """
-        individual traefik contianer per user
-        """
-        # netParams = ("check_duplicate=True, driver='overlay', labels={'user': {0} scope='local'".format(username))
-        containerName = ("traefik")
-
-        try:
-            net = self.createNetwork(username)
-            print(net)
-        except Exception as ex:
-            print(ex)
-
-        try:
-            cont = self.createTraefikContainer(username)
-            print(cont)
-        except Exception as ex:
-            print(ex)
-
-        return net
+    # def initializeUser(self, username):
+    #     """
+    #     individual traefik contianer per user
+    #     """
+    #     # netParams = ("check_duplicate=True, driver='overlay', labels={'user': {0} scope='local'".format(username))
+    #     containerName = ("traefik")
+    #
+    #     try:
+    #         net = self.createNetwork(username)
+    #         print(net)
+    #     except Exception as ex:
+    #         print(ex)
+    #
+    #     try:
+    #         cont = self.createTraefikContainer(username)
+    #         print(cont)
+    #     except Exception as ex:
+    #         print(ex)
+    #
+    #     return net
 
     def createNetwork(self, username):
 
@@ -45,10 +45,11 @@ class dockerAPI:
         net = self.checkIfNetworkExists(username)
         if net is False:
             # create network before creating container
+            print("network {0} not found, creating {0} network".format(username))
             try:
                 r = self.client.networks.create(name=username, driver="overlay", labels={"user": username}, attachable=True)
             except Exception as ex:
-                print(ex)
+                print("createNetwork() {0}".format(ex))
         else:
             print("network {0} already exists".format(username))
             return net
@@ -57,17 +58,26 @@ class dockerAPI:
 
     def getNetworkObject(self, networkName):
 
-        networkObject = self.client.networks.get(networkName)
+        # check if network exists
+        net = self.checkIfNetworkExists(networkName)
+        if net is False:
+            return net
+        else:
+            try:
+                networkObject = self.client.networks.get(networkName)
+            except Exception as ex:
+                print("getnetworkobject() {0}".format(ex))
 
-        return networkObject
+            return networkObject
 
     def connectNetwork(self, networkName, containerName):
 
         net = self.getNetworkObject(networkName)
         try:
-            r = net.connect(containerName)
+            net.connect(containerName)
+            print("network connected")
         except Exception as ex:
-            print(ex)
+            print("connectNetwork() {0}".format(ex))
             return False
         return True
 
@@ -81,6 +91,7 @@ class dockerAPI:
         net = self.checkIfNetworkExists('traefik')
         if net is False:
             # create network before creating container
+            print("network traefik not found")
             try:
                 self.createNetwork('traefik')
             except Exception as ex:
@@ -128,7 +139,7 @@ class dockerAPI:
         # doesn't take commands yet.
         r_containerName = ("{0}_{1}".format(name[1], username))
         r_ports = {"{0}/tcp".format(port): None}
-        r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0};".format(pathPrefix), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
+        r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
         r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
 
         return r
@@ -222,21 +233,19 @@ class dockerAPI:
     def checkIfContainerExists(self, containerName):
         # check to see if an image already exists or needs to be pulled.
         try:
-            r = self.client.containers.get(containerName)
-            print(r)
+            self.client.containers.get(containerName)
+            return True
+
         except Exception as ex:
             print(ex)
             return False
-
-        return True
 
     def checkIfNetworkExists(self, networkName):
         # check to see if an image already exists or needs to be pulled.
         try:
-            r = self.client.networks.get(networkName)
-            print(r)
+            self.client.networks.get(networkName)
+            return True
         except Exception as ex:
-            print(ex)
+            # print("checkIfNetworkExists() {0}".format(ex))
             return False
 
-        return True
