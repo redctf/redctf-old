@@ -46,15 +46,11 @@ export default class Register extends Component {
       }
     )
     .then((response) => {
-      console.log(response);
       const res = response.data;
 
-      console.log('res', res);
-
       if (res.data.createTeam !== null) {
-        console.log('success', res.data.createTeam.status);
-
-        mutation = this.registerUser();
+        let teamId = parseInt(res.data.createTeam.team.id);
+        mutation = this.registerUser(teamId, 10);
 
         const port = 8000;
         axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
@@ -144,10 +140,10 @@ export default class Register extends Component {
   }
 
   registerTeam() {
-    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status, token, team { team } } }`;
   }
-  registerUser() {
-    return `mutation { createUser ( username: "${this.state.username}", team: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}", hidden: "${this.state.hidden}", token: "${this.state.token}") { status } }`;
+  registerUser(teamId) {
+    return `mutation { createUser ( username: "${this.state.username}", teamId: "${teamId}", email: "${this.state.email}", password: "${this.state.password}", hidden: "${this.state.hidden}") { status } }`;
   }
   joinTeam() {
     return `mutation { joinTeam ( token: "${this.state.teamId}", "username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;

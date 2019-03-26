@@ -17,6 +17,7 @@ class TeamType(DjangoObjectType):
 
 class CreateTeam(graphene.Mutation):
     status = graphene.String()
+    token = graphene.String()
     team = graphene.Field(TeamType) 
 
     class Arguments:
@@ -46,7 +47,7 @@ class CreateTeam(graphene.Mutation):
         user = CreateUser(mutation)
 
         # Return Success
-        return CreateTeam(status='Created Team and User Successfully', team=team)
+        return CreateTeam(status=('Created Team and User Successfully' + token), token=token, team=team)
 
 
 class JoinTeam(graphene.Mutation):
