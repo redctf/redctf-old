@@ -1,6 +1,4 @@
 import docker as d
-import json
-
 
 class dockerAPI:
 
@@ -9,38 +7,32 @@ class dockerAPI:
         self.client = d.from_env()
 
     def version(self):
+        """
+        :return: version of Docker client running (host set by environment variable)
+        :from: https://docker-py.readthedocs.io/en/stable/client.html
+        """
         r = self.client.version()
 
         return r
 
     def listContainers(self, all=None):
+        """
+        List running containers on docker host.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param all: bool, set to true to return all containers
+        :return: list of container objects
+        """
         r = self.client.containers.list(all)
 
         return r
 
-    # def initializeUser(self, username):
-    #     """
-    #     individual traefik contianer per user
-    #     """
-    #     # netParams = ("check_duplicate=True, driver='overlay', labels={'user': {0} scope='local'".format(username))
-    #     containerName = ("traefik")
-    #
-    #     try:
-    #         net = self.createNetwork(username)
-    #         print(net)
-    #     except Exception as ex:
-    #         print(ex)
-    #
-    #     try:
-    #         cont = self.createTraefikContainer(username)
-    #         print(cont)
-    #     except Exception as ex:
-    #         print(ex)
-    #
-    #     return net
-
     def createNetwork(self, username):
-
+        """
+        Create a network based upon username.
+        :from: https://docker-py.readthedocs.io/en/stable/networks.html
+        :param username: string, username is used for network name
+        :return: network object
+        """
         # check if network exists
         net = self.checkIfNetworkExists(username)
         if net is False:
@@ -57,7 +49,12 @@ class dockerAPI:
         return r
 
     def getNetworkObject(self, networkName):
-
+        """
+        Get a network object by its name.
+        :from: https://docker-py.readthedocs.io/en/stable/networks.html
+        :param networkName: string, name of network to return
+        :return: network object
+        """
         # check if network exists
         net = self.checkIfNetworkExists(networkName)
         if net is False:
@@ -81,11 +78,12 @@ class dockerAPI:
             return False
         return True
 
-    def createTraefikContainer(self, username=None):
+    def createTraefikContainer(self):
         """
-        must create a traefik.toml on the server you are creating this on to expose the API/dashboard.
+        Creates a traefik container used for reverse proxy of users to individual containers. Must create a traefik.toml on the server you are creating this on to expose the API/dashboard.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :return: container object
         """
-        # r =self.client.containers.create("traefik:latest", "docker.watch", name="traefik_{0}".format(username), network='traefik', ports={"80/tcp": "80", "9090/tcp": "9090"}, volumes={"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}})
 
         # check if network exists
         net = self.checkIfNetworkExists('traefik')
@@ -121,6 +119,15 @@ class dockerAPI:
         return r
 
     def createContainer(self, username, imageName, port, pathPrefix=None):
+        """
+        Create a container for a user.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param username: string, contributes to container name
+        :param imageName: string, image name to use for container
+        :param port: dict, port number(s) to use on container
+        :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
+        :return: container object
+        """
 
         # check if image exists already
         image = self.checkIfImageExists(imageName)
@@ -145,7 +152,12 @@ class dockerAPI:
         return r
 
     def startContainer(self, containerName):
-
+        """
+        Start a container by name.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param containerName: string, container name to start
+        :return: docker host response
+        """
         # start the container in the created state
         try:
             container = self.client.containers.get(containerName)
@@ -158,7 +170,12 @@ class dockerAPI:
         return r
 
     def getContainerObject(self, containerName):
-
+        """
+        Get a container object by its name.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param containerName: string, container name
+        :return: container object
+        """
         try:
             containerObject = self.client.containers.get(containerName)
             print(containerObject)
@@ -170,7 +187,12 @@ class dockerAPI:
         return containerObject
 
     def stopContainer(self, containerObject):
-
+        """
+        Stop a container.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param containerObject: container object, used in conjunction with getContainerObject()
+        :return: bool with status
+        """
         try:
             containerObject.stop()
 
@@ -181,6 +203,12 @@ class dockerAPI:
         return True
 
     def removeContainer(self, containerName):
+        """
+        Remove a container by name.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param containerName: string, container name to remove
+        :return: docker host response
+        """
         # get the container object
         container = self.getContainerObject(containerName)
 
@@ -198,7 +226,11 @@ class dockerAPI:
         return r
 
     def pruneContainers(self):
-
+        """
+        Prune (remove) all stopped containers.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :return: bool
+        """
         try:
             self.client.containers.prune()
 
@@ -208,11 +240,15 @@ class dockerAPI:
 
         return True
 
-    def pullImage(self, containerName):
-        # repo = self.client.images.list(all=True)
-        # print(repo)
+    def pullImage(self, imageName):
+        """
+        Pull a image to be used in a container.
+        :from: https://docker-py.readthedocs.io/en/stable/images.html
+        :param imageName: string, image name
+        :return: docker host response
+        """
         try:
-            r = self.client.images.pull("{0}:latest".format(containerName))
+            r = self.client.images.pull("{0}:latest".format(imageName))
             print(r)
         except Exception as ex:
             print(ex)
@@ -220,7 +256,13 @@ class dockerAPI:
         return r
 
     def checkIfImageExists(self, imageName):
-        # check to see if an image already exists or needs to be pulled.
+        """
+        check to see if an image already exists or needs to be pulled.
+        :from: https://docker-py.readthedocs.io/en/stable/images.html
+        :param imageName: string, image name to check
+        :return: bool
+        """
+
         try:
             r = self.client.images.get(imageName)
             print(r)
@@ -231,7 +273,12 @@ class dockerAPI:
         return True
 
     def checkIfContainerExists(self, containerName):
-        # check to see if an image already exists or needs to be pulled.
+        """
+        Check to see if a con`tainer already exists.
+        :from: https://docker-py.readthedocs.io/en/stable/containers.html
+        :param containerName: string, container name to check
+        :return: bool
+        """
         try:
             self.client.containers.get(containerName)
             return True
@@ -241,7 +288,12 @@ class dockerAPI:
             return False
 
     def checkIfNetworkExists(self, networkName):
-        # check to see if an image already exists or needs to be pulled.
+        """
+        Check to see if a container already exists.
+        :from: https://docker-py.readthedocs.io/en/stable/networks.html
+        :param containerName: string, container name to check
+        :return: bool
+        """
         try:
             self.client.networks.get(networkName)
             return True

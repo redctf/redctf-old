@@ -15,12 +15,11 @@ pt = portainer()
 
 # args = parser.parse_args()
 
-
 # execute update and report any exceptions
 try:
     r = pt.getDockerServices()
     r_dict = json.loads(r.text)
-    print json.dumps(r_dict, indent=2, sort_keys=True)
+    print(json.dumps(r_dict, indent=2, sort_keys=True))
 
 except Exception as ex:
     print('error: {0}').format(ex)
