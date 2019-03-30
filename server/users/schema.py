@@ -22,9 +22,12 @@ from django.contrib.auth import authenticate, login, logout
 class Me(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ('id', 'username', 'is_superuser')
-        filter_fields = ('id', 'username', 'is_superuser')
+        #only_fields = ('id', 'username', 'is_superuser')
+        #filter_fields = ('id', 'username', 'is_superuser')
 
+class TeamType(DjangoObjectType):
+    class Meta:
+        model = Team
 
 class CreateUser(graphene.Mutation):
     status = graphene.String()
@@ -32,12 +35,12 @@ class CreateUser(graphene.Mutation):
 
     class Arguments:
         username = graphene.String(required=True)
-        teamId = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
         hidden = graphene.String(required=True)
+        token = graphene.String(required=True)
 
-    def mutate(self, info, username, teamId, password, email, hidden):
+    def mutate(self, info, username, password, email, hidden, token):
         # Validate username, password, and email
         validate_username(username) 
         validate_username_unique(username) 
@@ -58,21 +61,10 @@ class CreateUser(graphene.Mutation):
         # # Temp fix for stage 1 dev #
         # # ======================== # 
 
-
-
-        ##### Use teamId to assign team here.
-
-        team = teamId
-        #team = Team.objects.filter(id__iexact=int(teamId))
-
-        # print(team.values())
-
-
-
         user = User(
             username=username,
             email=email,
-            team=team,
+            team = Team.objects.get(token=token),
             hidden=hidden
         )
         user.set_password(password)

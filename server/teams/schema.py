@@ -5,7 +5,7 @@ from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 import uuid
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from users.schema import CreateUser
+from users.schema import *
 from users.models import User
 from teams.models import Team
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
@@ -41,13 +41,8 @@ class CreateTeam(graphene.Mutation):
         team = Team(name=teamname, token=token, hidden=hidden)
         team.save()
 
-        # Create User and Assign to Team
-        # Make mutation
-        mutation = 'createUser( username:' + username +', email:' + email + ', password:' + password + ', hidden:' + hidden + ', token' + token + ')'
-        user = CreateUser(mutation)
-
         # Return Success
-        return CreateTeam(status=('Created Team and User Successfully' + token), token=token, team=team)
+        return CreateTeam(status=('Created Team Successfully'), token=token)
 
 
 class JoinTeam(graphene.Mutation):
