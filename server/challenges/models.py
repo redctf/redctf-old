@@ -16,4 +16,9 @@ class Challenge(models.Model):
 class ChallengeAdmin(admin.ModelAdmin):
   #This inner class indicates to the admin interface how to display a post
   #See the Django documentation for more information
-  list_display = ('category', 'points', 'flag')
+  list_display = ('get_category', 'points', 'flag')
+
+  def get_category(self, obj):
+    return obj.category.name
+  get_category.short_description = 'Category'
+  get_category.admin_order_field = 'category__name'
