@@ -1,4 +1,4 @@
 from django.contrib import admin
-from challenges.models import Challenge
+from challenges.models import *
 
-admin.site.register(Challenge)
+admin.site.register(Challenge, ChallengeAdmin)
