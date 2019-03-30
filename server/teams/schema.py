@@ -8,8 +8,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from users.schema import *
 from users.models import User
 from teams.models import Team
-from users.validators import validate_user_is_admin, validate_user_is_authenticated
-from teams.validators import validate_teamname, validate_token, validate_teamname_unique 
+from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_admin, validate_user_is_authenticated
+from teams.validators import validate_teamname, validate_token, validate_teamname_unique
 
 class TeamType(DjangoObjectType):
     class Meta:
@@ -18,7 +18,7 @@ class TeamType(DjangoObjectType):
 class CreateTeam(graphene.Mutation):
     status = graphene.String()
     token = graphene.String()
-    team = graphene.Field(TeamType) 
+    team = graphene.Field(TeamType)
 
     class Arguments:
         teamname = graphene.String(required=True)
@@ -29,8 +29,15 @@ class CreateTeam(graphene.Mutation):
 
     def mutate(self, info, teamname, username, email, password, hidden):
         # Validate teamname
-        validate_teamname(teamname) 
+        validate_teamname(teamname)
         validate_teamname_unique(teamname)
+
+        # Validate username, password, and email
+        validate_username(username)
+        validate_username_unique(username)
+        validate_email(email)
+        validate_email_unique(email)
+        validate_password(password)
 
         # Create unique team token
         token = str(uuid.uuid4())
@@ -63,16 +70,16 @@ class JoinTeam(graphene.Mutation):
 
         if not Team.objects.filter(token__iexact=token).exists():
             raise Exception('Invalid team token')
-        
+
         team = Team.objects.get(token=token)
         user.team = team
         user.save()
 
         return JoinTeam(status='Join team successful')
-    
+
 
 class Query(object):
-    team = graphene.Field(TeamType) 
+    team = graphene.Field(TeamType)
 
     def resolve_team(self, info):
         user = info.context.user
