@@ -10,10 +10,10 @@ export default class Register extends Component {
     super(props);
     this.state = {
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
-      teamId: '',
+      token: '',
       password: '',
       passwordConfirmed: '',
       email: '',
@@ -31,8 +31,6 @@ export default class Register extends Component {
     } else {
       mutation  = this.joinTeam();
     }
-
-    console.log('mutation right under onSubmit', mutation);
 
     const port = 8000;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
@@ -73,7 +71,7 @@ export default class Register extends Component {
             console.log('User create success:', res.data.createUser.status);
             this.setState({
               isRegistrationSuccess: true,
-              successMessage: res.data.createUser.status
+              successMessage: 'User and Team created successfully'
             }, () => {
               setTimeout(() => {
                 this.props.history.push('/login');
@@ -102,7 +100,7 @@ export default class Register extends Component {
       regNewTeam: false,
       regJoinTeam: false,
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
       token: '',
@@ -134,7 +132,7 @@ export default class Register extends Component {
       regNewTeam: false,
       regJoinTeam: false,
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
       token: '',
@@ -231,7 +229,7 @@ export default class Register extends Component {
                   onChange={this.handleUsernameChanged}/>
                   {!this.state.username && <span className='req-input'>*</span>}
               </div>
-              {this.state.regJoinTeam && 
+              {this.state.regJoinTeam &&
                 <div className='login-inputs'>
                   <input type="text"
                     className="form-control input-req"
