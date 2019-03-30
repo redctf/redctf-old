@@ -12,4 +12,4 @@ class Category(models.Model):
 class CategoryAdmin(admin.ModelAdmin):
   #This inner class indicates to the admin interface how to display a post
   #See the Django documentation for more information
-  list_display = ('name')
+  list_display = ('name',)
