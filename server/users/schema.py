@@ -7,11 +7,12 @@ from django.utils.dateformat import format
 from users.models import User
 from teams.models import Team
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
+from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
 
 # # ======================== #
 # # Temp fix for stage 1 dev #
-# # ======================== # 
+# # ======================== #
 # import uuid
 # from teams.models import Team
 # # ======================== #
@@ -31,7 +32,7 @@ class TeamType(DjangoObjectType):
 
 class CreateUser(graphene.Mutation):
     status = graphene.String()
-    user = graphene.Field(Me) 
+    user = graphene.Field(Me)
 
     class Arguments:
         username = graphene.String(required=True)
@@ -42,15 +43,21 @@ class CreateUser(graphene.Mutation):
 
     def mutate(self, info, username, password, email, hidden, token):
         # Validate username, password, and email
-        validate_username(username) 
-        validate_username_unique(username) 
+        validate_username(username)
+        validate_username_unique(username)
         validate_email(email)
         validate_email_unique(email)
         validate_password(password)
 
+        # Validate token
+        validate_token(token)
+
+        if not Team.objects.filter(token__iexact=token).exists():
+            raise Exception('Invalid team token')
+
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
         # token = str(uuid.uuid4())
         # while Team.objects.filter(token__iexact=token).exists():
         #     token = str(uuid.uuid4())
@@ -59,7 +66,7 @@ class CreateUser(graphene.Mutation):
         # team.save()
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
 
         user = User(
             username=username,
@@ -72,7 +79,7 @@ class CreateUser(graphene.Mutation):
 
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
         # # Push the realtime data to rethinkdb
         # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         # try:
@@ -83,7 +90,7 @@ class CreateUser(graphene.Mutation):
         #     connection.close()
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
 
         return CreateUser(status='User account created', user=user)
 
@@ -132,16 +139,16 @@ class LogIn(graphene.Mutation):
         login(info.context, user)
 
         return LogIn(id=user.id, isSuperuser=user.is_superuser)
-    
+
 class LogOut(graphene.Mutation):
     status = graphene.String()
 
     def mutate(self, info):
-        logout(info.context) 
+        logout(info.context)
         return LogOut(status='Logged Out')
 
 class Query(object):
-    me = graphene.Field(Me) 
+    me = graphene.Field(Me)
 
     def resolve_me(self, info):
         user = info.context.user
