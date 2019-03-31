@@ -68,7 +68,7 @@ export default class Register extends Component {
               console.log('User create success:', res.data.createUser.status);
               this.setState({
                 isRegistrationSuccess: true,
-                successMessage: 'User and Team created successfully'
+                successMessage: 'User and team created successfully'
               }, () => {
                 setTimeout(() => {
                   this.props.history.push('/login');
@@ -111,7 +111,7 @@ export default class Register extends Component {
           console.log('User create success:', res.data.createUser.status);
           this.setState({
             isRegistrationSuccess: true,
-            successMessage: res.data.createUser.status
+            successMessage: 'User created and team joined successfully'
           }, () => {
             setTimeout(() => {
               this.props.history.push('/login');
