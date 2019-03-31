@@ -187,7 +187,7 @@ export default class Register extends Component {
     return `mutation { createUser ( username: "${this.state.username}", token: "${token}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
   }
   joinTeam() {
-    return `mutation { createUser ( username: "${this.state.username}", token: "${this.state.token}", "email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+    return `mutation { createUser ( username: "${this.state.username}", token: "${this.state.token}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
   }
 
   handleTeamNameChanged = (e) => {
@@ -268,7 +268,7 @@ export default class Register extends Component {
                   <input type="text"
                     className="form-control input-req"
                     placeholder="Token"
-                    onChange={this.handleTeamIdChanged}/>
+                    onChange={this.handleTokenChanged}/>
                   {!this.state.token && <span className='req-input'>*</span>}
                 </div>
               }
