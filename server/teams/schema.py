@@ -49,6 +49,12 @@ class CreateTeam(graphene.Mutation):
         team.save()
 
         # Push team to rethinkdb database
+        #evaluate string and set to boolean as rethinkdb expects
+        if hidden == 'True':
+            hidden = True
+        else:
+            hidden = False
+
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'name': team.name, 'points': team.points, 'hidden': hidden, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': [], 'created': format(team.created, 'U')}).run(connection)
