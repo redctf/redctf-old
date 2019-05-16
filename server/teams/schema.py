@@ -25,7 +25,7 @@ class CreateTeam(graphene.Mutation):
         username = graphene.String(required=True)
         email = graphene.String(required=True)
         password = graphene.String(required=True)
-        hidden = graphene.String(required=True)
+        hidden = graphene.Boolean(required=True)
 
     def mutate(self, info, teamname, username, email, password, hidden):
         # Validate teamname
@@ -49,11 +49,6 @@ class CreateTeam(graphene.Mutation):
         team.save()
 
         # Push team to rethinkdb database
-        #evaluate string and set to boolean as rethinkdb expects
-        if hidden == 'True':
-            hidden = True
-        else:
-            hidden = False
 
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
@@ -76,7 +71,7 @@ class JoinTeam(graphene.Mutation):
         username = graphene.String(required=True)
         email = graphene.String(required=True)
         password = graphene.String(required=True)
-        hidden = graphene.String(required=True)
+        hidden = graphene.Boolean(required=True)
 
     def mutate(self, info, token):
         # Validate username and password

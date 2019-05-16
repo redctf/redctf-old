@@ -38,7 +38,7 @@ class CreateUser(graphene.Mutation):
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
-        hidden = graphene.String(required=True)
+        hidden = graphene.Boolean(required=True)
         token = graphene.String(required=True)
 
     def mutate(self, info, username, password, email, hidden, token):

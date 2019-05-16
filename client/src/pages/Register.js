@@ -181,13 +181,13 @@ export default class Register extends Component {
   }
 
   registerTeam() {
-    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status, token } }`;
+    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status, token } }`;
   }
   registerUser(token) {
-    return `mutation { createUser ( username: "${this.state.username}", token: "${token}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+    return `mutation { createUser ( username: "${this.state.username}", token: "${token}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status } }`;
   }
   joinTeam() {
-    return `mutation { createUser ( username: "${this.state.username}", token: "${this.state.token}", email: "${this.state.email}", password: "${this.state.password}", hidden: "False") { status } }`;
+    return `mutation { createUser ( username: "${this.state.username}", token: "${this.state.token}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status } }`;
   }
 
   handleTeamNameChanged = (e) => {
