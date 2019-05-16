@@ -48,6 +48,16 @@ class CreateTeam(graphene.Mutation):
         team = Team(name=teamname, token=token, hidden=hidden)
         team.save()
 
+        # Push team to rethinkdb database
+        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        try:
+            r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'name': team.name, 'points': team.points, 'hidden': hidden, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': [], 'created': format(team.crea$
+
+        except RqlRuntimeError as e:
+            raise Exception('Error adding team to realtime database: %s' % (e))
+        finally:
+            connection.close()
+
         # Return Success
         return CreateTeam(status=('Created Team Successfully'), token=token)
 
