@@ -80,6 +80,7 @@ export default class Team extends Component {
       <div className='page posts'>
         <div className='graph-container'>
           <h2>{team.name}</h2>
+          <h3>Token:{team.token}</h3>
 
           <VictoryChart
             animate={{
