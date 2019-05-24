@@ -7,45 +7,57 @@ from django.utils.dateformat import format
 from users.models import User
 from teams.models import Team
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
+from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
 
-# ======================== #
-# Temp fix for stage 1 dev #
-# ======================== # 
-import uuid
-from teams.models import Team
-# ======================== #
-# Temp fix for stage 1 dev #
-# ======================== #
+# # ======================== #
+# # Temp fix for stage 1 dev #
+# # ======================== #
+# import uuid
+# from teams.models import Team
+# # ======================== #
+# # Temp fix for stage 1 dev #
+# # ======================== #
 
 
 class Me(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ('id', 'username', 'is_superuser')
-        filter_fields = ('id', 'username', 'is_superuser')
+        #only_fields = ('id', 'username', 'is_superuser')
+        #filter_fields = ('id', 'username', 'is_superuser')
 
+class TeamType(DjangoObjectType):
+    class Meta:
+        model = Team
 
 class CreateUser(graphene.Mutation):
     status = graphene.String()
+    user = graphene.Field(Me)
 
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
-        hidden = graphene.String(required=True)
+        hidden = graphene.Boolean(required=True)
+        token = graphene.String(required=True)
 
-    def mutate(self, info, username, password, email, hidden):
+    def mutate(self, info, username, password, email, hidden, token):
         # Validate username, password, and email
-        validate_username(username) 
-        validate_username_unique(username) 
+        validate_username(username)
+        validate_username_unique(username)
         validate_email(email)
         validate_email_unique(email)
         validate_password(password)
 
+        # Validate token
+        validate_token(token)
+
+        if not Team.objects.filter(token__iexact=token).exists():
+            raise Exception('Invalid team token')
+
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
         # token = str(uuid.uuid4())
         # while Team.objects.filter(token__iexact=token).exists():
         #     token = str(uuid.uuid4())
@@ -54,12 +66,12 @@ class CreateUser(graphene.Mutation):
         # team.save()
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
 
         user = User(
             username=username,
             email=email,
-            team=team,
+            team = Team.objects.get(token=token),
             hidden=hidden
         )
         user.set_password(password)
@@ -67,7 +79,7 @@ class CreateUser(graphene.Mutation):
 
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
         # # Push the realtime data to rethinkdb
         # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         # try:
@@ -78,9 +90,9 @@ class CreateUser(graphene.Mutation):
         #     connection.close()
         # # ======================== #
         # # Temp fix for stage 1 dev #
-        # # ======================== # 
+        # # ======================== #
 
-        return CreateUser(status='User account created')
+        return CreateUser(status='User account created', user=user)
 
 class ChangePassword(graphene.Mutation):
     status = graphene.String()
@@ -109,28 +121,34 @@ class LogIn(graphene.Mutation):
         password = graphene.String(required=True)
 
     def mutate(self, info, username, password):
+
+        print('\n\ngets here\n\n')
+
         # Validate username and password
         validate_username(username)
         validate_password(password)
 
+        print (username)
+        print (password)
         user = authenticate(username=username, password=password)
 
+        print (user)
         if not user:
             raise Exception('Invalid username or password')
 
         login(info.context, user)
 
         return LogIn(id=user.id, isSuperuser=user.is_superuser)
-    
+
 class LogOut(graphene.Mutation):
     status = graphene.String()
 
     def mutate(self, info):
-        logout(info.context) 
+        logout(info.context)
         return LogOut(status='Logged Out')
 
 class Query(object):
-    me = graphene.Field(Me) 
+    me = graphene.Field(Me)
 
     def resolve_me(self, info):
         user = info.context.user

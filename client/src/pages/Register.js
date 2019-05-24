@@ -10,10 +10,10 @@ export default class Register extends Component {
     super(props);
     this.state = {
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
-      teamId: '',
+      token: '',
       password: '',
       passwordConfirmed: '',
       email: '',
@@ -25,50 +25,119 @@ export default class Register extends Component {
   }
 
   onSubmit(event) {
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-    const mutation = this.registerUser();
-    axios.post('/graphql/',
-      {
-        query: mutation,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response);
-      const res = response.data;
+    let mutation;
+    if (this.state.regNewTeam) {
+      mutation  = this.registerTeam();
 
-      if (res.data.createUser !== null) {
-        console.log('success' + res.data.createUser.status);
-        this.setState({
-          isRegistrationSuccess: true,
-          successMessage: res.data.createUser.status
-        }, () => {
-          setTimeout(() => {
-            this.props.history.push('/login');
-          }, 200);
-        });
-      } else {
-        this.setState({
-          isRegistrationError: true,
-          errorMessage: res.errors[0].message
-        });
-      }
-    })
+      const port = 8000;
+      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      axios.post('/graphql/',
+        {
+          query: mutation,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((response) => {
+        const res = response.data;
+        console.log(response);
+
+        if (res.data.createTeam !== null) {
+          console.log('Team create success:', res.data.createTeam.status);
+          let token = res.data.createTeam.token;
+          mutation = this.registerUser(token);
+
+          const port = 8000;
+          axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+          axios.post('/graphql/',
+            {
+              query: mutation,
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            const res = response.data;
+
+            if (res.data.createUser !== null) {
+              console.log('User create success:', res.data.createUser.status);
+              this.setState({
+                isRegistrationSuccess: true,
+                successMessage: 'User and team created successfully'
+              }, () => {
+                setTimeout(() => {
+                  this.props.history.push('/login');
+                }, 3000);
+              });
+            } else if(res.errors) {
+              this.setState({
+                isRegistrationError: true,
+                errorMessage: res.errors[0].message
+              });
+            }
+          })
+        } else if(res.errors) {
+          this.setState({
+            isRegistrationError: true,
+            errorMessage: res.errors[0].message
+          });
+        }
+      })
+
+    } else {
+      mutation  = this.joinTeam();
+
+      const port = 8000;
+      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      axios.post('/graphql/',
+        {
+          query: mutation,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((response) => {
+        const res = response.data;
+        console.log(response);
+
+        if (res.data.createUser !== null) {
+          console.log('User create success:', res.data.createUser.status);
+          this.setState({
+            isRegistrationSuccess: true,
+            successMessage: 'User created and team joined successfully'
+          }, () => {
+            setTimeout(() => {
+              this.props.history.push('/login');
+            }, 3000);
+          });
+        } else if(res.errors) {
+          this.setState({
+            isRegistrationError: true,
+            errorMessage: res.errors[0].message
+          });
+        }
+      })
+    }
   }
+
+
 
   onBack(event) {
     this.setState({
       regNewTeam: false,
       regJoinTeam: false,
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
-      teamId: '',
+      token: '',
       password: '',
       passwordConfirmed: '',
       email: '',
@@ -97,10 +166,10 @@ export default class Register extends Component {
       regNewTeam: false,
       regJoinTeam: false,
       regNewTeam: false,
-      regJoinTeam: false, 
+      regJoinTeam: false,
       team: '',
       username: '',
-      teamId: '',
+      token: '',
       password: '',
       passwordConfirmed: '',
       email: '',
@@ -111,8 +180,14 @@ export default class Register extends Component {
     });
   }
 
-  registerUser() {
-    return `mutation { createUser ( username: "${this.state.team}", email: "${this.state.email}", password: "${this.state.password}", hidden: "false") { status } }`;
+  registerTeam() {
+    return `mutation { createTeam ( teamname: "${this.state.team}", username: "${this.state.username}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status, token } }`;
+  }
+  registerUser(token) {
+    return `mutation { createUser ( username: "${this.state.username}", token: "${token}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status } }`;
+  }
+  joinTeam() {
+    return `mutation { createUser ( username: "${this.state.username}", token: "${this.state.token}", email: "${this.state.email}", password: "${this.state.password}", hidden: false) { status } }`;
   }
 
   handleTeamNameChanged = (e) => {
@@ -131,10 +206,10 @@ export default class Register extends Component {
     });
   }
 
-  handleTeamIdChanged = (e) => {
+  handleTokenChanged = (e) => {
     this.setState({
-      teamId: e.currentTarget.value,
-      reqTeamId: !!e.currentTarget.value,
+      token: e.currentTarget.value,
+      reqToken: !!e.currentTarget.value,
       isRegistrationError: false
     });
   }
@@ -165,7 +240,7 @@ export default class Register extends Component {
 
   render() {
     const pwdConfirmed = (this.state.password === this.state.passwordConfirmed && this.state.password !== '') ? true : false;
-    const registrationDisabled = (pwdConfirmed && this.state.username !== '' && this.state.email !== '' && (this.state.team !== '' || this.state.teamId !== '')) ? '' : 'disabled';
+    const registrationDisabled = (pwdConfirmed && this.state.username !== '' && this.state.email !== '' && (this.state.team !== '' || this.state.token !== '')) ? '' : 'disabled';
     return (
       <div className="page login">
         <main>
@@ -188,13 +263,13 @@ export default class Register extends Component {
                   onChange={this.handleUsernameChanged}/>
                   {!this.state.username && <span className='req-input'>*</span>}
               </div>
-              {this.state.regJoinTeam && 
+              {this.state.regJoinTeam &&
                 <div className='login-inputs'>
                   <input type="text"
                     className="form-control input-req"
-                    placeholder="Team ID"
-                    onChange={this.handleTeamIdChanged}/>
-                  {!this.state.teamId && <span className='req-input'>*</span>}
+                    placeholder="Token"
+                    onChange={this.handleTokenChanged}/>
+                  {!this.state.token && <span className='req-input'>*</span>}
                 </div>
               }
               <div className='login-inputs'>

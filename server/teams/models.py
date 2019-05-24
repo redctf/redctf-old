@@ -1,5 +1,6 @@
 from django.db import models
 from challenges.models import Challenge
+from django.contrib import admin
 
 # Create your models here.
 class SolvedChallenge(models.Model):
@@ -23,3 +24,8 @@ class Team(models.Model):
     wrong_flags = models.IntegerField(default=0)
     solved = models.ManyToManyField(SolvedChallenge)
     created = models.DateTimeField(auto_now_add=True)
+
+class TeamAdmin(admin.ModelAdmin):
+    #This inner class indicates to the admin interface how to display a post
+    #See the Django documentation for more information
+    list_display = ('name', 'token')
