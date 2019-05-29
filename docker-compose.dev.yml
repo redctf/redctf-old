@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  rethinkdb:
+    image: rethinkdb:2.3.6
+    container_name: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8088:8080"
+    volumes:
+      - ./server/rethinkdb:/data
+  horizon:
+    image: rethinkdb/horizon
+    container_name: horizon
+    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
+    volumes:
+      - ./client:/usr/app
+    ports:
+      - "8181:8181"
+    depends_on:
+      - rethinkdb
+  django:
+    build: ./server/
+    container_name: django
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./server:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - RDB_HOST=rethinkdb
+      - RDB_PORT=28015
+    depends_on:
+      - horizon
+  react:
+    build:
+      context: ./client/
+      args:
+        #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
+        - hosted_at=192.168.0.41
+    container_name: react
+    command: bash -c "cd /code && yarn install && yarn start"
+    volumes:
+      - ./client:/code
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
