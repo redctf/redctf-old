@@ -140,6 +140,6 @@ GRAPHENE = {
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ORIGIN_WHITELIST = ( 'http://localhost:3000', 'http://localhost:8000', 'http://ctf.csgidev.com:8181',
-'http://ctf.csgidev.com:3000', 'http://ctf.csgidev.com:8000', 'http://10.10.10.147:3000', 'http://10.10.10.147:8181')
+'http://ctf.csgidev.com:3000', 'http://ctf.csgidev.com:8000')
 CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True

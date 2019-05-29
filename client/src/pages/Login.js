@@ -8,7 +8,7 @@ export default class Login extends Component {
 	constructor(props) {
 		super(props);
     this.state = {
-      team: '',
+      username: '',
       password: '',
       isLoginError: false,
       errorMessage: 'Error'
@@ -41,7 +41,7 @@ export default class Login extends Component {
   }
 
 	onSubmit() {
-		if (this.state.team !== '' && this.state.password !== '') {
+		if (this.state.username !== '' && this.state.password !== '') {
 			const port = 8000;
 			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
 			axios.defaults.withCredentials = true;
@@ -77,12 +77,12 @@ export default class Login extends Component {
 	}
 
 	postLogin() {
-		return `mutation { login ( username: "${this.state.team}", password: "${this.state.password}") {id isSuperuser} }`;
+		return `mutation { login ( username: "${this.state.username}", password: "${this.state.password}") {id isSuperuser} }`;
 	}
 
-	handleTeamNameChanged = (e) => {
+	handleUsernameChanged = (e) => {
 		this.setState({
-			team: e.currentTarget.value,
+			username: e.currentTarget.value,
 			isLoginError: false
 		});
 	}
@@ -95,13 +95,13 @@ export default class Login extends Component {
 	}
 
   handleKeyPress(event) {
-    if (event.key === 'Enter' && this.state.team !== '' && this.state.password !== '') {
+    if (event.key === 'Enter' && this.state.username !== '' && this.state.password !== '') {
       this.onSubmit();
     }
   }
 
 	render() {
-		const loginDisabled = (this.state.team !== '' && this.state.password !== '') ? '' : 'disabled';
+		const loginDisabled = (this.state.username !== '' && this.state.password !== '') ? '' : 'disabled';
 		return (
 			<div className="page login">
 				<form onKeyPress={this.handleKeyPress}>
@@ -109,8 +109,8 @@ export default class Login extends Component {
 						<div className='login-inputs'>
 							<input type="text"
 								className="form-control"
-								placeholder="Team Name"
-								onChange={this.handleTeamNameChanged}/>
+								placeholder="Username"
+								onChange={this.handleUsernameChanged}/>
 						</div>
 						<div className='login-inputs'>
 							<input type="password"
