@@ -2,6 +2,8 @@
 *.db
 *.pyc
 *.sqlite3
+*.idea
+*0001_initial.py
 node_modules/
 rethinkdb_data/
 server/challenges.json
