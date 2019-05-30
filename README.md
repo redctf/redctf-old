@@ -2,6 +2,15 @@
 
 The most customizeable CTF Framework built with modern technologies.
 
+## Development
+Everything is dockerized and easy to start development.
+
+####  Development
+`docker-compose -f docker-compose.dev.yml up`
+
+#### Production
+`docker-compose -f docker-compose.prod.yml up`
+
 
 
 ## Composition
@@ -25,36 +34,6 @@ The most customizeable CTF Framework built with modern technologies.
 * Horizon
 * Rethinkdb
 * Django (`redctf/server/`)
-
-    `sudo pip3 install --upgrade --no-deps  --force-reinstall -r requirements.txt`
-
-## To Develop on Project
-
-Run the following (in order):
-
-1) To Start Rethinkdb (`redctf/client/`)
-    
-    `rethinkdb`
-
-2) To Run Horizon Server (`redctf/client/`)
-    
-    `hz serve --dev`
-
-3) To Start Server (`redctf/server/`)
-
-    * Fresh install, start server with test categories and challenges
-    
-        `python3 reset_db.py --cats --chals && python3 manage.py runserver`
-    
-    * Simple development
-    
-        `python3 manage.py runserver`
-
-    
-4) To Start Client (`redctf/client/`)
-    
-    `npm start`
-
 
 
 ## Configuration 
