@@ -1,4 +1,4 @@
-Django==2.1.5
+Django==2.1.9
 django-cors-headers==2.4.0
 django-filter==2.0.0
 graphene==2.1.3
