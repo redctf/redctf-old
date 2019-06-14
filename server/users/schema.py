@@ -121,18 +121,12 @@ class LogIn(graphene.Mutation):
         password = graphene.String(required=True)
 
     def mutate(self, info, username, password):
-
-        print('\n\ngets here\n\n')
-
         # Validate username and password
         validate_username(username)
         validate_password(password)
 
-        print (username)
-        print (password)
         user = authenticate(username=username, password=password)
 
-        print (user)
         if not user:
             raise Exception('Invalid username or password')
 
