@@ -46,3 +46,17 @@ services:
       - "3000:3000"
     depends_on:
       - django
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+    ports:
+      - "80:80"
+      - "9090:9090"
+networks:
+  traefik:
+        
