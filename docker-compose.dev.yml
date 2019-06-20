@@ -46,6 +46,7 @@ services:
       - "3000:3000"
     depends_on:
       - django
+
   traefik:
     image: traefik:latest
     container_name: traefik
@@ -57,6 +58,7 @@ services:
     ports:
       - "80:80"
       - "9090:9090"
+
 networks:
   traefik:
         
