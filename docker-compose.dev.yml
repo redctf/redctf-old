@@ -48,7 +48,7 @@ services:
       - django
 
   traefik:
-    image: traefik:latest
+    image: traefik:1.7.12
     container_name: traefik
     networks:
       - traefik
@@ -57,7 +57,7 @@ services:
       - ./traefik.toml:/traefik.toml
     ports:
       - "80:80"
-      - "9090:9090"
+      - "8080:8080"
 
 networks:
   traefik:
