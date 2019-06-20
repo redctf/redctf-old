@@ -1,4 +1,5 @@
 import docker as d
+import re
 
 class dockerAPI:
 
@@ -141,7 +142,8 @@ class dockerAPI:
             except Exception as ex:
                 print(ex)
 
-        name = imageName.split("/")
+        #name = imageName.split("/")
+        name = re.split(r'/|:', imageName)
 
         # doesn't take commands yet.
         r_containerName = ("{0}_{1}".format(name[1], username))
