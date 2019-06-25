@@ -79,46 +79,6 @@ class dockerAPI:
             return False
         return True
 
-    def createTraefikContainer(self):
-        """
-        Creates a traefik container used for reverse proxy of users to individual containers. Must create a traefik.toml on the server you are creating this on to expose the API/dashboard.
-        :from: https://docker-py.readthedocs.io/en/stable/containers.html
-        :return: container object
-        """
-
-        # check if network exists
-        net = self.checkIfNetworkExists('traefik')
-        if net is False:
-            # create network before creating container
-            print("network traefik not found")
-            try:
-                self.createNetwork('traefik')
-            except Exception as ex:
-                print(ex)
-        else:
-            print("network already exists")
-
-        traefik = self.checkIfContainerExists('traefik')
-        if traefik is False:
-            print("no traefik container found")
-
-            # create container & run if none exists
-            try:
-                print("creating traefik container")
-                r = self.client.containers.create("traefik:latest", name="traefik",network="traefik", ports={"80/tcp": "80", "9090/tcp": "9090"}, volumes={"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}, "/home/nate/traefik.toml": {"bind": "/etc/traefik/traefik.toml", "mode": "rw"}})
-                print('created traefik container: {0}'.format(r))
-                self.startContainer('traefik')
-                status = self.getContainerObject('traefik').status
-                print('traefik container status: {0}'.format(status))
-            except Exception as ex:
-                print(ex)
-                return False
-        else:
-            print("traefik container already exists")
-            return traefik
-
-        return r
-
     def createContainer(self, username, imageName, port, pathPrefix=None):
         """
         Create a container for a user.
