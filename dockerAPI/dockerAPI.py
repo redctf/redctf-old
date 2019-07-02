@@ -1,5 +1,5 @@
 import docker as d
-import re
+import re, string, random, hashlib, datetime, os, binascii
 
 class dockerAPI:
 
@@ -79,7 +79,7 @@ class dockerAPI:
             return False
         return True
 
-    def createContainer(self, username, imageName, port, pathPrefix=None):
+    def createContainer(self, username, imageName, port, containerName=None, pathPrefix=None, netIsolation=None):
         """
         Create a container for a user.
         :from: https://docker-py.readthedocs.io/en/stable/containers.html
@@ -87,6 +87,7 @@ class dockerAPI:
         :param imageName: string, image name to use for container
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
+        :param netIsolation: for isolating a container to a specific user network
         :return: container object
         """
 
@@ -102,16 +103,29 @@ class dockerAPI:
             except Exception as ex:
                 print(ex)
 
-        #name = imageName.split("/")
         name = re.split(r'/|:', imageName)
 
-        # doesn't take commands yet.
-        r_containerName = ("{0}_{1}".format(name[1], username))
-        r_ports = {"{0}/tcp".format(port): None}
-        r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
-        r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
+        # for using network isolation per user basis.
+        if netIsolation:
+            print('test net isolation switch true')
 
-        return r
+            # doesn't take commands yet.
+            r_containerName = ("{0}_{1}".format(name[1], username))
+            r_ports = {"{0}/tcp".format(port): None}
+            r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
+            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
+
+            return r
+
+        else:
+            # print('test net isolation switch false')
+
+            header = self.createRandomHeader()
+            r_containerName = ("{0}_{1}".format(name[1], header))
+            r_ports = {"{0}/tcp".format(port): None}
+            r_labels = {"traefik.docker.network": 'redctf_traefik', "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:redctf, {1};".format(pathPrefix, header), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
+            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
+            return r
 
     def startContainer(self, containerName):
         """
@@ -263,3 +277,14 @@ class dockerAPI:
             # print("checkIfNetworkExists() {0}".format(ex))
             return False
 
+    def createRandomHashedHeader(self):
+        """
+        creates a random hashed character header for use in the container creation for Traefik to use.
+         The header will be assigned to a user when they request a challenge, which will assign them a container.
+        :return:string, hash for header use
+        """
+        seed = ''.join([random.choice(string.ascii_uppercase + string.digits) for n in range(32)])
+        salt = os.urandom(16)
+        header = hashlib.pbkdf2_hmac('sha256', seed.encode('utf-8'), salt, 100000)
+        headerString = str(binascii.hexlify(header), 'utf-8')
+        return headerString
