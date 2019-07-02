@@ -120,7 +120,7 @@ class dockerAPI:
         else:
             # print('test net isolation switch false')
 
-            header = self.createRandomHeader()
+            header = self.createRandomHashedHeader()
             r_containerName = ("{0}_{1}".format(name[1], header))
             r_ports = {"{0}/tcp".format(port): None}
             r_labels = {"traefik.docker.network": 'redctf_traefik', "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:redctf, {1};".format(pathPrefix, header), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
