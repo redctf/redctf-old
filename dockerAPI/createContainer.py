@@ -23,3 +23,4 @@ try:
 except Exception as ex:
 	print(ex)
 
+# python C:\Users\Nate\git-repos\redctf\dockerAPI\createContainer.py nate tutum/hello-world:latest 80 --containerName testName --pathPrefix hello

@@ -84,7 +84,7 @@ class dockerAPI:
         Create a container for a user.
         :from: https://docker-py.readthedocs.io/en/stable/containers.html
         :param username: string, contributes to container name
-        :param imageName: string, image name to use for container
+        :param imageName: string, image name to use for container; imageName:versionNumber
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
         :param netIsolation: for isolating a container to a specific user network
@@ -110,7 +110,7 @@ class dockerAPI:
             print('test net isolation switch true')
 
             # doesn't take commands yet.
-            r_containerName = ("{0}_{1}".format(name[1], username))
+            r_containerName = ("{0}_{1}".format(name, username))
             r_ports = {"{0}/tcp".format(port): None}
             r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
             r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
@@ -286,5 +286,5 @@ class dockerAPI:
         seed = ''.join([random.choice(string.ascii_uppercase + string.digits) for n in range(32)])
         salt = os.urandom(16)
         header = hashlib.pbkdf2_hmac('sha256', seed.encode('utf-8'), salt, 100000)
-        headerString = str(binascii.hexlify(header), 'utf-8')
+        headerString = str(binascii.hexlify(header))
         return headerString
