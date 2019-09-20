@@ -18,7 +18,11 @@ args = parser.parse_args()
 
 try:
 	r = d.createContainer(args.user, args.imageName, args.ports, args.containerName, args.pathPrefix, args.netIsolation)
-	print(r.attrs)
+	#print(r.attrs)
+	print("############")
+	print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(r.name, r.image, r.labels, r.short_id, r.status))
+	print("############")
+
 
 except Exception as ex:
 	print(ex)
