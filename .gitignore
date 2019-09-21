@@ -10,3 +10,4 @@ server/challenges.json
 server/teams.json
 server/challenges/migrations/*
 .vscode
+*.code-workspace
