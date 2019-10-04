@@ -34,58 +34,9 @@ defaultEntryPoints=["traefik"]
     address = ":9090"
 
 
-################################################################
-# Traefik logs configuration
-################################################################
 
-# Traefik logs
-# Enabled by default and log to stdout
-#
-# Optional
-#
-# [traefikLog]
 
-# Sets the filepath for the traefik log. If not specified, stdout will be used.
-# Intermediate directories are created if necessary.
-#
-# Optional
-# Default: os.Stdout
-#
-# filePath = "log/traefik.log"
 
-# Format is either "json" or "common".
-#
-# Optional
-# Default: "common"
-#
-# format = "common"
-
-################################################################
-# Access logs configuration
-################################################################
-
-# Enable access logs
-# By default it will write to stdout and produce logs in the textual
-# Common Log Format (CLF), extended with additional fields.
-#
-# Optional
-#
-# [accessLog]
-
-# Sets the file path for the access log. If not specified, stdout will be used.
-# Intermediate directories are created if necessary.
-#
-# Optional
-# Default: os.Stdout
-#
-# filePath = "/path/to/log/log.txt"
-
-# Format is either "json" or "common".
-#
-# Optional
-# Default: "common"
-#
-# format = "common"
 
 ################################################################
 # API and dashboard configuration

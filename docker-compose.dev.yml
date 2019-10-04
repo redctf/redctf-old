@@ -48,17 +48,23 @@ services:
       - django
 
   traefik:
-    image: traefik:1.7.12
+    image: traefik:2.0
     container_name: traefik
     networks:
       - traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
+      - ./traefik.yaml:/traefik.yaml
+    command: --api.insecure=true --providers.docker
     ports:
       - "80:80"
       - "9090:9090"
 
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: containous/whoami
+    labels:
+      - "traefik.http.routers.redctf.rule=PathPrefix('/whoami')"
 networks:
   traefik:
         

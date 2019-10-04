@@ -123,8 +123,9 @@ class dockerAPI:
             header = self.createRandomHashedHeader()
             r_containerName = ("{0}_{1}".format(name[1], header))
             r_ports = {"{0}/tcp".format(port): None}
-            r_labels = {"traefik.docker.network": 'redctf_traefik', "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:redctf, {1};".format(pathPrefix, header), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
-            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
+            # TODO: do I need the escaped single quotes around the path/headers? 
+            r_labels = {"traefik.docker.network": 'redctf_traefik', "traefik.port": port, "traefik.http.routers.redctf.rule": "PathPrefix:/{0}; Headers:\'redctf\', \'{1}\';".format(pathPrefix, header), "traefik.backend.loadbalancer.sticky": "True"}
+            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
             return r
 
     def startContainer(self, containerName):
