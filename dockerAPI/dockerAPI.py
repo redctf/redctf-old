@@ -309,5 +309,7 @@ class dockerAPI:
         seed = ''.join([random.choice(string.ascii_uppercase + string.digits) for n in range(32)])
         salt = os.urandom(16)
         header = hashlib.pbkdf2_hmac('sha256', seed.encode('utf-8'), salt, 100000)
-        headerString = str(binascii.hexlify(header))
+        headerString = binascii.hexlify(header).decode('ascii')
+        #headerString = str(binascii.hexlify(header))
+
         return headerString
