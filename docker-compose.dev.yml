@@ -75,10 +75,8 @@ services:
       - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
       - "traefik.http.routers.api.service=api@internal"
       - "traefik.http.routers.api.middlewares=auth"
-      # TODO: change this from default
+      # TODO: change this from default with script
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
-      # - "traefik.http.middlewares.auth.basicauth.users=test:$$apr1$$pOi2oCMs$$5Sln12BjbjmpU4cqBUWJo.,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
-
 
 # ...
   whoami:

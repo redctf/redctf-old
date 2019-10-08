@@ -127,8 +127,9 @@ class dockerAPI:
             r_labels = {
                 "traefik.docker.network": "redctf_traefik",
                  "traefik.port": port,
-                  "traefik.http.routers.redctf.rule": "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header),
-                   "traefik.http.services.redctf.loadbalancer.sticky": "true"} # maybe use , "traefik.http.services.myservice.loadbalancer.sticky.cookie.name":"redctf"
+                  "traefik.http.routers.{0}.rule".format(r_containerName): "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header),
+                  "traefik.http.routers.{0}.rule".format(r_containerName): "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header)
+                   ,"traefik.http.services.{0}.loadbalancer.sticky".format(r_containerName): "true"} # maybe use , "traefik.http.services.myservice.loadbalancer.sticky.cookie.name":"redctf"
             r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
             return r
 
