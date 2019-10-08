@@ -54,7 +54,8 @@ services:
     # The official v2.0 Traefik docker image
     image: traefik:v2.0
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    # command: --api.insecure=true --providers.docker
+    command:  --api=true --providers.docker
     networks: 
       - "traefik"
     ports:
@@ -65,6 +66,19 @@ services:
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      # Declaring the user list
+      #
+      # Note: all dollar signs in the hash need to be doubled for escaping.
+      # To create user:password pair, it's possible to use this command:
+      # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      # TODO: change this from default
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
+      # - "traefik.http.middlewares.auth.basicauth.users=test:$$apr1$$pOi2oCMs$$5Sln12BjbjmpU4cqBUWJo.,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
+
 
 # ...
   whoami:
