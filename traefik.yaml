@@ -15,29 +15,29 @@ ping: {}
 http:
   routers:
     redctf:
-      service: "red-ctf"
 
     api:
       rule: PathPrefix(`/api`) || PathPrefix(`/dashboard`)
       service: api@internal
+    
 
 
-## Static configuration for entrypoints
-entryPoints:
-  red-ctf:
-    address: ":80"
-    proxyProtocol:
-      insecure: true
+# ## Static configuration for entrypoints
+# entryPoints:
+#   red-ctf:
+#     address: ":80"
+#     proxyProtocol:
+#       insecure: true
 
-  red-ctf-secure:
-    address: ":443"
-    proxyProtocol:
-      insecure: true
+#   red-ctf-secure:
+#     address: ":443"
+#     proxyProtocol:
+#       insecure: true
 
-  traefik:
-    address: ":9090"
-    proxyProtocol:
-      insecure: true
+#   traefik:
+#     address: ":9090"
+#     proxyProtocol:
+#       insecure: true
 
 # enable docker provider
 providers:
@@ -48,9 +48,15 @@ providers:
     # exposedByDefault: false
     
     network: "traefik"
-    
+  
+    router: 
+      redctf:
+      
+    # api:
+    #   rule: PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+    #   service: api@internal
     # TODO: pass this in from the start up script
-    domain: "red-ctf.woodnbottle.com"
+    #domain: "red-ctf.woodnbottle.com" may not be necessary in v2
     
     # TODO: configure secure connection to TLS docker socket
     # tls:

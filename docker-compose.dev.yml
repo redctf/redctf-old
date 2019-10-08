@@ -37,7 +37,7 @@ services:
       context: ./client/
       args:
         #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
-        - hosted_at=192.168.0.41
+        - hosted_at=10.10.10.147
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
     volumes:
@@ -47,24 +47,34 @@ services:
     depends_on:
       - django
 
-  traefik:
-    image: traefik:2.0
-    container_name: traefik
-    networks:
-      - traefik
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.yaml:/traefik.yaml
-    command: --api.insecure=true --providers.docker
-    ports:
-      - "80:80"
-      - "9090:9090"
+version: '3'
 
+services:
+  reverse-proxy:
+    # The official v2.0 Traefik docker image
+    image: traefik:v2.0
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    networks: 
+      - "traefik"
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "9090:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+# ...
   whoami:
     # A container that exposes an API to show its IP address
     image: containous/whoami
+    networks: 
+      - "traefik"
     labels:
-      - "traefik.http.routers.redctf.rule=PathPrefix('/whoami')"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`) && Headers(`redctf`,`redctf`)" # && PathPrefix(`/whoami`)" # to test path prefix setup
+
 networks:
   traefik:
         

@@ -124,7 +124,11 @@ class dockerAPI:
             r_containerName = ("{0}_{1}".format(name[1], header))
             r_ports = {"{0}/tcp".format(port): None}
             # TODO: do I need the escaped single quotes around the path/headers? 
-            r_labels = {"traefik.docker.network": 'redctf_traefik', "traefik.port": port, "traefik.http.routers.redctf.rule": "PathPrefix:/{0}; Headers:\'redctf\', \'{1}\';".format(pathPrefix, header), "traefik.backend.loadbalancer.sticky": "True"}
+            r_labels = {
+                "traefik.docker.network": "redctf_traefik",
+                 "traefik.port": port,
+                  "traefik.http.routers.redctf.rule": "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header),
+                   "traefik.http.services.redctf.loadbalancer.sticky": "true"} # maybe use , "traefik.http.services.myservice.loadbalancer.sticky.cookie.name":"redctf"
             r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
             return r
 
@@ -287,5 +291,5 @@ class dockerAPI:
         seed = ''.join([random.choice(string.ascii_uppercase + string.digits) for n in range(32)])
         salt = os.urandom(16)
         header = hashlib.pbkdf2_hmac('sha256', seed.encode('utf-8'), salt, 100000)
-        headerString = str(binascii.hexlify(header))
+        headerString = binascii.hexlify(header).decode('ascii')
         return headerString
