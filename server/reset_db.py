@@ -17,6 +17,7 @@ from teams.models import Team
 from categories.models import Category
 from challenges.models import Challenge
 from ctfs.models import Ctf
+from containers.models import Container
 from users.validators import validate_username, validate_password, validate_email
 
 def resetRethinkDB():
@@ -32,6 +33,7 @@ def resetRethinkDB():
         r.db(CTF_DB).table_create('categories').run(connection)
         r.db(CTF_DB).table_create('teams').run(connection)
         r.db(CTF_DB).table_create('ctfs').run(connection)
+        r.db(CTF_DB).table_create('containers').run(connection)
         print('Realtime database setup complete')
     except RqlRuntimeError as e:
         print('Error during database setup: %s' % (e))
