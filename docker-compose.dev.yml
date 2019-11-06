@@ -32,6 +32,15 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.routers.django.entrypoints=errorhandler"
+      - traefik.http.routers.django.service=django-errorhandler-backend
+      - traefik.http.services.django-errorhandler-backend.loadbalancer.server.port=8000
+
   react:
     build:
       context: ./client/
@@ -47,15 +56,13 @@ services:
     depends_on:
       - django
 
-version: '3'
 
-services:
   reverse-proxy:
     # The official v2.0 Traefik docker image
     image: traefik:v2.0
     # Enables the web UI and tells Traefik to listen to docker
     # command: --api.insecure=true --providers.docker
-    command:  --api=true --providers.docker
+    command:  --api=true --providers.docker --providers.docker.exposedByDefault=false --accesslog=true
     networks: 
       - "traefik"
     ports:
@@ -77,7 +84,12 @@ services:
       - "traefik.http.routers.api.middlewares=auth"
       # TODO: change this from default with script
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
-
+      # Dynamic Custom Error Page for 404 Status Code
+      - "traefik.http.middlewares.django.errors.status=404"
+      - "traefik.http.middlewares.django.errors.service=django-errorhandler-backend"
+      - "traefik.http.middlewares.django.errors.query=/admin"
+    depends_on:
+      - react
 # ...
   whoami:
     # A container that exposes an API to show its IP address
@@ -85,8 +97,11 @@ services:
     networks: 
       - "traefik"
     labels:
-      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`) && Headers(`redctf`,`redctf`)" # && PathPrefix(`/whoami`)" # to test path prefix setup
-
+      # - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`) && Headers(`redctf`,`redctf`)" # && PathPrefix(`/whoami`)" # to test path prefix setup
+        - "traefik.http.routers.whoami.rule=PathPrefix(`/hello`)"
+        - "traefik.enable=true" # required for each container used by traefik
+        - traefik.http.routers.whoami.middlewares=django@docker
+      
 networks:
   traefik:
         

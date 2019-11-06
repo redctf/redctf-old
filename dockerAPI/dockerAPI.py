@@ -280,7 +280,7 @@ class dockerAPI:
             self.client.networks.get(networkName)
             return True
         except Exception as ex:
-            # print("checkIfNetworkExists() {0}".format(ex))
+            print("checkIfNetworkExists() {0}".format(ex))
             return False
 
     def createRandomHashedHeader(self):
