@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'teams',
     'categories',
     'ctfs',
+    'containers',
     'corsheaders'
 ]
 

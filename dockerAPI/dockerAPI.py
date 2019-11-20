@@ -27,6 +27,7 @@ class dockerAPI:
 
         return r
 
+    # TODO: fix this so its not username dependent - aka add netIsolation switch like below. 
     def createNetwork(self, username):
         """
         Create a network based upon username.
@@ -107,7 +108,18 @@ class dockerAPI:
 
         # for using network isolation per user basis.
         if netIsolation:
-            print('test net isolation switch true')
+
+            # check if network exists already
+            network = self.checkIfNetworkExists(username)
+            if network is False:
+                print("no network found")
+                # create network if none exists
+                try:
+                    print("creating network: {0}".format(username))
+                    self.createNetwork(username)
+                    print('network create successful for: {0}'.format(username))
+                except Exception as ex:
+                    print(ex)
 
             # doesn't take commands yet.
             r_containerName = ("{0}_{1}".format(name, username))
@@ -118,7 +130,18 @@ class dockerAPI:
             return r
 
         else:
-            # print('test net isolation switch false')
+            # check if network exists already
+            ctfNet = "redctf_traefik"
+            network = self.checkIfNetworkExists(ctfNet)
+            if network is False:
+                print("no network found")
+                # create network if none exists
+                try:
+                    print("creating network: {0}".format(ctfNet))
+                    self.createNetwork(ctfNet)
+                    print('network create successful for: {0}'.format(ctfNet))
+                except Exception as ex:
+                    print(ex)
 
             header = self.createRandomHashedHeader()
             r_containerName = ("{0}_{1}".format(name[1], header))
@@ -131,6 +154,7 @@ class dockerAPI:
                   "traefik.http.routers.{0}.rule".format(r_containerName): "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header)
                    ,"traefik.http.services.{0}.loadbalancer.sticky".format(r_containerName): "true"} # maybe use , "traefik.http.services.myservice.loadbalancer.sticky.cookie.name":"redctf"
             r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
+
             return r
 
     def startContainer(self, containerName):
