@@ -16,7 +16,7 @@ services:
     labels:
       - traefik.http.middlewares.errorhandler.errors.status=404
       - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
-      - traefik.http.middlewares.errorhandler.errors.query=/admin
+      - traefik.http.middlewares.errorhandler.errors.query=/graphql/
       # - traefik.http.middlewares.errorhandler.errors.query=/whoami
       - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
     depends_on:
@@ -61,5 +61,5 @@ services:
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
       - traefik.http.routers.errorhandler.service=errorhandler-backend
       # - "traefik.http.routers.errorhandler.rule=PathPrefix(`/whoami`)"
-      - "traefik.http.routers.errorhandler.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
       # - "traefik.http.routers.errorhandler.rule=Host(`traefik.ruehouse.com`)"
