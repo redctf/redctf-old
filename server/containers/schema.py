@@ -4,6 +4,7 @@ import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from containers.models import Container
+from challenges.models import Challenge
 from users.validators import validate_user_is_admin
 from containers.validators import validate_name, validate_name_unique
 
@@ -52,30 +53,35 @@ class AddContainer(graphene.Mutation):
 
 		return AddContainer(status='Container Created')
 
-class GetContainer(graphene.Mutation):
+class GetUserContainer(graphene.Mutation):
 	status = graphene.String()
+	containerName = graphene.String()
+	nextHop = graphene.String()
 
 	class Arguments:
-		name = graphene.String(required=True)
+		challenge_id = graphene.Int(required=True) #sid from rethinkdb
 
-	def mutate(self, info, name):
+	def mutate(self, info, challenge_id):
+			
 		user = info.context.user
-		#image = info.context.image
-		#port = info.context.port
-		#path = info.context.path
-		# TODO: set this to take network parameter, if they want to do user isolation vs just container isolation
-		# net = info.context.net
-		#net = 'false'
-		# Validate user is admin
-		validate_user_is_admin(user)
+		
 
-		# Sanitize inputs
-		validate_name(name)
-		validate_name_unique(name)
+		#does challenge exist with passed in challenge id?
+		try:
+			chall_obj = Challenge.objects.get(id__exact=challenge_id)
+		except:
+			raise Exception('Invalid Challenge ID')
 
-		# Save the container
-		container = Container(name=name)
-		#container.save()
+
+		#look up container that belongs to logged in user for the associated challenge
+		try:
+			cont_obj = Container.objects.get(challenge__id__exact=challenge_id, user__exact=user)
+		except:
+			raise Exception('Container does not exist for user and/or challenge')
+			#if none exists create or assign one instead of raising exception
+		
+
+
 
 		# Push the realtime data to rethinkdb
 		# TODO: does this need to be done?? Should it be a call to the systems instead?
@@ -93,8 +99,12 @@ class GetContainer(graphene.Mutation):
 		# except:
 		# 	print('test error')
 
-		return GetContainer(status='Container Retrieved')
+
+
+		#return container name (image_header) so header can be parsed out & return path prefix (in challenge model) as a next_hop
+		return GetUserContainer(containerName= cont_obj.name, nextHop=chall_obj.pathPrefix, status='Container Retrieved - challenge_id: ' + str(challenge_id) + ', container_id: ' + str(cont_obj.id) + ', user: ' + user.username)
+
 
 class Mutation(graphene.ObjectType):
 	add_container = AddContainer.Field()
-	get_container = GetContainer.Field()
+	get_user_container = GetUserContainer.Field()
