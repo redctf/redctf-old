@@ -32,12 +32,21 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+    networks:
+      - traefik
+    labels:
+      # - traefik.enable=true
+      # - traefik.docker.network=traefik
+      # - traefik.routers.django.entrypoints=errorhandler"
+      # - traefik.http.routers.django.service=django-errorhandler-backend
+      # - traefik.http.services.django-errorhandler-backend.loadbalancer.server.port=8000
+
   react:
     build:
       context: ./client/
       args:
         #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
-        - hosted_at=192.168.0.41
+        - hosted_at=10.10.10.147
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
     volumes:
@@ -47,18 +56,85 @@ services:
     depends_on:
       - django
 
-  traefik:
-    image: traefik:1.7.12
-    container_name: traefik
-    networks:
-      - traefik
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-    ports:
-      - "80:80"
-      - "9090:9090"
 
+  reverse-proxy:
+    # The official v2.0 Traefik docker image
+    image: traefik:v2.0
+    # Enables the web UI and tells Traefik to listen to docker
+    # command: --api.insecure=true --providers.docker
+    command:  --api=true --providers.docker --providers.docker.exposedByDefault=false --accesslog=true
+    networks: 
+      - "traefik"
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      # Declaring the user list
+      #
+      # Note: all dollar signs in the hash need to be doubled for escaping.
+      # To create user:password pair, it's possible to use this command:
+      # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      # TODO: change this from default with script
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
+      # Dynamic Custom Error Page for 404 Status Code
+      # - traefik.http.middlewares.errorhandler.errors.status=404
+      # - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
+      # - traefik.http.middlewares.errorhandler.errors.query=/whoami
+    depends_on:
+      - react
+# ...
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: containous/whoami
+    networks: 
+      - "traefik"
+    labels:
+      # - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`) && Headers(`redctf`,`redctf`)" # && PathPrefix(`/whoami`)" # to test path prefix setup
+        # - "traefik.http.routers.whoami.rule=PathPrefix(`/hello`)"
+        # - "traefik.enable=true" # required for each container used by traefik
+        # - traefik.http.routers.whoami.middlewares=django@docker
+  
+  # errorhandler:
+  #   image: containous/whoami
+  #   networks: 
+  #     - "traefik"
+  #   labels:
+  #     - "traefik.http.routers.errorhandler.rule=Host(`traefik.ruehouse.com`)"
+  #     - "traefik.http.routers.errorhandler.rule=PathPrefix(`/whoami`)"
+  #     - traefik.http.routers.errorhandler.service=errorhandler-backend
+  #     - traefik.http.services.errorhandler-backend.loadbalancer.server.port=80
+  #     - "traefik.enable=true" # required for each container used by traefik
+
+  # goodpath:
+  #   image: apache
+  #   build: .
+  #   container_name: apache_goodpath
+  #   networks: 
+  #     - "traefik"
+  #   labels:
+  #     - "traefik.http.routers.goodpath.rule=Host(`traefik.ruehouse.com`)"
+  #     - "traefik.http.routers.goodpath.rule=PathPrefix(`/goodpath`)"
+  #     - traefik.http.routers.goodpath.middlewares=errorhandler@docker
+  #     - traefik.http.services.goodpath.loadbalancer.server.port=80
+  #     - "traefik.enable=true" # required for each container used by traefik
+
+  default:
+    image: tutum/hello-world
+    networks: 
+      - "traefik"
+    labels:
+      - "traefik.http.routers.default.rule=Host(`traefik.ruehouse.com`)"
+      - "traefik.http.routers.default.rule=PathPrefix(`/`)"
+      - traefik.http.routers.default.middlewares=errorhandler@docker
+      - "traefik.enable=true" # required for each container used by traefik
 networks:
   traefik:
         
