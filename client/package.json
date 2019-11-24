@@ -52,7 +52,7 @@
     "css-mqpacker": "^6.0.1",
     "faker": "^4.1.0",
     "horizon": "^2.0.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "lazy-route": "^1.0.7",
     "lodash": "^4.17.11",
     "mobx": "^3.2.2",
