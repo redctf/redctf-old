@@ -4,6 +4,8 @@ services:
   rethinkdb:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
+    networks: 
+      - "traefik"
     ports:
       - "28015:28015"
       - "8088:8080"
@@ -13,6 +15,8 @@ services:
     image: rethinkdb/horizon
     container_name: horizon
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
+    networks: 
+      - "traefik"
     volumes:
       - ./client:/usr/app
     ports:
@@ -24,6 +28,8 @@ services:
     container_name: django
     command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
+      # So that Django can interact with Docker host
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./server:/code
     ports:
       - "8000:8000"
@@ -34,7 +40,7 @@ services:
       - horizon
     networks:
       - traefik
-    labels:
+    #labels:
       # - traefik.enable=true
       # - traefik.docker.network=traefik
       # - traefik.routers.django.entrypoints=errorhandler"
@@ -46,9 +52,11 @@ services:
       context: ./client/
       args:
         #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
-        - hosted_at=10.10.10.147
+        - hosted_at=localhost
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
+    networks: 
+      - "traefik"
     volumes:
       - ./client:/code
     ports:
@@ -61,15 +69,15 @@ services:
     # The official v2.0 Traefik docker image
     image: traefik:v2.0
     # Enables the web UI and tells Traefik to listen to docker
-    # command: --api.insecure=true --providers.docker
-    command:  --api=true --providers.docker --providers.docker.exposedByDefault=false --accesslog=true
+    command: --api.insecure=true --providers.docker
+    #command:  --api=true --providers.docker --providers.docker.exposedByDefault=false --accesslog=true
     networks: 
       - "traefik"
     ports:
       # The HTTP port
       - "80:80"
       # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
+      - "9090:8080"
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -81,9 +89,9 @@ services:
       # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
       - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
       - "traefik.http.routers.api.service=api@internal"
-      - "traefik.http.routers.api.middlewares=auth"
+      #- "traefik.http.routers.api.middlewares=auth"
       # TODO: change this from default with script
-      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
+      #- "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$b1GdUNW6$$RnJ5pyIY3h4gf02KVI8N0."
       # Dynamic Custom Error Page for 404 Status Code
       # - traefik.http.middlewares.errorhandler.errors.status=404
       # - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
@@ -96,7 +104,7 @@ services:
     image: containous/whoami
     networks: 
       - "traefik"
-    labels:
+    #labels:
       # - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`) && Headers(`redctf`,`redctf`)" # && PathPrefix(`/whoami`)" # to test path prefix setup
         # - "traefik.http.routers.whoami.rule=PathPrefix(`/hello`)"
         # - "traefik.enable=true" # required for each container used by traefik
@@ -133,7 +141,7 @@ services:
     labels:
       - "traefik.http.routers.default.rule=Host(`traefik.ruehouse.com`)"
       - "traefik.http.routers.default.rule=PathPrefix(`/`)"
-      - traefik.http.routers.default.middlewares=errorhandler@docker
+      #- traefik.http.routers.default.middlewares=errorhandler@docker
       - "traefik.enable=true" # required for each container used by traefik
 networks:
   traefik:
