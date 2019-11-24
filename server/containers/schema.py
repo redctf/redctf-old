@@ -108,11 +108,11 @@ class GetUserContainer(graphene.Mutation):
 			finally:
 			 	connection.close()
 		
-
+			#return CREATED container name (image_header) so header can be parsed out & return path prefix (in challenge model) as a next_hop
 			return GetUserContainer(containerName=new_cont_obj.name, nextHop=chall_obj.pathPrefix, status='New Container Created for - challenge_id: ' + str(challenge_id) + ', user: ' + user.username)
 		
 
-		#return container name (image_header) so header can be parsed out & return path prefix (in challenge model) as a next_hop
+		#return existing container name (image_header) so header can be parsed out & return path prefix (in challenge model) as a next_hop
 		return GetUserContainer(containerName=cont_obj.name, nextHop=chall_obj.pathPrefix, status='Container Retrieved - challenge_id: ' + str(challenge_id) + ', container_id: ' + str(cont_obj.id) + ', user: ' + user.username)
 
 		
