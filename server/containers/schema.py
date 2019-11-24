@@ -5,7 +5,7 @@ from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from containers.models import Container
 from challenges.models import Challenge
-from users.validators import validate_user_is_admin
+from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from containers.validators import validate_name, validate_name_unique
 
 d = dockerAPI()
@@ -64,6 +64,9 @@ class GetUserContainer(graphene.Mutation):
 	def mutate(self, info, challenge_id):
 			
 		user = info.context.user
+		# Validate user is authenticated
+		validate_user_is_authenticated(user)
+
 
 		#does challenge exist with passed in challenge id?
 		try:
