@@ -60,6 +60,4 @@ services:
     labels:
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
       - traefik.http.routers.errorhandler.service=errorhandler-backend
-      # - "traefik.http.routers.errorhandler.rule=PathPrefix(`/whoami`)"
       - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
-      # - "traefik.http.routers.errorhandler.rule=Host(`traefik.ruehouse.com`)"

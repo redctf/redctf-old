@@ -32,6 +32,10 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+    labels:
+      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
+      - traefik.http.routers.errorhandler.service=errorhandler-backend
+      - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
   react:
     build:
       context: ./client/
@@ -47,18 +51,46 @@ services:
     depends_on:
       - django
 
-  traefik:
-    image: traefik:1.7.12
-    container_name: traefik
-    networks:
-      - traefik
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-    ports:
-      - "80:80"
-      - "9090:9090"
+  reverse-proxy:
+      # The official v2.0 Traefik docker image
+      image: traefik:v2.0
+      # Enables the web UI and tells Traefik to listen to docker
+      command: --api.insecure=true --providers.docker --accesslog=true
+      ports:
+        # The HTTP port
+        - "80:80"
+        # The Web UI (enabled by --api.insecure=true)
+        - "8080:8080"
+      volumes:
+        # So that Traefik can listen to the Docker events
+        - /var/run/docker.sock:/var/run/docker.sock
+      labels:
+        - traefik.http.middlewares.errorhandler.errors.status=404
+        - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
+        - traefik.http.middlewares.errorhandler.errors.query=/graphql/
+        - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      depends_on:
+        - goodpath
+        - default
+        - django
 
+  goodpath:
+    image: apache
+    build: .
+    container_name: apache_goodpath
+    labels:
+      - "traefik.http.routers.goodpath.rule=Host(`traefik.ruehouse.com`)"
+      - "traefik.http.routers.goodpath.rule=PathPrefix(`/goodpath`)"
+      - traefik.http.routers.goodpath.middlewares=errorhandler@docker
+      - traefik.http.services.goodpath.loadbalancer.server.port=80
+
+  default:
+    image: tutum/hello-world
+    labels:
+      - "traefik.http.routers.default.rule=Host(`traefik.ruehouse.com`)"
+      - "traefik.http.routers.default.rule=PathPrefix(`/`)"
+      - traefik.http.routers.default.middlewares=errorhandler@docker
+      
 networks:
   traefik:
         
