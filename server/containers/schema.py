@@ -17,39 +17,42 @@ class AddContainer(graphene.Mutation):
 		name = graphene.String(required=True)
 
 	def mutate(self, info, name):
-		user = info.context.user
-		image = info.context.image
-		port = info.context.port
-		path = info.context.path
-		# TODO: set this to take network parameter, if they want to do user isolation vs just container isolation
-		# net = info.context.net
-		net = 'false'
-		# Validate user is admin
-		validate_user_is_admin(user)
+		
+		raise Exception('Not implemented yet')
+		
+		# user = info.context.user
+		# image = info.context.image
+		# port = info.context.port
+		# path = info.context.path
+		# # TODO: set this to take network parameter, if they want to do user isolation vs just container isolation
+		# # net = info.context.net
+		# net = 'false'
+		# # Validate user is admin
+		# validate_user_is_admin(user)
 
-		# Sanitize inputs
-		validate_name(name)
-		validate_name_unique(name)
+		# # Sanitize inputs
+		# validate_name(name)
+		# validate_name_unique(name)
 
-		# Save the container
-		container = Container(name=name)
-		container.save()
+		# # Save the container
+		# container = Container(name=name)
+		# container.save()
 
-		# Push the realtime data to rethinkdb
-		# TODO: does this need to be done?? Should it be a call to the systems instead?
-		connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-		try:
-			r.db(CTF_DB).table('categories').insert(
-				{'sid': container.id, 'name': container.name, 'created': format(container.created, 'U')}).run(connection)
-		except RqlRuntimeError as e:
-			raise Exception('Error adding container to realtime database: %s' % (e))
-		finally:
-			connection.close()
-		# TODO: does this belong above the DB connection? It should log what the connection details are for the DB.
-		try:
-			dockerConnection = d.createContainer(username=user, imageName=image, port=port, pathPrefix=path, netIsolation=net)
-		except:
-			print('test error')
+		# # Push the realtime data to rethinkdb
+		# # TODO: does this need to be done?? Should it be a call to the systems instead?
+		# connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+		# try:
+		# 	r.db(CTF_DB).table('categories').insert(
+		# 		{'sid': container.id, 'name': container.name, 'created': format(container.created, 'U')}).run(connection)
+		# except RqlRuntimeError as e:
+		# 	raise Exception('Error adding container to realtime database: %s' % (e))
+		# finally:
+		# 	connection.close()
+		# # TODO: does this belong above the DB connection? It should log what the connection details are for the DB.
+		# try:
+		# 	dockerConnection = d.createContainer(username=user, imageName=image, port=port, pathPrefix=path, netIsolation=net)
+		# except:
+		# 	print('test error')
 
 		return AddContainer(status='Container Created')
 
@@ -83,7 +86,7 @@ class GetUserContainer(graphene.Mutation):
 			#if none exists create or assign one instead of raising exception
 
 			try:
-				new_cont_obj = d.createContainer(username=user, imageName='tutum/hello-world:latest', port='80', containerName='test_cont_name', pathPrefix=chall_obj.pathPrefix)
+				new_cont_obj = d.createContainer(username=user, imageName=chall_obj.imageName, port=chall_obj.ports, containerName='test_cont_name', pathPrefix=chall_obj.pathPrefix)
 				print("############")
 				print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))
 				print("############")
