@@ -13,6 +13,9 @@ class Challenge(models.Model):
   category = models.ForeignKey(Category, default=None, null=True, on_delete=models.CASCADE, related_name='categories')
   points = models.IntegerField(default=0)
   flag = models.CharField(max_length=100)
+  hosted = models.BooleanField(default=False)
+  imageName = models.CharField(max_length=100, default=None, null=True)
+  ports = models.CharField(max_length=100, default=None, null=True)
   pathPrefix = models.CharField(max_length=100, default=None, null=True)
   created = models.DateTimeField(auto_now_add=True)
 
