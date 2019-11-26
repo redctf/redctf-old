@@ -118,7 +118,7 @@ endpoint = "unix:///var/run/docker.sock"
 #
 # Optional
 #
-domain = "red-ctf.woodnbottle.com"
+#domain = "red-ctf.woodnbottle.com"
 
 # Enable watch docker changes.
 #

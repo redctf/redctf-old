@@ -178,9 +178,16 @@ def insertRealChallenges():
             data = json.load(f)
             for c in data:
                 category = Category.objects.filter(name__icontains = c['category'])
-                challenge = Challenge(category=category[0], flag=c['flag'], points=c['points'])
+                if c['pathPrefix']:
+                    challenge = Challenge(category=category[0], flag=c['flag'], points=c['points'], title=c['title'], description=c['description'], pathPrefix=c['pathPrefix'])
+                else:
+                    challenge = Challenge(category=category[0], flag=c['flag'], points=c['points'], title=c['title'], description=c['description'])
                 challenge.save()
-                r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'created': format(challenge.created, 'U')}).run(connection)
+                
+                if c['pathPrefix']:
+                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'pathPrefix': c['pathPrefix'], 'created': format(challenge.created, 'U')}).run(connection)
+                else:
+                    r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'created': format(challenge.created, 'U')}).run(connection)
 
     except RqlRuntimeError as e:
         raise Exception('Error adding challenges to realtime database: %s' % (e))
@@ -195,32 +202,32 @@ def insertChallengeBoard():
     try:
         for category in Category.objects.all():
             # Save the challenge flag to the database
-            challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=50)
+            challenge_50 = Challenge(category=category, flag="flag{0}".format(i), points=50, title='Test Title', description='Test Description')
             challenge_50.save()
             i+=1
 
             # Save the challenge flag to the database
-            challenge_100 = Challenge(category=category, flag="flag{0}".format(i), points=100)
+            challenge_100 = Challenge(category=category, flag="flag{0}".format(i), points=100, title='Test Title', description='Test Description')
             challenge_100.save()
             i+=1
 
             # Save the challenge flag to the database
-            challenge_200 = Challenge(category=category, flag="flag{0}".format(i), points=200)
+            challenge_200 = Challenge(category=category, flag="flag{0}".format(i), points=200, title='Test Title', description='Test Description')
             challenge_200.save()
             i+=1
 
             # Save the challenge flag to the database
-            challenge_300 = Challenge(category=category, flag="flag{0}".format(i), points=300)
+            challenge_300 = Challenge(category=category, flag="flag{0}".format(i), points=300, title='Test Title', description='Test Description')
             challenge_300.save()
             i+=1
 
             # Save the challenge flag to the database
-            challenge_400 = Challenge(category=category, flag="flag{0}".format(i), points=400)
+            challenge_400 = Challenge(category=category, flag="flag{0}".format(i), points=400, title='Test Title', description='Test Description')
             challenge_400.save()
             i+=1
 
             # Save the challenge flag to the database
-            challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500)
+            challenge_500 = Challenge(category=category, flag="flag{0}".format(i), points=500, title='Test Title', description='Test Description')
             challenge_500.save()
             i+=1
 

@@ -4,6 +4,8 @@ services:
   rethinkdb:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
+    networks: 
+      - "traefik"
     ports:
       - "28015:28015"
       - "8088:8080"
@@ -13,6 +15,8 @@ services:
     image: rethinkdb/horizon
     container_name: horizon
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
+    networks: 
+      - "traefik"
     volumes:
       - ./client:/usr/app
     ports:
@@ -24,6 +28,8 @@ services:
     container_name: django
     command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
+      # So that Django can interact with Docker host
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./server:/code
     ports:
       - "8000:8000"
@@ -32,18 +38,23 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+
     labels:
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
       - traefik.http.routers.errorhandler.service=errorhandler-backend
       - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
+
   react:
     build:
       context: ./client/
       args:
         #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
-        - hosted_at=192.168.0.41
+
+        - hosted_at=localhost
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
+    networks: 
+      - "traefik"
     volumes:
       - ./client:/code
     ports:
