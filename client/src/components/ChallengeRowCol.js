@@ -44,7 +44,8 @@ export default class ChallengeRowCol extends Component {
 
 
       return (
-        <JeopardyButton sid={challenge.sid}
+        <JeopardyButton key={challenge.sid}
+          sid={challenge.sid}
           value={challenge.points}
           name={challenge.title}
           category={this.props.category}

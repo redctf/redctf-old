@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject } from "mobx-react";
+import axios from 'axios';
 
 @inject("store")
 export default class ChallengeModal extends Component {
@@ -33,26 +34,28 @@ export default class ChallengeModal extends Component {
   }
 
   handleContainerClick = (e) => {
-    // if (in horizon datastore) container exists for user/challenge combo
-    // - use container_name field to parse out shas256 and use sha256 to set redctf cookie
-    // - redirect to pathPrefix
+    // Determine if container for click already exists
+    const container = this.store.containers.filter((ele) => {
+      return ele.challenge === this.props.sid;
+    }).filter((ele) => {
+      return ele.user === parseInt(this.store.team.id, 10);
+    })[0];
 
-    console.log('chalmod props', this.props);
-    console.log('chalmod store', this.store);
+    if (container) {
+      // if there exists a container for this challenge and this user...
 
-    const challengeId = this.props.sid;
-    const teamId = this.store.team.id;
+      // create cookie
+      const newCookie = `redctf=${container.name.split('_')[1]}`;
+      document.cookie = newCookie;
 
-    const container_exists = true;
-
-    if (container_exists) {
-
-
-
+      // redirect to path
+      window.location = this.props.path;
     } else {
+      // container does not exist, must create using graphQL call
       const port = 8000;
       axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-      const mutation = '/getusercontainer/'
+      const mutation = `mutation { getUserContainer ( challengeId: ${this.props.sid}) {status, containerName, nextHop } }`;
+    
       axios.post('/graphql/',
         {
           query: mutation,
@@ -63,22 +66,18 @@ export default class ChallengeModal extends Component {
         }
       )
       .then((response) => {
-        console.log(response);
+        const result = response.data.data.getUserContainer;
+        console.log(result.status);
+
+        // create cookie
+        const newCookie = `redctf=${result.containerName.split('_')[1]}`;
+        document.cookie = newCookie;
+
+        // redirect to path
+        //window.location = result.nextHop;
+        console.log(result.status);
       })
-
-
-
     }
-
-
-
-
-
-    // else (no container)
-    // - ajax call to create container
-    // - take return value of container_name to set cookie
-    // - redirect
-
   }
 
   handleFieldChanged = (e) => {
