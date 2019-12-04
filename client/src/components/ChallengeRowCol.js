@@ -26,6 +26,8 @@ export default class ChallengeRowCol extends Component {
       }
     });
 
+    console.log('challengeData', challenges);
+
     challengeData.sort(function(a,b){return (a.points > b.points) ? 1 : ((b.points > a.points) ? -1 : 0); } );
 
     // Get array of solved challenges
@@ -40,7 +42,9 @@ export default class ChallengeRowCol extends Component {
         }
       });
 
+
       return (
+        // TODO - Send hosted information into JeopardyButton
         <JeopardyButton key={`${challenge.sid}`}
           value={challenge.points}
           name={challenge.title}
@@ -48,6 +52,7 @@ export default class ChallengeRowCol extends Component {
           description={challenge.description}
           solves={challenge.solved_count}
           solved={challengeSolved}
+          path={challenge.pathPrefix}
         />
       )
     });

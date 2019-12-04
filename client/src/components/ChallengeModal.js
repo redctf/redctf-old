@@ -38,6 +38,8 @@ export default class ChallengeModal extends Component {
   render() {
     const solveString = this.props.solves ? this.props.solves : 0;
     const solves = solveString === 1 ? `${solveString} Solve` : `${solveString} Solves`;
+
+    // TODO - Render hosted information
     return (
       <div className='challenge-modal'>
         <div className='title-bar'>
@@ -48,6 +50,7 @@ export default class ChallengeModal extends Component {
         <div className='challenge-modal-content'>
           <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
     
+          {this.props.path && <a className='container-link' href={this.props.path} target="_blank">Click Here For Container</a>}
 
           <div className='footer-bar'>
             <p>{solves}</p>
