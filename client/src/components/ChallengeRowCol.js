@@ -44,8 +44,7 @@ export default class ChallengeRowCol extends Component {
 
 
       return (
-        // TODO - Send hosted information into JeopardyButton
-        <JeopardyButton key={`${challenge.sid}`}
+        <JeopardyButton sid={challenge.sid}
           value={challenge.points}
           name={challenge.title}
           category={this.props.category}
