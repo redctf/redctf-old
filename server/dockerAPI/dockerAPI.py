@@ -258,6 +258,7 @@ class dockerAPI:
             print(r)
         except Exception as ex:
             print(ex)
+            raise Exception(ex)
 
         return r
 
