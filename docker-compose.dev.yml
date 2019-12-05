@@ -17,7 +17,12 @@ services:
       - traefik.http.services.rethinkdb-backend.loadbalancer.server.port=8088
       - traefik.http.routers.rethinkdb.service=rethinkdb-backend
       - "traefik.http.routers.rethinkdb.rule=PathPrefix(`/rethinkdb`)"
-      - traefik.http.routers.rethinkdb.middlewares=errorhandler@docker
+      # - traefik.http.routers.rethinkdb.middlewares=errorhandler@docker
+      - traefik.http.routers.rethinkdb.middlewares=rethinkdb-chain
+      - traefik.http.middlewares.rethinkdb-chain.chain.middlewares=errorhandler,rethinkdb-replacepathregex
+      # Replace path with regex
+      - "traefik.http.middlewares.rethinkdb-replacepathregex.replacepathregex.regex=/rethinkdb(/*)"
+      - "traefik.http.middlewares.rethinkdb-replacepathregex.replacepathregex.replacement=$$1"
 
   horizon:
     image: rethinkdb/horizon
@@ -55,11 +60,14 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+    networks:
+      - traefik
 
     labels:
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
       - traefik.http.routers.errorhandler.service=errorhandler-backend
       - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
+
 
   react:
     build:
@@ -70,8 +78,6 @@ services:
         - hosted_at=localhost
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
-    networks: 
-      - "traefik"
     volumes:
       - ./client:/code
     ports:
@@ -92,7 +98,7 @@ services:
 
   reverse-proxy:
       # The official v2.0 Traefik docker image
-      image: traefik:v2.0
+      image: traefik:v2.0.6
       # Enables the web UI and tells Traefik to listen to docker
       command: --providers.docker --accesslog=true  --api.insecure=true --api.dashboard=true
       ports:
@@ -111,6 +117,9 @@ services:
         - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
         - "traefik.http.routers.api.service=api@internal"
         - traefik.http.routers.api.middlewares=errorhandler@docker
+        # - traefik.http.routers.api.middlewares=reverse-proxy-chain
+        # - traefik.http.midlewares.reverse-proxy-chain.chain.middlewares=errorhandler
+
        
       depends_on:
         - django
@@ -121,13 +130,60 @@ services:
     image: apache
     build: .
     container_name: apache_goodpath
+    ports:
+      - "9880:80"
     labels:
       - "traefik.http.routers.goodpath.rule=Host(`traefik.ruehouse.com`)"
-      - "traefik.http.routers.goodpath.rule=PathPrefix(`/goodpath`)"
-      - traefik.http.routers.goodpath.middlewares=errorhandler@docker
+      - "traefik.http.routers.goodpath.rule=PathPrefix(`/goodpath`) || PathPrefix(`/path`)"
+      # - traefik.http.routers.goodpath.middlewares=errorhandler@docker
       - traefik.http.services.goodpath.loadbalancer.server.port=80
+      - traefik.http.routers.goodpath.middlewares=goodpath-chain
+      - traefik.http.middlewares.goodpath-chain.chain.middlewares=errorhandler,goodpath-replacepathregex #,middleware199
+      # Replace path with regex
+      - "traefik.http.middlewares.goodpath-replacepathregex.replacepathregex.regex=/(goodpath)/a"
+      - "traefik.http.middlewares.goodpath-replacepathregex.replacepathregex.replacement=/$$1/"
+      # - "traefik.http.middlewares.middleware199.stripprefix.prefixes=/path, foobar"
+
     networks:
       - traefik
+
+  pathStrip:
+    image: apache
+    build: 
+      context: .
+      dockerfile: dockerfile2
+    container_name: apache_pathStrip
+    labels:
+      - "traefik.http.routers.pathStrip.rule=PathPrefix(`/path`)"
+      - traefik.http.services.pathStrip.loadbalancer.server.port=80
+      - traefik.http.routers.pathStrip.middlewares=pathStrip-chain
+      # - traefik.http.routers.pathStrip.middlewares=pathStrip-chain
+      - traefik.http.middlewares.pathStrip-chain.chain.middlewares=errorhandler, middleware19 #pathStrip-stripprefix
+
+      # - "traefik.http.middlewares.pathStrip-stripprefix.stripprefix.prefixes=/path"
+      # - "traefik.http.middlewares.pathStrip-stripprefix.stripprefix.forceslash=true"
+      - "traefik.http.middlewares.middleware19.stripprefix.forceslash=true"
+      - "traefik.http.middlewares.middleware19.stripprefix.prefixes=/path, foobar"
+    networks:
+      - traefik
+
+  # whoami:
+  #   image: tutum/hello-world:latest
+  #   container_name: hello-world
+  #   labels:
+  #     - "traefik.http.routers.hello-world.rule=Host(`traefik.ruehouse.com`)"
+  #     - "traefik.http.routers.hello-world.rule=PathPrefix(`/hello`)"
+  #     # - traefik.http.routers.goodpath.middlewares=errorhandler@docker
+  #     - traefik.http.services.hello-world.loadbalancer.server.port=80
+  #     - traefik.http.routers.hello-world.middlewares=hello-world-chain
+  #     - traefik.http.middlewares.hello-world-chain.chain.middlewares=errorhandler,hello-world-replacepathregex,hello-world-stripprefix
+  #     # Replace path with regex
+  #     - "traefik.http.middlewares.hello-world-replacepathregex.replacepathregex.regex=/(hello)/a"
+  #     - "traefik.http.middlewares.hello-world-replacepathregex.replacepathregex.replacement=/$$1/"
+  #     - "traefik.http.middlewares.hello-world-stripprefix.stripprefix.prefixes=/foobar"
+  #     - "traefik.http.middlewares.hello-world-stripprefix.stripprefix.forceslash=false"
+  #   networks:
+  #     - traefik
 
 networks:
   traefik:
