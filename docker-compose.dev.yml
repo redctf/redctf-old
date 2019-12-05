@@ -166,24 +166,23 @@ services:
       - "traefik.http.middlewares.middleware19.stripprefix.prefixes=/path, foobar"
     networks:
       - traefik
-
-  # whoami:
-  #   image: tutum/hello-world:latest
-  #   container_name: hello-world
-  #   labels:
-  #     - "traefik.http.routers.hello-world.rule=Host(`traefik.ruehouse.com`)"
-  #     - "traefik.http.routers.hello-world.rule=PathPrefix(`/hello`)"
-  #     # - traefik.http.routers.goodpath.middlewares=errorhandler@docker
-  #     - traefik.http.services.hello-world.loadbalancer.server.port=80
-  #     - traefik.http.routers.hello-world.middlewares=hello-world-chain
-  #     - traefik.http.middlewares.hello-world-chain.chain.middlewares=errorhandler,hello-world-replacepathregex,hello-world-stripprefix
-  #     # Replace path with regex
-  #     - "traefik.http.middlewares.hello-world-replacepathregex.replacepathregex.regex=/(hello)/a"
-  #     - "traefik.http.middlewares.hello-world-replacepathregex.replacepathregex.replacement=/$$1/"
-  #     - "traefik.http.middlewares.hello-world-stripprefix.stripprefix.prefixes=/foobar"
-  #     - "traefik.http.middlewares.hello-world-stripprefix.stripprefix.forceslash=false"
-  #   networks:
-  #     - traefik
+  
+  timetraveler:
+    build: 
+      context: ../RedCTF/challenges/timetraveler/
+      dockerfile: dockerfile
+    container_name: timetraveler    
+    ports:
+      - "9980:80"
+    labels:
+      - "traefik.http.routers.timetraveler.rule=PathPrefix(`/timetraveler`)"
+      - traefik.http.services.timetraveler.loadbalancer.server.port=80
+      - traefik.http.routers.timetraveler.middlewares=timetraveler-chain
+      - traefik.http.middlewares.timetraveler-chain.chain.middlewares=errorhandler, timetraveler-stripprefix
+      - "traefik.http.middlewares.timetraveler-stripprefix.stripprefix.forceslash=false"
+      - "traefik.http.middlewares.timetraveler-stripprefix.stripprefix.prefixes=/timetraveler"
+    networks:
+      - traefik
 
 networks:
   traefik:
