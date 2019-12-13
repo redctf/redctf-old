@@ -1,5 +1,15 @@
+import binascii
+import datetime
+import hashlib
+import logging
+import os
+import random
+import re
+import string
+from logging import *
+
 import docker as d
-import re, string, random, hashlib, datetime, os, binascii
+
 
 class dockerAPI:
 
@@ -7,13 +17,14 @@ class dockerAPI:
         # client
         self.client = d.from_env()
 
+
     def version(self):
         """
         :return: version of Docker client running (host set by environment variable)
         :from: https://docker-py.readthedocs.io/en/stable/client.html
         """
         r = self.client.version()
-
+        print("this is a print test, file=sys.stderr")
         return r
 
     def listContainers(self, all=None):
@@ -80,7 +91,7 @@ class dockerAPI:
             return False
         return True
 
-    def createContainer(self, username, imageName, port, containerName=None, pathPrefix=None, netIsolation=None):
+    def createContainer(self, username, imageName, port, containerName=None, pathPrefix=None, netIsolation=None, containerType=None):
         """
         Create a container for a user.
         :from: https://docker-py.readthedocs.io/en/stable/containers.html
@@ -89,6 +100,7 @@ class dockerAPI:
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
         :param netIsolation: for isolating a container to a specific user network
+        :param containerType: string, either http or tcp
         :return: container object
         """
 
@@ -105,6 +117,22 @@ class dockerAPI:
                 print(ex)
 
         name = re.split(r'/|:', imageName)
+        header = self.createRandomHashedHeader()
+
+        
+        if "/" in imageName and ":" in imageName:
+            r_containerName = ("{0}_{1}".format(name[1], header))
+            
+        elif "/" in imageName:
+            r_containerName = ("{0}_{1}".format(name[1], header))
+            
+        elif ":" in imageName:
+            r_containerName = ("{0}_{1}".format(name[0], header))
+
+        else:
+            print("unknown combo provided")
+            return("unknown imageName combo")    
+            
 
         # for using network isolation per user basis.
         if netIsolation:
@@ -143,16 +171,38 @@ class dockerAPI:
                 except Exception as ex:
                     print(ex)
 
-            header = self.createRandomHashedHeader()
-            r_containerName = ("{0}_{1}".format(name[1], header))
-            r_ports = {"{0}/tcp".format(port): None}
-            # TODO: do I need the escaped single quotes around the path/headers? 
-            r_labels = {
-                "traefik.docker.network": "redctf_traefik",
-                 "traefik.port": port,
-                  "traefik.http.routers.{0}.rule".format(r_containerName): "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header),
-                  "traefik.http.routers.{0}.rule".format(r_containerName): "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header)
-                   ,"traefik.http.services.{0}.loadbalancer.sticky".format(r_containerName): "true"} # maybe use , "traefik.http.services.myservice.loadbalancer.sticky.cookie.name":"redctf"
+            r_ports = {"{0}/tcp".format(port): None}       
+
+            # define labels  below - each new label is appended to the labels dict. 
+            r_labels = {}
+            
+            # DEFAULT middlewares inserted here as comma delimited string of middlewares
+            middleware_chain = "errorhandler"
+            
+            # rules: path prefix and headers
+            r_labels["traefik.http.routers.{0}.rule".format(r_containerName)] = "PathPrefix(`/{0}`) &&  Headers(`redctf`, `{1}`)".format(pathPrefix, header)
+            
+            # docker network
+            r_labels["traefik.docker.network"] = ctfNet
+            
+            # LB server port
+            r_labels["traefik.http.services.{0}.loadbalancer.server.port".format(r_containerName)] = port
+            
+            # LB server stickey setting #TODO: is this necessary?
+            r_labels["traefik.http.services.{0}.loadbalancer.sticky".format(r_containerName)] = "true"
+            
+            # define middleware chain
+            r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-chain".format(r_containerName)
+            
+            # http containers only - will strip path using middleware
+            if containerType == "http":
+                middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
+                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
+                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
+                          
+            # define middleware chain middleware list - only appends if http above is true
+            r_labels["traefik.http.middlewares.{0}-chain.chain.middlewares".format(r_containerName)] = middleware_chain
+                
             r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
 
             return r
