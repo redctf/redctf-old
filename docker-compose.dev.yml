@@ -14,15 +14,8 @@ services:
     networks:
       - traefik
     labels:
-      - traefik.http.services.rethinkdb-backend.loadbalancer.server.port=8088
-      - traefik.http.routers.rethinkdb.service=rethinkdb-backend
-      - "traefik.http.routers.rethinkdb.rule=PathPrefix(`/rethinkdb`)"
-      # - traefik.http.routers.rethinkdb.middlewares=errorhandler@docker
-      - traefik.http.routers.rethinkdb.middlewares=rethinkdb-chain
-      - traefik.http.middlewares.rethinkdb-chain.chain.middlewares=errorhandler,rethinkdb-replacepathregex
-      # Replace path with regex
-      - "traefik.http.middlewares.rethinkdb-replacepathregex.replacepathregex.regex=/rethinkdb(/*)"
-      - "traefik.http.middlewares.rethinkdb-replacepathregex.replacepathregex.replacement=$$1"
+      - traefik.http.routers.rethinkdb.middlewares=errorhandler@docker
+
 
   horizon:
     image: rethinkdb/horizon
@@ -39,9 +32,7 @@ services:
     networks:
       - traefik
     labels:
-      - traefik.http.services.horizon-backend.loadbalancer.server.port=8181
-      - traefik.http.routers.horizon.service=horizon-backend
-      - "traefik.http.routers.horizon.rule=PathPrefix(`/horizon`)"
+
       - traefik.http.routers.horizon.middlewares=errorhandler@docker
 
 
@@ -64,9 +55,7 @@ services:
       - traefik
 
     labels:
-      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
       - traefik.http.routers.errorhandler.service=errorhandler-backend
-      - "traefik.http.routers.errorhandler.rule=PathPrefix(`/graphql/`)"
 
 
   react:
@@ -89,9 +78,9 @@ services:
     labels:
       - traefik.http.services.react-backend.loadbalancer.server.port=3000
       - traefik.http.routers.react.service=react-backend
-      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`) #|| PathPrefix(`/`) # don't add this back in I'm not sure why but it breaks routing for the dashboard. 
+      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
       - traefik.http.routers.react.middlewares=errorhandler@docker
-      # this seperate rule for the default route is necessary for dashboard to work - not sure why. 
+      # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
       - traefik.http.routers.default2.rule=PathPrefix(`/`)
       - traefik.http.routers.default2.middlewares=errorhandler@docker
 
