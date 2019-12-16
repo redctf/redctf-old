@@ -100,7 +100,7 @@ class dockerAPI:
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
         :param netIsolation: for isolating a container to a specific user network
-        :param containerType: string, either http or tcp
+        :param containerType: string array [http, https, tcp]
         :return: container object
         """
 
@@ -175,8 +175,7 @@ class dockerAPI:
 
             # define labels  below - each new label is appended to the labels dict. 
             r_labels = {}
-            
-            # DEFAULT middlewares inserted here as comma delimited string of middlewares
+            # default middlewares inserted here as comma delimited string of
             middleware_chain = "errorhandler"
             
             # rules: path prefix and headers
@@ -194,12 +193,24 @@ class dockerAPI:
             # define middleware chain
             r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-chain".format(r_containerName)
             
-            # http containers only - will strip path using middleware
-            if containerType == "http":
-                middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
-                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
-                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
-                          
+            for container in containerType:
+                # http containers only - will strip path using middleware
+                if container == "http":
+                    middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
+                    r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
+                    r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
+                
+                # placeholder https logic
+                elif container == "https":
+                    print("https container type")
+                
+                # placeholder tcp logic
+                elif container == "tcp":
+                    print("tcp container type")
+                
+                else:
+                    print("unknown container type")
+                    
             # define middleware chain middleware list - only appends if http above is true
             r_labels["traefik.http.middlewares.{0}-chain.chain.middlewares".format(r_containerName)] = middleware_chain
                 

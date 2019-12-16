@@ -15,10 +15,10 @@ parser.add_argument('--netIsolation', help='include flag if using network isolat
 user = "jerry"
 imageName = "redctf_timetraveler:latest"
 ports = "80"
-pathPrefix = "timetraveler"
+pathPrefix = "timetraveler-prefix"
 containerName = "timetraveler"
 netIsolation = False
-containerType = "http"
+containerType = ["http", "tcp"] #TODO: create as array type - do noting with TCP  
 
 args = parser.parse_args()
 # port format - for static argument.
