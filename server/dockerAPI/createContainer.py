@@ -12,13 +12,22 @@ parser.add_argument('ports', metavar='ports', help='Must use port#/protocol:host
 parser.add_argument('--pathPrefix', metavar='pathPrefix', help='Path prefix for traefik reverse proxy: \'hello\' is an example - don\'t use leading forward slash.')
 parser.add_argument('--netIsolation', help='include flag if using network isolation per user', action='store_true')
 
+user = "jerry"
+imageName = "redctf_timetraveler:latest"
+ports = "80"
+pathPrefix = "timetraveler-prefix"
+containerName = "timetraveler"
+netIsolation = False
+containerType = ["http", "tcp"] #TODO: create as array type - do noting with TCP  
+
 args = parser.parse_args()
 # port format - for static argument.
 # ports = "{\"80/tcp\":None, \"9090/tcp\":None}"
 
 try:
-	r = d.createContainer(args.user, args.imageName, args.ports, args.containerName, args.pathPrefix, args.netIsolation)
+	# r = d.createContainer(args.user, args.imageName, args.ports, args.containerName, args.pathPrefix, args.netIsolation)
 	#print(r.attrs)
+	r = d.createContainer(user, imageName, ports, containerName, pathPrefix, netIsolation, containerType)
 	print("############")
 	print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(r.name, r.image, r.labels, r.short_id, r.status))
 	print("############")
