@@ -86,7 +86,7 @@ class GetUserContainer(graphene.Mutation):
 			#if none exists create or assign one instead of raising exception
 
 			try:
-				new_cont_obj = d.createContainer(username=user, imageName=chall_obj.imageName, port=chall_obj.ports, containerName='test_cont_name', pathPrefix=chall_obj.pathPrefix)
+				new_cont_obj = d.createContainer(username=user, imageName=chall_obj.imageName, port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='http')
 				print("############")
 				print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))
 				print("############")
