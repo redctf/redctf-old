@@ -72,7 +72,9 @@ export default class JeopardyButton extends Component {
     const buttonStyle = {
       backgroundColor: (this.props.solved) ? 'green' : 'blue'
     };
+
     return (
+      // TODO - Send hosted information to ChallengeModal
       <div className='jeopardy-button'
         onClick={this.handleOpenModal}
         style={buttonStyle}>
@@ -88,10 +90,13 @@ export default class JeopardyButton extends Component {
           <ModalHeader title={`${this.props.category} - ${this.props.name}`}
             handleClose={this.handleCloseModal}/>
           <ModalContent>
-            <ChallengeModal name={this.props.name}
+            <ChallengeModal sid={this.props.sid}
+              name={this.props.name}
               solves={this.props.solves}
               value={this.props.value}
-              description={this.props.description}/>
+              description={this.props.description}
+              path={this.props.path}
+            />
           </ModalContent>
           <ModalFooter confirmText='Submit'
             confirm={this.onSubmit}/>
