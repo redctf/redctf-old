@@ -49,7 +49,8 @@ export default class ChallengeModal extends Component {
       document.cookie = newCookie;
 
       // redirect to path
-      window.location = this.props.path;
+      window.location = 'http://'+window.location.hostname+':80/'+this.props.path;
+      // window.location = this.props.path;
     } else {
       // container does not exist, must create using graphQL call
       const port = 8000;
@@ -74,7 +75,8 @@ export default class ChallengeModal extends Component {
         document.cookie = newCookie;
 
         // redirect to path
-        //window.location = result.nextHop;
+        window.location = 'http://'+window.location.hostname+':80/'+result.nextHop;
+        // window.location = result.nextHop;
         console.log(result.status);
       })
     }
