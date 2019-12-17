@@ -13,9 +13,6 @@ services:
       - ./server/rethinkdb:/data
     networks:
       - traefik
-    labels:
-      - traefik.http.routers.rethinkdb.middlewares=errorhandler@docker
-
 
   horizon:
     image: rethinkdb/horizon
@@ -31,10 +28,6 @@ services:
       - rethinkdb
     networks:
       - traefik
-    labels:
-
-      - traefik.http.routers.horizon.middlewares=errorhandler@docker
-
 
   django:
     build: ./server/
@@ -56,7 +49,7 @@ services:
 
     labels:
       - traefik.http.routers.errorhandler.service=errorhandler-backend
-
+      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
 
   react:
     build:
