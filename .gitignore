@@ -9,9 +9,9 @@ rethinkdb_data/
 server/challenges.json
 server/teams.json
 server/challenges/migrations/*
+.npm
 .vscode
 *.code-workspace
 portainer/portainer.key
 portainer/portainer.pub
 portainer/config.json
-
