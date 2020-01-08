@@ -18,7 +18,7 @@ export default class Instructions extends Component {
           <p>The competition schedule is from 10am to 4pm CST, Monday, February 5th, 2018.</p>
 
           <div className='instruction-sub-heading'>Flags</div>
-          <p>Flag format is <code>{`CTF{md5}`}</code>.  If you find an md5 hash, feel free to append the <code>{`CTF{ }`}</code> around it and submit to see if you've identified a flag!</p>
+          <p>Flag format is <code>{`CSGI{md5}`}</code>.  If you find an md5 hash, feel free to append the <code>{`CSGI{ }`}</code> around it and submit to see if you've identified a flag!</p>
 
           <div className='instruction-heading'>Resources</div>
           

@@ -127,6 +127,7 @@ class LogIn(graphene.Mutation):
 
         user = authenticate(username=username, password=password)
 
+        print (user)
         if not user:
             raise Exception('Invalid username or password')
 
