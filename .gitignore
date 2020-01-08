@@ -11,4 +11,7 @@ server/teams.json
 server/challenges/migrations/*
 .npm
 .vscode
-*-workspace*
+*.code-workspace
+portainer/portainer.key
+portainer/portainer.pub
+portainer/config.json
