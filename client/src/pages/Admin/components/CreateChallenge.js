@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Tab, Tabs, TabPanel, TabList } from 'react-web-tabs';
-import axios from "axios";
 
 import DropDown from '../../../components/ui/DropDown/DropDown';
 import DropDownItem from '../../../components/ui/DropDown/DropDownItem';
 import SelectedItem from '../../../components/ui/DropDown/SelectedItem';
-import ChallengeStatus from 'ChallengeStatus';
+
 import Icon from "../../../components/ui/SvgIcon/Icon";
+import Button from '../../../components/ui/Button';
 
 @inject("store")
 @observer
@@ -21,116 +20,49 @@ export default class CreateChallenge extends Component {
         category: 0,
         points: 0,
         description: '',
-        flag: ''
+        flag: '',
+        upload: null,
+        imageName: '',
+      	hosted: false,
+      	ports: ''
       },
-      category: ''
+      category: '',
+      hostedType: 'dockerfile'
     };
-    this.getCategories = ::this.getCategories;
-  }
-
-  addChallenge() {   
-    // TODO - this is goofy logic, but works
-    const categories = this.store.appState.categories;
-    categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
-    const c = this.state.challenge;
-    const category = categories[c.category].sid;
-    
-    console.log('4');
-    return `mutation { addChallenge(flag: "${c.flag}" category: ${category} title: "${c.title}" points: ${c.points} description: "${c.description}") { status } }`;
-  }
-
-  addCategory() {
-    console.log('7');
-    return `mutation { addCategory(name: "${this.state.category}") { status } }`;
-  }
-
-  onSubmit(e) {
-    console.log('6');
-    if (this.state.challenge.category) {
-      const port = 8000;
-      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-      axios.defaults.withCredentials = true;
-
-      const mutation = this.addChallenge();
-      axios.post('/graphql/',
-        {
-          query: mutation,
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-      })
-    }
-  }
-  
-  onCategorySubmitted(e) {
-    console.log('5');
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
-    const mutation = this.addCategory();
-    axios.post('/graphql/',
-      {
-        query: mutation,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response);
-    })
   }
 
   handleFieldChanged = (e) => {
     const challenge = {...this.state.challenge};
     challenge[e.currentTarget.id] = e.currentTarget.value;
     this.setState({challenge});
-    console.log('3');
+    this.props.onChange(challenge);
   }
 
-  handleCategoryChanged = (e) => {
-    this.setState({category: e.currentTarget.value});
-    console.log('2');
+  handleHostedChanged = (e) => {
+  	const challenge = {...this.state.challenge};
+  	challenge['hosted'] = !(this.state.challenge.hosted)
+  	this.setState({challenge});
+    this.props.onChange(challenge);
+  }
+
+  handleHostedChoice = (e) => {
+  	this.setState({
+  		hostedType: e.currentTarget.value
+  	});
+  }
+
+  handleUpload = (e) => {
+  	const challenge = {...this.state.challenge};
+  	challenge['upload'] = e.target.files[0];
+  	this.setState({challenge});
+    this.props.onChange(challenge);
   }
 
   handleSelection = (selectedIndex, value, e) => {
     const challenge = {...this.state.challenge};
-    challenge.category = value
+    challenge['category'] = value
     this.setState({challenge});
-    console.log('1');
-  }
-
-  getCategories() {
-    const categories = this.store.appState.categories;
-    let items = null;
-
-    if (categories.length == 0 || categories[0].id !== 'test') {
-      categories.unshift({
-        id: 'test',
-        name: 'Please select a category',
-        sid: 0
-      });
-    }
-
-    if (categories.length !== 0) {
-      categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
-
-      items = categories.map((ele, idx) => {
-        return (
-          <DropDownItem onClick={this.handleSelection.bind(this, ele)}
-            key={ele.sid}
-            value={idx}>
-            <span>{ele.name}</span>
-          </DropDownItem>
-        );
-      });
-    }
-    return items;  
+    this.props.onChange(challenge);
   }
 
   validateInput = (event, maxLength, regex) => {
@@ -147,69 +79,148 @@ export default class CreateChallenge extends Component {
   }
 
   render() {
-    const categories = this.getCategories();
-    categories.sort(function(a,b){return (a.sid > b.sid) ? 1 : ((b.sid > a.sid) ? -1 : 0); } );
+    const categories = this.store.appState.categories.sort(function(a,b){return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); } );
+    const dropDownItems = categories.map((ele, idx) => {
+      return (
+        <DropDownItem onClick={this.handleSelection.bind(this, ele)}
+          key={ele.sid}
+          value={idx}>
+          <span>{ele.name}</span>
+        </DropDownItem>
+      );
+    });
+
     return (
-      <div className="page posts">
-        <div className="temp-section">
-          <div className="temp-header">Create Challenge</div>
-          <div className="temp-form">
-            <ul className="temp-flex">
-              <li>
-                <label>Category</label>
-                <DropDown width={460}
-                    selectedItem={this.state.challenge.category}
-                    selectedListItem={<SelectedItem/>}>
-                    {categories}
-                </DropDown>
-                <span className='requiredStar'>*</span>
-              </li>
-              <li>
-                <label>Title</label>
-                <input type="text"
-                  id="title"
-                  className="temp-input"
-                  placeholder="Awesome Laser Challenge"
-                  onChange={this.handleFieldChanged}/>
-                <span className='requiredStar'>*</span>
-              </li>
-              <li>
-                <label>Points</label>
-                <input type="text"
-                  id="points"
-                  className="temp-input"
-                  placeholder="It's over 9000"
-                  onKeyPress={(event) => {this.validateInput(event, 10, /^\d+$/);}}
-                  onChange={this.handleFieldChanged}/>
-                <span className='requiredStar'>*</span>
-              </li>
-              <li>
-                <label>Description</label>
-                <textarea rows="6"
-                  id="description"
-                  className="temp-input"
-                  placeholder="Duck the lasers, steal the egg. Simple."
-                  onChange={this.handleFieldChanged}>
-                </textarea>
-                <span className='requiredStar'>*</span>
-              </li>
-              <li>
-                <label>Flag</label>
-                <input type="text"
-                  id="flag"
-                  className="temp-input"
-                  placeholder="ctf{flagformat}"
-                  onChange={this.handleFieldChanged}/>
-                <span className='requiredStar'>*</span>
-              </li>
-              <li><small className='requiredText'>* required</small></li>
-              <li>
-                <button type="button"
-                  onClick={this.onSubmit.bind(this)}>Submit</button>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div className="create-challenge-modal">
+
+      	<DropDown selectBoxClassName='form-control category-selection'
+      		menuClassName='category-selection-menu'
+      		width={452}
+      		selectedItem={this.state.challenge.category}
+      		selectedListItem={<SelectedItem/>}>
+      		{dropDownItems}
+      	</DropDown>
+
+
+      	<input type="text"
+          id="title"
+          className="form-control"
+          placeholder="Title"
+          onChange={this.handleFieldChanged}
+         />
+
+      	<textarea type="text"
+      		rows="3"
+          id="description"
+          className="form-control"
+          placeholder="Challenge Description"
+          onChange={this.handleFieldChanged}
+         />
+
+        <div className='challenge-modal-double-line'>
+        	<div className='challenge-modal-flag'>
+		      	<input type="text"
+		          id="flag"
+		          className="form-control"
+		          placeholder="Flag"
+		          onChange={this.handleFieldChanged}
+		         />
+	        </div>
+	        <div className='challenge-modal-points'>
+		      	<input type="text"
+		          id="points"
+		          className="form-control"
+		          placeholder="Points"
+		          onKeyPress={(event) => {this.validateInput(event, 10, /^\d+$/);}}
+		          onChange={this.handleFieldChanged}
+		         />
+	         </div>
+         </div>
+
+
+        <div className='hosted-radio-section'>
+        	{/* TODO - Change to Hosted, add Tool Tips */}
+        	<div className='hosted-radio-title'>Is Challenge Containerized?</div>
+        	<div className='hosted-radios'>
+						<div className='hosted-radio-button'>
+							<input type="radio"
+								name="hosted-containers"
+			 					checked={this.state.challenge.hosted}
+								value={true}
+								onChange={this.handleHostedChanged}/>
+							<label htmlFor="Yes"> Yes</label>
+						</div>
+						<div className='hosted-radio-button'>
+			 				<input type="radio"
+			 					name="hosted-containers"
+			 					checked={!this.state.challenge.hosted}
+			 					value={false}
+								onChange={this.handleHostedChanged}/>
+			 				<label htmlFor="No"> No</label>
+		 				</div>
+	 				</div>
+ 				</div>
+
+
+        {this.state.challenge.hosted && 
+        <div className='hosted-radio-section'>
+        	<div className='hosted-radio-title'>How would you like to load container?</div>
+        	<div className='hosted-radios'>
+						<div className='hosted-radio-button'>
+							<input type="radio"
+								name="hosted-type"
+			 					checked={this.state.hostedType === 'dockerfile'}
+								value={'dockerfile'}
+								onChange={this.handleHostedChoice}/>
+							<label htmlFor="dockerfile"> Use Dockerfile</label>
+						</div>
+						<div className='hosted-radio-button'>
+			 				<input type="radio"
+			 					name="hosted-type"
+			 					checked={this.state.hostedType === 'dockerhub'}
+			 					value={'dockerhub'}
+								onChange={this.handleHostedChoice}/>
+			 				<label htmlFor="dockerhub"> Use Docker Hub</label>
+		 				</div>
+	 				</div>
+ 				</div>}
+
+
+ 				{this.state.challenge.hosted && this.state.hostedType === 'dockerfile' &&
+ 				<div className='hosted-type-section'>
+ 					<div className='hosted-type-desc'><b>Task: </b> Load a local Dockerfile.</div>
+ 					<div className='hosted-type-input'>
+		      	<input type="file"
+		          id="upload"
+		          className="form-control"
+		          placeholder="Upload local Dockerfile"
+		          onChange={this.handleUpload}
+		         />
+ 					</div>
+ 				</div>}
+
+ 				{this.state.challenge.hosted && this.state.hostedType === 'dockerhub' &&
+ 				<div className='hosted-type-section'>
+ 					<div className='hosted-type-desc'><b>Task: </b> Input the image name from Docker Hub and the ports that you would like it hosted on in a comma-separated list.</div>
+ 					<div className='challenge-modal-double-line'>
+ 						<div className='challenge-modal-image-name'>
+			      	<input type="text"
+			          id="imageName"
+			          className="form-control"
+			          placeholder="Image Name from Docker Hub"
+			          onChange={this.handleFieldChanged}
+			         />
+		         </div>
+ 						<div className='challenge-modal-ports'>
+			      	<input type="text"
+			          id="ports"
+			          className="form-control"
+			          placeholder="Ports (comma-sep)"
+			          onChange={this.handleFieldChanged}
+			         />
+		         </div>
+ 					</div>
+ 				</div>}
       </div>
     );
   }

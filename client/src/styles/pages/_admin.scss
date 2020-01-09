@@ -130,10 +130,136 @@
         transform: scale(1.5);
       }
     }
+  }
 
+  .admin-sub-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 20px;
+
+    .admin-sub {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .admin-sub-title {
+      font-size: 24px;
+      margin-left: 15px;
+    }
   }
 
 }
+
+.challenge-status-icon {
+  fill: #999;
+  transform: scale(0.5);
+}
+
+.create-new-challenge-btn {
+  fill: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #545dca;
+  color: #fff;
+  font-size: 20px;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+
+.create-challenge-modal {
+  margin: 0 auto;
+  padding: 36px 24px;
+
+  .form-control {
+    margin-bottom: 15px;
+  }
+
+  .challenge-modal-double-line {
+    display: flex;
+    flex-direction: row;
+
+    .challenge-modal-flag {
+      display: flex;
+      flex: 1;
+    }
+
+    .challenge-modal-points {
+      display: flex;
+      max-width: 100px;
+
+      input {
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .hosted-radio-section {
+    margin-bottom: 15px;
+
+    .hosted-radio-title {
+      line-height: 24px;
+      padding-bottom: 5px;
+    }
+
+    .hosted-radios {
+      display: flex;
+      flex-direction: row;
+
+      .hosted-radio-button {
+        display: flex;
+      }
+    }
+
+    label {
+      margin: 0px 25px 0px 8px;
+      font-size: 14px;
+    }
+  }
+
+  .hosted-type-section {
+    padding-top: 10px;
+
+    .hosted-type-desc {
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 24px;
+
+      b {
+        font-weight: 600;
+      }
+    }
+
+    .challenge-modal-double-line {
+      display: flex;
+      flex-direction: row;
+
+      .challenge-modal-image-name {
+        display: flex;
+        flex: 1;
+      }
+
+      .challenge-modal-ports {
+        display: flex;
+        max-width: 180px;
+
+        input {
+          margin-left: 15px;
+        }
+      }
+    }
+
+
+  }
+}
+
+
+
+
 
 
 
