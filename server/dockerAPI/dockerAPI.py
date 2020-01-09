@@ -409,15 +409,33 @@ class dockerAPI:
         except Exception as ex:
             raise ex
 
-    def lintDockerFile(self, dockerfile, rulesFile, volume, debug=False):
+    def lintDockerFile(self, dockerfile, rulesFile, volume, debug=False, imagePath=None):
         
         commands = "dockerfile_lint -p -f {0} -r {1} -j".format(
             dockerfile, rulesFile)
-
+        
+        #TODO: build image for dft. 
+        try: 
+            image = self.checkIfImageExists('redctf_dockerfile_linter')
+        except Exception as ex: 
+            print(ex)
+            
+        if image:
+            print("image exists")
+        else:
+            print("image does NOT exist - need to build it.")
+            try: 
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                imagePath = './redctf/server/dockerAPI'
+                newImage = self.buildImage(BASE_DIR, 'redctf_dockerfile_linter')
+            except Exception as ex: 
+                raise ex
+            
+            
         if debug == False:
 
             try:
-                container = self.client.containers.run('dft', command = commands, auto_remove = True, volumes = {
+                container = self.client.containers.run('redctf_dockerfile_linter', command = commands, auto_remove = True, volumes = {
                                                    volume: {'bind': '/dockerLint', 'mode': 'rw'}}, privileged=True)
                 return container
             except Exception as ex:
@@ -426,9 +444,9 @@ class dockerAPI:
         elif debug == True:
             
             try:
-                container = self.getContainerObject('dft-test')
+                container = self.getContainerObject('redctf_dockerfile_linter')
                 if not container:
-                    container = self.client.containers.create('dft', name='dft-test',  detach=False, auto_remove=False, command='sleep 1000', volumes={
+                    container = self.client.containers.create('redctf_dockerfile_linter', name='redctf_dockerfile_linter',  detach=False, auto_remove=False, command='sleep 1000', volumes={
                                                             volume: {'bind': '/dockerLint', 'mode': 'rw'}}, privileged=True)
 
                 containerDict = {}
@@ -449,3 +467,27 @@ class dockerAPI:
         else:
             raise("Unknown debug flag")
             
+    def buildImage (self, path, tag, labels=None):
+        """
+        check to see if an image already exists or needs to be pulled.
+        :from: https://docker-py.readthedocs.io/en/stable/images.html
+        :param imageName: string, image name to check
+        :return: bool
+        """
+        if labels == None: 
+            
+            try:
+                r = self.client.images.build(path=path, tag=tag, pull=True)
+                print(r)
+            except Exception as ex:
+                print(ex)
+                return False
+        else: 
+            try:
+                r = self.client.images.build(path=path, tag=tag, pull=True, labels=labels)
+                print(r)
+            except Exception as ex:
+                print(ex)
+                return False
+
+        return True
