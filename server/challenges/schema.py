@@ -3,6 +3,7 @@ import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
+from graphene_file_upload.scalars import Upload
 from django.utils.dateformat import format
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description, validate_imageName, validate_ports, validate_pathPrefix, validate_pathPrefix_unique
@@ -24,8 +25,9 @@ class AddChallenge(graphene.Mutation):
         image_name = graphene.String(required=False)
         ports = graphene.String(required=False)
         path_prefix = graphene.String(required=False)
+        upload = Upload(required=False)
 
-    def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix):
+    def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -45,10 +47,15 @@ class AddChallenge(graphene.Mutation):
             validate_pathPrefix(path_prefix)
             validate_pathPrefix_unique(path_prefix)
 
+
         challenge_category = Category.objects.get(id=category)
 
         # Save the challenge flag to the database
         challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports, pathPrefix=path_prefix)
+        challenge.save()
+
+        # Challenge needs to be saved before file can be uploaded so ID (primary key) exists
+        challenge.upload = upload
         challenge.save()
 
         # Push the realtime data to rethinkdb
@@ -61,6 +68,7 @@ class AddChallenge(graphene.Mutation):
             connection.close()
 
         return AddChallenge(status='Challenge Created')
+
 
 
 class CheckFlag(graphene.Mutation):
@@ -113,6 +121,9 @@ class CheckFlag(graphene.Mutation):
             return CheckFlag(status='Correct Flag') 
         else:
             return CheckFlag(status='Wrong Flag')
+
+
+
 
 
 class Mutation(graphene.ObjectType):
