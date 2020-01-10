@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import FormData from 'form-data'
 import axios from "axios";
 
 import Modal from 'react-modal';
@@ -37,31 +38,64 @@ export default class Challenges extends Component {
     };
   }
 
-  addChallenge() {
-    const c = this.state.challenge;
-    return `mutation { addChallenge ( category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}", pathPrefix: "", upload: "${c.upload}" ) { status } }`
-  }
-
   onSubmit = () => {
     // TODO - add in checks (i.e. do not allow submit if all fields not filled out properly)
+    // validateForm()   (...or something)
 
     const port = 8000;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
     axios.defaults.withCredentials = true;
+    const c = this.state.challenge;
 
-    const mutation = this.addChallenge();
-    axios.post('/graphql/',
-      {
-        query: mutation,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+    if (c.upload) {
+      let o = {
+        query: `mutation ($file: Upload!) {
+          addChallenge(category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}", pathPrefix: "", upload: $file) {
+            status
+          }
+        }`,
+        variables: {
+          file: null
+        }
       }
-    )
-    .then((response) => {
-      console.log(response);
-    })
+
+      let map = {
+        '0': ['variables.file']
+      }
+
+      let fd = new FormData()
+      fd.append('operations', JSON.stringify(o))
+      fd.append('map', JSON.stringify(map))
+      fd.append(0, this.state.challenge.upload, this.state.challenge.upload.name)
+
+      axios.post('/graphql/', fd,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        this.setState({showModal: false});
+      });
+    } else {
+      const mutation = `mutation { addChallenge ( category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}", pathPrefix: "" ) { status } }`;
+      axios.post('/graphql/',
+        {
+          query: mutation,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        this.setState({showModal: false});
+      })
+    }
   }
 
   createNewChallenge = () => {

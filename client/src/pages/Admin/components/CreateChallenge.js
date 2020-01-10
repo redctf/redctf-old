@@ -17,6 +17,7 @@ export default class CreateChallenge extends Component {
     this.state = {
       challenge: {
         title: '',
+        categorySelected: 0,
         category: 0,
         points: 0,
         description: '',
@@ -26,9 +27,16 @@ export default class CreateChallenge extends Component {
       	hosted: false,
       	ports: ''
       },
-      category: '',
+      categories: null,
       hostedType: 'dockerfile'
     };
+  }
+
+  componentWillMount() {
+  	const categories = this.store.appState.categories.sort(function(a,b){return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); } );
+    const challenge = {...this.state.challenge};
+    challenge['category'] = categories[0].sid;
+  	this.setState({challenge});
   }
 
   handleFieldChanged = (e) => {
@@ -60,7 +68,8 @@ export default class CreateChallenge extends Component {
 
   handleSelection = (selectedIndex, value, e) => {
     const challenge = {...this.state.challenge};
-    challenge['category'] = value
+    challenge['category'] = selectedIndex.sid;
+    challenge['categorySelected'] = value;
     this.setState({challenge});
     this.props.onChange(challenge);
   }
@@ -96,7 +105,7 @@ export default class CreateChallenge extends Component {
       	<DropDown selectBoxClassName='form-control category-selection'
       		menuClassName='category-selection-menu'
       		width={452}
-      		selectedItem={this.state.challenge.category}
+      		selectedItem={this.state.challenge.categorySelected}
       		selectedListItem={<SelectedItem/>}>
       		{dropDownItems}
       	</DropDown>
