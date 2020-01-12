@@ -52,7 +52,7 @@ export default class JeopardyButton extends Component {
       }
     )
     .then((response) => {
-      console.log('flag submitted:', flag, response);
+      //console.log('flag submitted:', flag, response);
       const status = response.data.data.checkFlag.status;
 
       if (status === "Correct Flag") {

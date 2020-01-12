@@ -33,7 +33,7 @@ export default class AppState {
   //   let { data } = await axios.get(
   //     `https://jsonplaceholder.typicode.com${pathname}`
   //   );
-  //   console.log(data);
+  //   //console.log(data);
   //   data.length > 0 ? this.setData(data) : this.setSingle(data);
   // }
 
@@ -57,7 +57,7 @@ export default class AppState {
   }
 
   @action authenticate() {
-    console.log('gets to authenticate in AppState')
+    //console.log('gets to authenticate in AppState')
     return new Promise((resolve, reject) => {
       this.authenticating = true;
       setTimeout(() => {

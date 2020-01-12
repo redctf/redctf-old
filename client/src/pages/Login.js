@@ -31,7 +31,7 @@ export default class Login extends Component {
       }
     )
     .then((response) => {
-      console.log('team information:', response);
+      //console.log('team information:', response);
       this.props.store.appState.team = response.data.data.team;
     })
   }
@@ -56,7 +56,7 @@ export default class Login extends Component {
 				}
 		  )
 		  .then((response) => {
-		    console.log(response);
+		    //console.log(response);
 		   	const res = response.data;
 
 		    if (res.data.login !== null) {

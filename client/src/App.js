@@ -40,26 +40,26 @@ export default class App extends Component {
     });
 
     ctf_collection.order('id').watch().subscribe(allCtfs => {
-      console.log({horizon_ctf: allCtfs}),
+      //console.log({horizon_ctf: allCtfs}),
       error => console.error(error);
       this.store.appState.ctfs = allCtfs;
     })
 
     users_collection.order('id').watch().subscribe(allItems => {
-      console.log({horizon_users: allItems}),
+      //console.log({horizon_users: allItems}),
       error => console.error(error) 
     });
     categories_collection.order('id').watch().subscribe(allCategories => {
       allCategories.sort(function(a,b){return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); } );
-      console.log({horizon_categories: allCategories}), error => console.error(error);
+      //console.log({horizon_categories: allCategories}), error => console.error(error);
       this.store.appState.categories = allCategories;
     });
     challenges_collection.order('id').watch().subscribe(allChallenges => {
-      console.log({horizon_challenges: allChallenges}), error => console.error(error);
+      //console.log({horizon_challenges: allChallenges}), error => console.error(error);
       this.store.appState.challenges = allChallenges;
     });
     containers_collection.order('id').watch().subscribe(allContainers => {
-      console.log({horizon_containers: allContainers}), error => console.error(error);
+      //console.log({horizon_containers: allContainers}), error => console.error(error);
       this.store.appState.containers = allContainers;
     });
     teams_collection.order('id').watch().subscribe(allTeams=> {
@@ -85,7 +85,7 @@ export default class App extends Component {
           (+(a.name > b.name) || +(a.name === b.name) - 1);
       });
 
-      console.log({horizon_teams: sortedTeams}), error => console.error(error);
+      //console.log({horizon_teams: sortedTeams}), error => console.error(error);
       this.store.appState.teams = sortedTeams;
     });
     this.getTeamInfo();
@@ -110,7 +110,7 @@ export default class App extends Component {
       }
     )
     .then((response) => {
-      console.log('team information:', response);
+      //console.log('team information:', response);
       this.store.appState.team = response.data.data.team;
     })
   }

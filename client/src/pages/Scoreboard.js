@@ -21,15 +21,15 @@ export default class Scoreboard extends Component {
 
     teamsFiltered.forEach((team) => {
       total += parseInt(team.correct_flags, 10);
-      console.log('total', total);
+      //console.log('total', total);
     });
     
-    console.log('total_post_loop', total);
+    //console.log('total_post_loop', total);
 
     this.setState({
       totalSolvedChallenges: total
     });
-    // console.log('totalChallenges: ', this.state.totalSolvedChallenges);
+    // //console.log('totalChallenges: ', this.state.totalSolvedChallenges);
   }
 
 

@@ -42,10 +42,10 @@ export default class Register extends Component {
       )
       .then((response) => {
         const res = response.data;
-        console.log(response);
+        //console.log(response);
 
         if (res.data.createTeam !== null) {
-          console.log('Team create success:', res.data.createTeam.status);
+          //console.log('Team create success:', res.data.createTeam.status);
           let token = res.data.createTeam.token;
           mutation = this.registerUser(token);
 
@@ -61,11 +61,11 @@ export default class Register extends Component {
             }
           )
           .then((response) => {
-            console.log(response);
+            //console.log(response);
             const res = response.data;
 
             if (res.data.createUser !== null) {
-              console.log('User create success:', res.data.createUser.status);
+              //console.log('User create success:', res.data.createUser.status);
               this.setState({
                 isRegistrationSuccess: true,
                 successMessage: 'User and team created successfully'
@@ -105,10 +105,10 @@ export default class Register extends Component {
       )
       .then((response) => {
         const res = response.data;
-        console.log(response);
+        //console.log(response);
 
         if (res.data.createUser !== null) {
-          console.log('User create success:', res.data.createUser.status);
+          //console.log('User create success:', res.data.createUser.status);
           this.setState({
             isRegistrationSuccess: true,
             successMessage: 'User created and team joined successfully'
