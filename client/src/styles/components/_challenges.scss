@@ -44,15 +44,16 @@
   margin-top: 15px;
   display: flex;
   justify-content: center;
+
   .solved-key {
-    background-color: green;
+    background-color: $la-palma;
     width: 30px;
     height: 20px;
     display: inline-block;
     margin-right: 5px;
   }
   .unsolved-key {
-    background-color: blue;
+    background-color: $royal-blue;
     width: 30px;
     height: 20px;
     display: inline-block;
@@ -61,6 +62,6 @@
 }
 
 .container-link {
-  color: #0285fc;
+  color: $azure-radiance;
   margin-top: 20px;
 }

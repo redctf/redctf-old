@@ -52,7 +52,6 @@ export default class JeopardyButton extends Component {
       }
     )
     .then((response) => {
-      console.log('flag submitted:', flag, response);
       const status = response.data.data.checkFlag.status;
 
       if (status === "Correct Flag") {
@@ -70,7 +69,7 @@ export default class JeopardyButton extends Component {
 
   render () {
     const buttonStyle = {
-      backgroundColor: (this.props.solved) ? 'green' : 'blue'
+      backgroundColor: (this.props.solved) ? '#14af12' : '#2638ED'
     };
 
     return (
