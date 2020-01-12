@@ -135,15 +135,13 @@ def insertCategories():
     web.save()
     rookie = Category(name="Rookie")
     rookie.save()
-    programming = Category(name="Programming")
-    programming.save()
     crypto = Category(name="Crypto & Puzzles")
     crypto.save()
-    advanced = Category(name="Advanced")
+    advanced = Category(name="Scripting")
     advanced.save()
     data = Category(name="Data")
     data.save()
-    bonus = Category(name="_Bonus")
+    bonus = Category(name="Reversing")
     bonus.save()
 
     # Push test categories to rethinkdb database
@@ -151,7 +149,6 @@ def insertCategories():
     try:
         r.db(CTF_DB).table('categories').insert({'sid': web.id, 'name': web.name, 'created': format(web.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': rookie.id, 'name': rookie.name, 'created': format(rookie.created, 'U')}).run(connection)
-        r.db(CTF_DB).table('categories').insert({'sid': programming.id, 'name': programming.name, 'created': format(programming.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name, 'created': format(crypto.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': advanced.id, 'name': advanced.name, 'created': format(advanced.created, 'U')}).run(connection)
         r.db(CTF_DB).table('categories').insert({'sid': data.id, 'name': data.name, 'created': format(data.created, 'U')}).run(connection)
