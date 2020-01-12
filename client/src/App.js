@@ -7,7 +7,8 @@ import axios from "axios";
 
 /* Horizon */
 import Horizon from '@horizon/client';
-const horizon = new Horizon({host: 'localhost:8181'});
+const location = document.location.host;
+const horizon = new Horizon({host: `${location}:8181`});
 const ctf_collection = horizon('ctfs');
 const users_collection = horizon('users');
 const categories_collection = horizon('categories');
