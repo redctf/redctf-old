@@ -17,8 +17,9 @@ export default class Home extends Component {
 				<Hero />
 				<main>
 					<div className="section-header">
-						<h3>A CTF Framework made with ReactJS, Mobx, RethinkDB, and Django.</h3>
+						<h3>The 2020 Contrast Security Kickoff CTF.</h3>
 						<hr />
+						<h4 className='made-with'>made with love and...</h4>
 					</div>
 					<div className="section-item">
 						<div className="section-logo react" />
