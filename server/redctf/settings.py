@@ -92,7 +92,7 @@ DATABASES = {
 }
 
 # Rethinkdb settings
-RDB_HOST =  os.environ.get('RDB_HOST') or 'localhost'
+RDB_HOST =  os.environ.get('RDB_HOST') or 'localhost' or 'contrastcontest.com'
 RDB_PORT = os.environ.get('RDB_PORT') or 28015
 CTF_DB = 'redctf'
 
@@ -143,7 +143,6 @@ GRAPHENE = {
 
 AUTH_USER_MODEL = 'users.User'
 
-CORS_ORIGIN_WHITELIST = ( 'http://localhost:3000', 'http://localhost:8000', 'http://ctf.csgidev.com:8181',
-'http://ctf.csgidev.com:3000', 'http://ctf.csgidev.com:8000')
+CORS_ORIGIN_WHITELIST = ( '*')
 CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True
