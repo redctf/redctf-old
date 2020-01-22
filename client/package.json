@@ -31,8 +31,9 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.22.0",
-    "image-webpack-loader": "^3.4.2",
+    "image-webpack-loader": "^6.0.0",
     "node-sass": "^4.13.1",
+    "open": ">0.0.5",
     "postcss-loader": "^2.0.6",
     "pure-render-decorator": "^0.2.0",
     "react-hot-loader": "next",
@@ -43,8 +44,7 @@
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.7",
     "webpack": "^3.5.6",
-    "webpack-dev-server": "^2.11.5",
-    "open": ">0.0.5"
+    "webpack-dev-server": "^2.11.5"
   },
   "dependencies": {
     "@nivo/line": "^0.33.0",
