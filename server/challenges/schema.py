@@ -48,6 +48,27 @@ class AddChallenge(graphene.Mutation):
             validate_pathPrefix_unique(path_prefix)
 
 
+        if upload:
+            try:
+                ports = list()
+                for line in upload:
+                    line = line.decode('utf-8')
+                    start = 'EXPOSE '
+
+                    if (start in line):
+                        possible_port = (line[line.find(start)+len(start):])
+                        ports.append(possible_port.split())
+
+                # flatten list
+                flattened_ports = list(set([val for sublist in ports for val in sublist]))
+                print (flattened_ports)
+            except Exception as e:
+                raise Exception('Error parsing uploaded Dockerfile: ', e)
+
+
+
+
+
         challenge_category = Category.objects.get(id=category)
 
         # Save the challenge flag to the database
