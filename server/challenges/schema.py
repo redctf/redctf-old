@@ -164,12 +164,11 @@ class DeleteChallenge(graphene.Mutation):
             chal.delete()
 
         else:
-            correct = False
             return DeleteChallenge(status='Unable to delete challenge id: %s' % (id))
             
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').get(id).delete().run(connection)
+            r.db(CTF_DB).table('challenges').filter({'sid':id}).delete().run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error deleting challenge from realtime database: %s' % (e))
         finally:
@@ -182,16 +181,16 @@ class UpdateChallenge(graphene.Mutation):
 
     class Arguments:
         id = graphene.Int(required=True)
-        category = graphene.Int(required=False)
-        title = graphene.String(required=False)
-        points = graphene.Int(required=False)
-        description = graphene.String(required=False)
-        flag = graphene.String(required=False)
-        hosted = graphene.Boolean(required=False)
-        image_name = graphene.String(required=False)
-        ports = graphene.String(required=False)
-        path_prefix = graphene.String(required=False)
-        upload = Upload(required=False)
+        updated_category = graphene.Int(required=False)
+        updated_title = graphene.String(required=False)
+        updated_points = graphene.Int(required=False)
+        updated_description = graphene.String(required=False)
+        updated_flag = graphene.String(required=False)
+        updated_hosted = graphene.Boolean(required=False)
+        updated_image_name = graphene.String(required=False)
+        updated_ports = graphene.String(required=False)
+        updated_path_prefix = graphene.String(required=False)
+        updated_upload = Upload(required=False)
         
 
     def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, path_prefix=None, upload=None):
@@ -203,8 +202,7 @@ class UpdateChallenge(graphene.Mutation):
         # validate_flag(flag)
 
         correct = False
-        # I don't think this is working as intended. 
-        # TODO: fix this to work or remove it. 
+        
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
             
@@ -212,7 +210,7 @@ class UpdateChallenge(graphene.Mutation):
         else:
             correct = False
             # TODO: updates broken. it updates the challenge and adds the new one called title with value title 
-        updates = {title:title}
+        updates = {title:updated_title}
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').get(id).update(updates).run(connection)
