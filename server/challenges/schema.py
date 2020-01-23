@@ -150,9 +150,9 @@ class DeleteChallenge(graphene.Mutation):
         id = graphene.Int(required=True)
 
     def mutate(self, info, id):
-        # user = info.context.user
+        user = info.context.user
         # Validate user is authenticated
-        # validate_user_is_authenticated(user)
+        validate_user_is_authenticated(user)
 
         # Sanitize flag input 
         # validate_flag(flag)
@@ -164,7 +164,7 @@ class DeleteChallenge(graphene.Mutation):
             chal.delete()
 
         else:
-            return DeleteChallenge(status='Unable to delete challenge id: %s' % (id))
+            return DeleteChallenge(status='Error deleting challenge from database: %s' % (id))
             
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
@@ -181,39 +181,98 @@ class UpdateChallenge(graphene.Mutation):
 
     class Arguments:
         id = graphene.Int(required=True)
-        updated_category = graphene.Int(required=False)
-        updated_title = graphene.String(required=False)
-        updated_points = graphene.Int(required=False)
-        updated_description = graphene.String(required=False)
-        updated_flag = graphene.String(required=False)
-        updated_hosted = graphene.Boolean(required=False)
-        updated_image_name = graphene.String(required=False)
-        updated_ports = graphene.String(required=False)
-        updated_path_prefix = graphene.String(required=False)
-        updated_upload = Upload(required=False)
+        updatedCategory = graphene.Int(required=False)
+        updatedTitle = graphene.String(required=False)
+        updatedPoints = graphene.Int(required=False)
+        updatedDescription = graphene.String(required=False)
+        updatedFlag = graphene.String(required=False)
+        updatedHosted = graphene.Boolean(required=False)
+        updatedImage_name = graphene.String(required=False)
+        updatedPorts = graphene.String(required=False)
+        updatedPath_prefix = graphene.String(required=False)
+        updatedUpload = Upload(required=False)
         
 
-    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, path_prefix=None, upload=None):
-        # user = info.context.user
+    def mutate(self, info, id, updatedCategory=None, updatedTitle=None, updatedPoints=None, updatedDescription=None, updatedFlag=None, updatedHosted=None, updatedImage_name=None, updatedPorts=None, updatedPath_prefix=None, updatedUpload=None):
+        user = info.context.user
         # Validate user is authenticated
-        # validate_user_is_authenticated(user)
+        validate_user_is_authenticated(user)
 
         # Sanitize flag input 
         # validate_flag(flag)
 
-        correct = False
+        rethink_updates = {}
+        
         
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
+            if updatedTitle:
+                chal.title = updatedTitle
+                rethink_updates['title'] = updatedTitle
+                
+            if updatedCategory:
+                challenge_category = Category.objects.get(id=updatedCategory)
+                chal.category = challenge_category
+                rethink_updates['category'] = updatedCategory
+                        
+            if updatedPoints:
+                chal.points = updatedPoints
+                rethink_updates['points'] = updatedPoints
+                
+            if updatedDescription:
+                chal.description = updatedDescription
+                rethink_updates['description'] = updatedDescription
+                
+            if updatedFlag:
+                chal.flag = updatedFlag
+                rethink_updates['flag'] = updatedFlag
+                
+            if updatedHosted:
+                chal.hosted = updatedHosted
+                rethink_updates['hosted'] = updatedHosted
+                
+            if updatedImage_name:
+                chal.imageName = updatedImage_name
+                rethink_updates['imageName'] = updatedImage_name
+                
+            if updatedPorts:
+                chal.ports = updatedPorts
+                rethink_updates['ports'] = updatedPorts
             
-            correct = True
+            if updatedPath_prefix:
+                chal.pathPrefix = updatedPath_prefix
+                rethink_updates['pathPrefix'] = updatedPath_prefix
+            
+            # if updatedUpload:
+            #     if upload:
+            #         try:
+            #             ports = list()
+            #             for line in upload:
+            #                 line = line.decode('utf-8')
+            #                 start = 'EXPOSE '
+
+            #                 if (start in line):
+            #                     possible_port = (line[line.find(start)+len(start):])
+            #                     ports.append(possible_port.split())
+
+            #         # flatten list
+            #         flattened_ports = list(set([val for sublist in ports for val in sublist]))
+            #         print (flattened_ports)
+            #     except Exception as e:
+            #         raise Exception('Error parsing uploaded Dockerfile: ', e)
+            #     chal.upload = updatedUpload
+            #     rethink_updates['upload'] = updatedUpload
+            
+            chal.save()
+            
+            
         else:
-            correct = False
             # TODO: updates broken. it updates the challenge and adds the new one called title with value title 
-        updates = {title:updated_title}
+            return UpdateChallenge(status='Error updating challenge')
+        # updates = {'title':updatedTitle}
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').get(id).update(updates).run(connection)
+            r.db(CTF_DB).table('challenges').filter({'sid':id}).update(rethink_updates).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error updating challenge from realtime database: %s' % (e))
         finally:
