@@ -382,6 +382,7 @@ class dockerAPI:
         return headerString
     
     def parseDockerfile(self, dockerfile):
+        
         try:
             with open(file=dockerfile) as f:
                 r = DockerfileParser(fileobj=f)
@@ -393,7 +394,7 @@ class dockerAPI:
                 # r_dict['cmd'] = r.cmd
                 # r_dict['content'] = r.content
                 r_dict['labels'] = r.labels
-
+                
                 r_ports = []
                 count = 0
                 for line in r.structure:
@@ -401,6 +402,14 @@ class dockerAPI:
                         r_ports.append(line['value'])
 
                 r_dict['ports'] = r_ports
+                
+                # test = {}
+                # fields = json.loads(r.json)
+                # for thing in fields:
+                    
+                #     key = thing.keys()
+                #     value = thing.values
+                #     test[key] = value
 
                 r_json = json.dumps(r_dict)
 

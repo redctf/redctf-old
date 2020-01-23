@@ -112,26 +112,7 @@
           description: "No tag is used"
           reference_url:
             - "https://docs.docker.com/engine/reference/builder/"
-            - "#from"
-        -
-          label: "as_name"
-          regex: /( as \w+)/
-          level: "info"
-          inverse_rule: true
-          message: "FROM <test> as <value>"
-          description: "No tag is used"
-          reference_url:
-            - "https://docs.docker.com/engine/reference/builder/"
             - "#from"        
-        -
-          label: "no_tag"
-          regex: /[:]/
-          level: "warn"
-          message: "the tag IS USED TEST"
-          description: "No tag is used"
-          reference_url:
-            - "https://docs.docker.com/engine/reference/builder/"
-            - "#from"
         - 
           label: "no_tag"
           regex: /^[:]/

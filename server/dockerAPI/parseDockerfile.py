@@ -8,8 +8,8 @@ pp = pprint.PrettyPrinter(indent=4)
 retcode = 0
 
 path = "/"
-filename = "./dockerLint/dockerfile-test"
-dockerfile = 'dockerfile-test'
+filename = "./dockerLint/dockerfile-bad"
+dockerfile = 'dockerfile-bad'
 rulesfile = "rules.yaml"
 volume = '/home/nate/redctf/dockerLint'
 debug = True

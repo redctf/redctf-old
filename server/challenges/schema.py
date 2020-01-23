@@ -1,5 +1,6 @@
 import graphene
 import rethinkdb as r
+from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
@@ -11,6 +12,8 @@ from categories.validators import validate_category_exists
 from categories.models import Category
 from challenges.models import Challenge
 from teams.models import SolvedChallenge
+
+d = dockerAPI()
 
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
@@ -64,9 +67,6 @@ class AddChallenge(graphene.Mutation):
                 print (flattened_ports)
             except Exception as e:
                 raise Exception('Error parsing uploaded Dockerfile: ', e)
-
-
-
 
 
         challenge_category = Category.objects.get(id=category)
@@ -142,6 +142,85 @@ class CheckFlag(graphene.Mutation):
             return CheckFlag(status='Correct Flag') 
         else:
             return CheckFlag(status='Wrong Flag')
+        
+class DeleteChallenge(graphene.Mutation):
+    status = graphene.String()
+
+    class Arguments:
+        id = graphene.String(required=True)
+
+    def mutate(self, info, id):
+        # user = info.context.user
+        # Validate user is authenticated
+        # validate_user_is_authenticated(user)
+
+        # Sanitize flag input 
+        # validate_flag(flag)
+
+        correct = False
+        # I don't think this is working as intended. 
+        # TODO: fix this to work or remove it. 
+        if Challenge.objects.filter(id__iexact=id).exists():
+            chal = Challenge.objects.get(id__iexact=id)
+            
+            correct = True
+        else:
+            correct = False
+            
+        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        try:
+            r.db(CTF_DB).table('challenges').get(id).delete().run(connection)
+        except RqlRuntimeError as e:
+            raise Exception('Error deleting challenge from realtime database: %s' % (e))
+        finally:
+            connection.close()
+
+        return DeleteChallenge(status='Challenge Deleted: %s' % (id))
+    
+class UpdateChallenge(graphene.Mutation):
+    status = graphene.String()
+
+    class Arguments:
+        id = graphene.String(required=True)
+        category = graphene.Int(required=False)
+        title = graphene.String(required=False)
+        points = graphene.Int(required=False)
+        description = graphene.String(required=False)
+        flag = graphene.String(required=False)
+        hosted = graphene.Boolean(required=False)
+        image_name = graphene.String(required=False)
+        ports = graphene.String(required=False)
+        path_prefix = graphene.String(required=False)
+        upload = Upload(required=False)
+        
+
+    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, path_prefix=None, upload=None):
+        # user = info.context.user
+        # Validate user is authenticated
+        # validate_user_is_authenticated(user)
+
+        # Sanitize flag input 
+        # validate_flag(flag)
+
+        correct = False
+        # I don't think this is working as intended. 
+        # TODO: fix this to work or remove it. 
+        if Challenge.objects.filter(id__iexact=id).exists():
+            chal = Challenge.objects.get(id__iexact=id)
+            
+            correct = True
+        else:
+            correct = False
+        updates = {title=title}
+        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        try:
+            r.db(CTF_DB).table('challenges').get(id).update(updates).run(connection)
+        except RqlRuntimeError as e:
+            raise Exception('Error updating challenge from realtime database: %s' % (e))
+        finally:
+            connection.close()
+
+        return UpdateChallenge(status='Challenge Updated: %s' % (id))
 
 
 
@@ -150,3 +229,5 @@ class CheckFlag(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     add_challenge = AddChallenge.Field()
     check_flag = CheckFlag.Field()
+    delete_challenge = DeleteChallenge.Field()
+    update_challenge = UpdateChallenge.Field()

@@ -36,3 +36,7 @@ def validate_pathPrefix(value):
 def validate_pathPrefix_unique(value):
     if Challenge.objects.filter(pathPrefix__iexact=value).exists():
         raise Exception('pathPrefix already exists')
+    
+def validate_challenge_id(value):
+    if Challenge.objects.filter(id__iexact=value).exists():
+        raise Exception('chal_id doesnt exists')

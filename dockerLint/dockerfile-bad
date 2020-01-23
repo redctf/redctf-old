@@ -1,0 +1,11 @@
+FROM tecadmin/ubuntu-ssh
+LABEL redctf.name="Goodpath"
+LABEL redctf.version="1.0"
+RUN apt-get update \
+   && apt-get install -y apache2
+COPY index.html /var/www/html/goodpath/
+WORKDIR /var/www/html
+CMD ["apachectl", "-D", "FOREGROUND"]
+EXPOSE 80
+EXPOSE 443
+aslkfdj
