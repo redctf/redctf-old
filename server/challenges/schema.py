@@ -147,7 +147,7 @@ class DeleteChallenge(graphene.Mutation):
     status = graphene.String()
 
     class Arguments:
-        id = graphene.String(required=True)
+        id = graphene.Int(required=True)
 
     def mutate(self, info, id):
         # user = info.context.user
@@ -157,15 +157,15 @@ class DeleteChallenge(graphene.Mutation):
         # Sanitize flag input 
         # validate_flag(flag)
 
-        correct = False
-        # I don't think this is working as intended. 
-        # TODO: fix this to work or remove it. 
+
+        # ID is primary key for django, SID is PK in Rethink
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
-            
-            correct = True
+            chal.delete()
+
         else:
             correct = False
+            return DeleteChallenge(status='Unable to delete challenge id: %s' % (id))
             
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
@@ -181,7 +181,7 @@ class UpdateChallenge(graphene.Mutation):
     status = graphene.String()
 
     class Arguments:
-        id = graphene.String(required=True)
+        id = graphene.Int(required=True)
         category = graphene.Int(required=False)
         title = graphene.String(required=False)
         points = graphene.Int(required=False)
@@ -211,7 +211,8 @@ class UpdateChallenge(graphene.Mutation):
             correct = True
         else:
             correct = False
-        updates = {title=title}
+            # TODO: updates broken. it updates the challenge and adds the new one called title with value title 
+        updates = {title:title}
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').get(id).update(updates).run(connection)
