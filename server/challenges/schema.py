@@ -26,13 +26,13 @@ class AddChallenge(graphene.Mutation):
         description = graphene.String(required=True)
         flag = graphene.String(required=True)
         hosted = graphene.Boolean(required=True)
-        #image_name = graphene.String(required=False)
+        image_name = graphene.String(required=False)
         ports = graphene.String(required=False)
         #path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
 
     #def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix, upload=None):
-    def mutate(self, info, category, title, points, description, flag, hosted, ports, upload=None):
+    def mutate(self, info, category, title, points, description, flag, hosted, ports, image_name=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -44,8 +44,8 @@ class AddChallenge(graphene.Mutation):
         validate_title(title)
         validate_description(description)
         validate_category_exists(category)
-        # if image_name:
-        #     validate_imageName(image_name)
+        if image_name:
+            validate_imageName(image_name)
         if ports:
             validate_ports(ports)
         # if path_prefix:
@@ -75,31 +75,33 @@ class AddChallenge(graphene.Mutation):
         challenge_category = Category.objects.get(id=category)
 
         # Save the challenge flag to the database
-        challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, ports=ports)
+        challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports)
         challenge.save()
 
         #set var for pathPrefix and tag
         path_tag = str(challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', challenge.category.name.lower()) + str(challenge.points)
-        image_name = path_tag + ':latest'
-
-        #build image
-        build = d.buildImage(fileobj=upload.file, tag=path_tag)
-        
-        #delete already saved challenge if build fails
-        if not build:
-            chall_id = challenge.id
-            try:
-                challenge.delete()
-            except:
-                #raise exception if unable to delete already saved challenge requiring manual intervention
-                raise Exception('Unable to delete challenge ID: %i. Manual deletion necessary.' % (chall_id))
-
-            raise Exception('Unable to build image.  Reverted challenge creation.')
-
-        # Challenge needs to be saved  so ID (primary key) exists before file can be uploaded, pathPrefix can be set, and image be built with appropriate tag
-        challenge.upload = upload
         challenge.pathPrefix = path_tag
-        challenge.imageName = image_name
+        
+        if upload:
+            image_name = path_tag + ':latest'
+
+            #build image
+            build = d.buildImage(fileobj=upload.file, tag=path_tag)
+        
+            #delete already saved challenge if build fails
+            if not build:
+                chall_id = challenge.id
+                try:
+                    challenge.delete()
+                except:
+                    #raise exception if unable to delete already saved challenge requiring manual intervention
+                    raise Exception('Unable to delete challenge ID: %i. Manual deletion necessary.' % (chall_id))
+
+                raise Exception('Unable to build image.  Reverted challenge creation.')
+
+            challenge.upload = upload
+            challenge.imageName = image_name
+        
         challenge.save()
 
 

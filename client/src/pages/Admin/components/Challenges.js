@@ -50,7 +50,7 @@ export default class Challenges extends Component {
     if (c.upload) {
       let o = {
         query: `mutation ($file: Upload!) {
-          addChallenge(category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, ports: "${c.ports}", upload: $file) {
+          addChallenge(category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}", upload: $file) {
             status
           }
         }`,
@@ -81,7 +81,7 @@ export default class Challenges extends Component {
         this.setState({showModal: false});
       });
     } else {
-      const mutation = `mutation { addChallenge ( category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}", pathPrefix: "" ) { status } }`;
+      const mutation = `mutation { addChallenge ( category: ${c.category}, description: "${c.description}", flag: "${c.flag}", points: ${c.points}, title: "${c.title}", hosted: ${c.hosted}, imageName: "${c.imageName}", ports: "${c.ports}") { status } }`;
       axios.post('/graphql/',
         {
           query: mutation,
