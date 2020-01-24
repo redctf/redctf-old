@@ -151,12 +151,9 @@ class DeleteChallenge(graphene.Mutation):
 
     def mutate(self, info, id):
         user = info.context.user
-        # Validate user is authenticated
-        validate_user_is_authenticated(user)
-
-        # Sanitize flag input 
-        # validate_flag(flag)
-
+        # Validate user is admin
+        validate_user_is_admin(user)
+        
 
         # ID is primary key for django, SID is PK in Rethink
         if Challenge.objects.filter(id__iexact=id).exists():
