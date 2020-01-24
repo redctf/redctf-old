@@ -7,7 +7,6 @@ from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from django.utils.dateformat import format
-from django.core.files.base import ContentFile
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description, validate_imageName, validate_ports, validate_pathPrefix, validate_pathPrefix_unique
 from categories.validators import validate_category_exists
