@@ -53,12 +53,7 @@ services:
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
 
   react:
-    build:
-      context: ./client/
-      args:
-        #SET THIS ARGUMENT TO REFLECT THE EXPOSED IP/HOSTNAME (1.1.1.1, example.com, localhost)
-        - hosted_at=localhost
-
+    build: ./client/
     container_name: react
     command: bash -c "cd /code && yarn install && yarn start"
     volumes:
