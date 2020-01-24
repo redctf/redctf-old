@@ -476,7 +476,7 @@ class dockerAPI:
         else:
             raise("Unknown debug flag")
             
-    def buildImage (self, path, tag, labels=None):
+    def buildImage (self, tag=None, path=None, fileobj=None, labels=None):
         """
         check to see if an image already exists or needs to be pulled.
         :from: https://docker-py.readthedocs.io/en/stable/images.html
@@ -486,17 +486,17 @@ class dockerAPI:
         if labels == None: 
             
             try:
-                r = self.client.images.build(path=path, tag=tag, pull=True)
+                r = self.client.images.build(path=path, fileobj=fileobj, tag=tag, pull=True, rm=True)
                 print(r)
             except Exception as ex:
-                print(ex)
+                print('Returned exception from build call: %s' % (ex))
                 return False
         else: 
             try:
-                r = self.client.images.build(path=path, tag=tag, pull=True, labels=labels)
+                r = self.client.images.build(path=path, fileobj=fileobj, tag=tag, pull=True, rm=True, labels=labels)
                 print(r)
             except Exception as ex:
-                print(ex)
+                print('Returned exception from build call: %s' % (ex))
                 return False
 
         return True

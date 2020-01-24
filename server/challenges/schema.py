@@ -1,11 +1,13 @@
 import graphene
 import rethinkdb as r
+import re
 from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from django.utils.dateformat import format
+from django.core.files.base import ContentFile
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description, validate_imageName, validate_ports, validate_pathPrefix, validate_pathPrefix_unique
 from categories.validators import validate_category_exists
@@ -25,12 +27,13 @@ class AddChallenge(graphene.Mutation):
         description = graphene.String(required=True)
         flag = graphene.String(required=True)
         hosted = graphene.Boolean(required=True)
-        image_name = graphene.String(required=False)
+        #image_name = graphene.String(required=False)
         ports = graphene.String(required=False)
-        path_prefix = graphene.String(required=False)
+        #path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
 
-    def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix, upload=None):
+    #def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix, upload=None):
+    def mutate(self, info, category, title, points, description, flag, hosted, ports, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -42,15 +45,15 @@ class AddChallenge(graphene.Mutation):
         validate_title(title)
         validate_description(description)
         validate_category_exists(category)
-        if image_name:
-            validate_imageName(image_name)
+        # if image_name:
+        #     validate_imageName(image_name)
         if ports:
             validate_ports(ports)
-        if path_prefix:
-            validate_pathPrefix(path_prefix)
-            validate_pathPrefix_unique(path_prefix)
+        # if path_prefix:
+        #     validate_pathPrefix(path_prefix)
+        #     validate_pathPrefix_unique(path_prefix)
 
-
+        #parse dockerfile for list of ports
         if upload:
             try:
                 ports = list()
@@ -65,6 +68,7 @@ class AddChallenge(graphene.Mutation):
                 # flatten list
                 flattened_ports = list(set([val for sublist in ports for val in sublist]))
                 print (flattened_ports)
+
             except Exception as e:
                 raise Exception('Error parsing uploaded Dockerfile: ', e)
 
@@ -72,17 +76,38 @@ class AddChallenge(graphene.Mutation):
         challenge_category = Category.objects.get(id=category)
 
         # Save the challenge flag to the database
-        challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports, pathPrefix=path_prefix)
+        challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, ports=ports)
         challenge.save()
 
-        # Challenge needs to be saved before file can be uploaded so ID (primary key) exists
+        #set var for pathPrefix and tag
+        path_tag = str(challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', challenge.category.name.lower()) + str(challenge.points)
+        image_name = path_tag + ':latest'
+
+        #build image
+        build = d.buildImage(fileobj=upload.file, tag=path_tag)
+        
+        #delete already saved challenge if build fails
+        if not build:
+            chall_id = challenge.id
+            try:
+                challenge.delete()
+            except:
+                #raise exception if unable to delete already saved challenge requiring manual intervention
+                raise Exception('Unable to delete challenge ID: %i. Manual deletion necessary.' % (chall_id))
+
+            raise Exception('Unable to build image.  Reverted challenge creation.')
+
+        # Challenge needs to be saved  so ID (primary key) exists before file can be uploaded, pathPrefix can be set, and image be built with appropriate tag
         challenge.upload = upload
+        challenge.pathPrefix = path_tag
+        challenge.imageName = image_name
         challenge.save()
+
 
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description, 'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix':path_prefix, 'created': format(challenge.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description, 'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix':path_tag, 'created': format(challenge.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
             raise Exception('Error adding challenge to realtime database: %s' % (e))
         finally:
