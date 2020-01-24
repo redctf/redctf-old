@@ -192,11 +192,9 @@ class UpdateChallenge(graphene.Mutation):
 
     def mutate(self, info, id, updatedCategory=None, updatedTitle=None, updatedPoints=None, updatedDescription=None, updatedFlag=None, updatedHosted=None, updatedImage_name=None, updatedPorts=None, updatedPath_prefix=None, updatedUpload=None):
         user = info.context.user
-        # Validate user is authenticated
-        validate_user_is_authenticated(user)
-
-        # Sanitize flag input 
-        # validate_flag(flag)
+        # Validate user is admin
+        validate_user_is_admin(user)
+        
 
         rethink_updates = {}
         
