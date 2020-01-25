@@ -204,19 +204,19 @@ class UpdateChallenge(graphene.Mutation):
 
     class Arguments:
         id = graphene.Int(required=True)
-        updatedCategory = graphene.Int(required=False)
-        updatedTitle = graphene.String(required=False)
-        updatedPoints = graphene.Int(required=False)
-        updatedDescription = graphene.String(required=False)
-        updatedFlag = graphene.String(required=False)
-        updatedHosted = graphene.Boolean(required=False)
-        updatedImage_name = graphene.String(required=False)
-        updatedPorts = graphene.String(required=False)
-        updatedPath_prefix = graphene.String(required=False)
-        updatedUpload = Upload(required=False)
+        category = graphene.Int(required=False)
+        title = graphene.String(required=False)
+        points = graphene.Int(required=False)
+        description = graphene.String(required=False)
+        flag = graphene.String(required=False)
+        hosted = graphene.Boolean(required=False)
+        image_name = graphene.String(required=False)
+        ports = graphene.String(required=False)
+        path_prefix = graphene.String(required=False)
+        upload = Upload(required=False)
         
 
-    def mutate(self, info, id, updatedCategory=None, updatedTitle=None, updatedPoints=None, updatedDescription=None, updatedFlag=None, updatedHosted=None, updatedImage_name=None, updatedPorts=None, updatedPath_prefix=None, updatedUpload=None):
+    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, path_prefix=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -227,62 +227,65 @@ class UpdateChallenge(graphene.Mutation):
         
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
-            if updatedTitle:
-                chal.title = updatedTitle
-                rethink_updates['title'] = updatedTitle
+            if title:
+                chal.title = title
+                rethink_updates['title'] = title
                 
-            if updatedCategory:
-                challenge_category = Category.objects.get(id=updatedCategory)
+            if category:
+                challenge_category = Category.objects.get(id=category)
                 chal.category = challenge_category
-                rethink_updates['category'] = updatedCategory
+                rethink_updates['category'] = category
                         
-            if updatedPoints:
-                chal.points = updatedPoints
-                rethink_updates['points'] = updatedPoints
+            if points:
+                chal.points = points
+                rethink_updates['points'] = points
                 
-            if updatedDescription:
-                chal.description = updatedDescription
-                rethink_updates['description'] = updatedDescription
+            if description:
+                chal.description = description
+                rethink_updates['description'] = description
                 
-            if updatedFlag:
-                chal.flag = updatedFlag
-                rethink_updates['flag'] = updatedFlag
+            if flag:
+                chal.flag = flag
+                rethink_updates['flag'] = flag
                 
-            if updatedHosted:
-                chal.hosted = updatedHosted
-                rethink_updates['hosted'] = updatedHosted
+            if hosted:
+                chal.hosted = hosted
+                rethink_updates['hosted'] = hosted
                 
-            if updatedImage_name:
-                chal.imageName = updatedImage_name
-                rethink_updates['imageName'] = updatedImage_name
+            if image_name:
+                chal.imageName = image_name
+                rethink_updates['imageName'] = image_name
                 
-            if updatedPorts:
-                chal.ports = updatedPorts
-                rethink_updates['ports'] = updatedPorts
+            if ports:
+                chal.ports = ports
+                rethink_updates['ports'] = ports
             
-            if updatedPath_prefix:
-                chal.pathPrefix = updatedPath_prefix
-                rethink_updates['pathPrefix'] = updatedPath_prefix
+            if path_prefix:
+                chal.pathPrefix = path_prefix
+                rethink_updates['pathPrefix'] = path_prefix
             
-            # if updatedUpload:
-            #     if upload:
-            #         try:
-            #             ports = list()
-            #             for line in upload:
-            #                 line = line.decode('utf-8')
-            #                 start = 'EXPOSE '
+            
+            if upload:
+                try:
+                    ports = list()
+                    for line in upload:
+                        line = line.decode('utf-8')
+                        start = 'EXPOSE '
 
-            #                 if (start in line):
-            #                     possible_port = (line[line.find(start)+len(start):])
-            #                     ports.append(possible_port.split())
+                        if (start in line):
+                            possible_port = (line[line.find(start)+len(start):])
+                            ports.append(possible_port.split())
 
-            #         # flatten list
-            #         flattened_ports = list(set([val for sublist in ports for val in sublist]))
-            #         print (flattened_ports)
-            #     except Exception as e:
-            #         raise Exception('Error parsing uploaded Dockerfile: ', e)
-            #     chal.upload = updatedUpload
-            #     rethink_updates['upload'] = updatedUpload
+                    # flatten list
+                    flattened_ports = list(set([val for sublist in ports for val in sublist]))
+                    print (flattened_ports)
+                    chal.ports = flattened_ports
+                    chal.upload = upload
+                    rethink_updates['upload'] = upload
+                    
+                except Exception as e:
+                    raise Exception('Error parsing uploaded Dockerfile: ', e)
+                
             
             chal.save()
             
