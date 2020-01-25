@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, withRouter } from "react-router-dom";
+import axios from "axios";
 
 import TopNav from "./TopNav";
 import ActiveLink from "./ui/ActiveLink";
@@ -17,7 +18,34 @@ export default class TopBar extends Component {
 
 	authenticate(e) {
 		if (e) e.preventDefault();
+		
+		// log out of back end
+		if (this.store.authenticated) {
+			const port = 8000;
+			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+			axios.defaults.withCredentials = true;
+			const mutation = this.postLogout();
+			axios.post('/graphql/',
+				{
+					query: mutation,
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+				}
+		  )
+		  .then((response) => {
+		    console.log(response);
+
+		  })
+		}
+
+		// change authenticated in AppState
 		this.store.authenticate();
+	}
+
+	postLogout() {
+		return `mutation { logout {status} }`;
 	}
 
 	render() {
