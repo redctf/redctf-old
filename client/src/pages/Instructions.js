@@ -22,7 +22,8 @@ export default class Instructions extends Component {
           <p>The competition is scheduled is from 8am (local time), Sunday, January 12th through Wednesday, January 15th.</p>
 
           <div className='instruction-sub-heading'>Flags</div>
-          <p>Flag format is <code>{`contrast{md5}`}</code>.  If you find an md5 hash, feel free to append the <code>{`contrast{ }`}</code> around it and submit to see if you've identified a flag!</p>
+
+          <p>Flag format is <code>{`CTF{md5}`}</code>.  If you find an md5 hash, feel free to append the <code>{`CTF{ }`}</code> around it and submit to see if you've identified a flag!</p>
 
           <div className='instruction-heading'>Resources</div>
           
@@ -30,7 +31,7 @@ export default class Instructions extends Component {
           <p>The ctf resources are...</p>
 
           <div className='instruction-heading'>Contact Organizers</div>
-          <p>Join us on slack in the #kickoff-ctf-2020 channel</p>
+          <p>Join us on slack in the #ctf channel</p>
 
 
         </div>
