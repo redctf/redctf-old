@@ -31,13 +31,12 @@ class AddChallenge(graphene.Mutation):
         #path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
 
-    #def mutate(self, info, category, title, points, description, flag, hosted, image_name, ports, path_prefix, upload=None):
     def mutate(self, info, category, title, points, description, flag, hosted, ports, image_name=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
 
-        # TODO: sanitize all the input fields 
+        # sanitize all the input fields 
         validate_flag(flag)
         validate_flag_unique(flag)
         validate_points(points)
@@ -213,60 +212,60 @@ class UpdateChallenge(graphene.Mutation):
         hosted = graphene.Boolean(required=False)
         image_name = graphene.String(required=False)
         ports = graphene.String(required=False)
-        path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
         
 
-    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, path_prefix=None, upload=None):
+    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
         
-
-        rethink_updates = {}
-        
+        rethink_updates = {}   
         
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
-            if title:
+            if title is not None:
+                validate_title(title)
                 chal.title = title
                 rethink_updates['title'] = title
                 
-            if category:
+            if category is not None:
+                validate_category_exists(category)
                 challenge_category = Category.objects.get(id=category)
                 chal.category = challenge_category
                 rethink_updates['category'] = category
                         
-            if points:
+            if points is not None:
+                validate_points(points)
                 chal.points = points
                 rethink_updates['points'] = points
                 
-            if description:
+            if description is not None:
+                validate_description(description)
                 chal.description = description
                 rethink_updates['description'] = description
                 
-            if flag:
+            if flag is not None:
+                validate_flag(flag)
+                validate_flag_unique(flag)
                 chal.flag = flag
                 rethink_updates['flag'] = flag
                 
-            if hosted:
+            if hosted is not None:
                 chal.hosted = hosted
                 rethink_updates['hosted'] = hosted
                 
-            if image_name:
+            if image_name is not None:
+                validate_imageName(image_name)
                 chal.imageName = image_name
                 rethink_updates['imageName'] = image_name
                 
-            if ports:
+            if ports is not None:
+                validate_ports(ports)
                 chal.ports = ports
                 rethink_updates['ports'] = ports
             
-            if path_prefix:
-                chal.pathPrefix = path_prefix
-                rethink_updates['pathPrefix'] = path_prefix
-            
-            
-            if upload:
+            if upload is not None:
                 try:
                     ports = list()
                     for line in upload:
@@ -282,19 +281,22 @@ class UpdateChallenge(graphene.Mutation):
                     print (flattened_ports)
                     chal.ports = flattened_ports
                     chal.upload = upload
-                    rethink_updates['upload'] = upload
+                    # rethink doesn't need the file object, may add metadata later
+                    # rethink_updates['upload'] = upload
                     
                 except Exception as e:
                     raise Exception('Error parsing uploaded Dockerfile: ', e)
                 
-            
+            # set var for pathPrefix and tag
+            path_tag = str(chal.id) + '_' + re.sub('[^A-Za-z0-9]+', '', chal.category.name.lower()) + str(chal.points)
+            chal.pathPrefix = path_tag
+            rethink_updates['pathPrefix'] = path_tag
             chal.save()
             
             
         else:
             raise Exception('Error - can\'t find challenge: %s' % (id))
 
-        # updates = {'title':updatedTitle}
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').filter({'sid':id}).update(rethink_updates).run(connection)
