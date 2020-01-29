@@ -180,15 +180,6 @@ class DeleteChallenge(graphene.Mutation):
         # Validate user is admin
         validate_user_is_admin(user)
         
-
-        # ID is primary key for django, SID is PK in Rethink
-        if Challenge.objects.filter(id__iexact=id).exists():
-            chal = Challenge.objects.get(id__iexact=id)
-            chal.delete()
-
-        else:
-            return DeleteChallenge(status='Error deleting challenge from database: %s' % (id))
-            
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').filter({'sid':id}).delete().run(connection)
@@ -196,6 +187,16 @@ class DeleteChallenge(graphene.Mutation):
             raise Exception('Error deleting challenge from realtime database: %s' % (e))
         finally:
             connection.close()
+
+        # ID is primary key for django, SID is PK in Rethink
+        if Challenge.objects.filter(id__iexact=id).exists():
+            chal = Challenge.objects.get(id__iexact=id)
+            chal.delete()
+
+        else:
+            # return DeleteChallenge(status='Error deleting challenge from database: %s' % (id))
+            raise Exception('Error deleting challenge from database: %s' % (id))
+
 
         return DeleteChallenge(status='Challenge Deleted: %s' % (id))
     
@@ -291,8 +292,8 @@ class UpdateChallenge(graphene.Mutation):
             
             
         else:
-            # TODO: updates broken. it updates the challenge and adds the new one called title with value title 
-            return UpdateChallenge(status='Error updating challenge')
+            raise Exception('Error - can\'t find challenge: %s' % (id))
+
         # updates = {'title':updatedTitle}
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
