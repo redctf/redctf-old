@@ -121,18 +121,18 @@
 }
 
 .error-message {
-  background-color: pink;
-  margin-top:15px;
+  background-color: $pippin;
+  margin: 15px 0px;
   padding: 5px 10px;
-  color: red;
+  color: $punch;
   font-size: 12px;
   border-radius: 5px;
-  border: 1px solid red;
+  border: 1px solid $punch;
 }
 
 .success-message {
   background-color: #ade3c3;
-  margin-top:15px;
+  margin: 15px 0px;
   padding: 5px 10px;
   color: green;
   font-size: 12px;

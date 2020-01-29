@@ -1,14 +1,18 @@
 import graphene
 import rethinkdb as r
+from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from django.utils.dateformat import format
 from users.models import User
 from teams.models import Team
+from containers.models import Container
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
 from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
+
+d = dockerAPI()
 
 # # ======================== #
 # # Temp fix for stage 1 dev #
@@ -138,6 +142,37 @@ class LogOut(graphene.Mutation):
     status = graphene.String()
 
     def mutate(self, info):
+        user = info.context.user
+        
+        #destroy all user's containers
+        #look up container that belongs to logged in user
+        try:
+            cont_objs = Container.objects.filter(user__exact=user)
+
+            for cont in cont_objs:
+                #remove container
+                try:
+                    d.removeContainer(containerName=cont.name)
+                except:
+                    print('%s was not found our we are unable to remove container from docker host.', (cont.name) )
+                #delete realtime database object
+                try:
+                    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+                    r.db(CTF_DB).table('containers').filter({'sid':cont.id}).delete().run(connection)
+                except RqlRuntimeError as e:
+                    raise Exception('Error deleting container from realtime database: %s' % (e))
+                finally:
+                    connection.close()
+                #delete database object
+                try:
+                    cont.delete()
+                except Exception as e:
+                    raise Exception('Was not able to delete container from database: ', e)
+
+        except:
+            print('Container does not exist for user.')
+            #if none exists, log out
+
         logout(info.context)
         return LogOut(status='Logged Out')
 

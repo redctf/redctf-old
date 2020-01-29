@@ -120,7 +120,13 @@ button, input, optgroup, select, textarea {
   margin: 0;
 }
 
-
+.custom-button {
+  display: flex;
+  align-items: center;
+}
+.button-icon {
+  margin-right: 15px;
+}
 
 .temp-td {
   text-align: center !important;

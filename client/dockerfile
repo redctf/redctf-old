@@ -1,8 +1,3 @@
 FROM node:11.10.1
-
-ARG hosted_at
-
 COPY . /code
-RUN /bin/bash -c 'sed -i "s/localhost/$hosted_at/g" /code/src/App.js'
-
 WORKDIR /code

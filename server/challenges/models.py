@@ -2,21 +2,31 @@ from django.db import models
 from categories.models import Category
 from django.contrib import admin
 
+def user_directory_path(instance, filename):
+  # file will be uploaded to MEDIA_ROOT/uploads/challenge_<id>/<filename>
+  return 'uploads/challenge_{0}/{1}'.format(instance.id, filename)
 
 # Create your models here.
 class Challenge(models.Model):
   """
   Challenge model class.
   """
+  title = models.CharField(max_length=100)
+  description = models.CharField(max_length=512)
   category = models.ForeignKey(Category, default=None, null=True, on_delete=models.CASCADE, related_name='categories')
   points = models.IntegerField(default=0)
   flag = models.CharField(max_length=100)
+  hosted = models.BooleanField(default=False)
+  imageName = models.CharField(max_length=100, default=None, null=True)
+  ports = models.CharField(max_length=100, default=None, null=True)
+  pathPrefix = models.CharField(max_length=100, default=None, null=True)
+  upload = models.FileField(upload_to=user_directory_path, default=None, null=True)
   created = models.DateTimeField(auto_now_add=True)
 
 class ChallengeAdmin(admin.ModelAdmin):
   #This inner class indicates to the admin interface how to display a post
   #See the Django documentation for more information
-  list_display = ('get_category', 'points', 'flag')
+  list_display = ('get_category', 'title', 'points', 'flag', 'pathPrefix', 'upload')
 
   def get_category(self, obj):
     return obj.category.name

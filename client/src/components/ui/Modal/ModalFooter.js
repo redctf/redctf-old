@@ -38,7 +38,9 @@ export default class ModalFooter extends Component {
   }
 
   componentDidMount() {
-    this.refs.flagInput.focus();
+    if (this.props.flagSubmissionInput) {
+      this.refs.flagInput.focus();
+    }
   }
 
   render() {
@@ -72,7 +74,11 @@ export default class ModalFooter extends Component {
     this.props.cancel(evt);
   }
   handleConfirm(evt) {
-    this.props.confirm(evt, this.state.flag);
+    if (this.props.flagSubmissionInput) {
+      this.props.confirm(evt, this.state.flag);
+    } else {
+      this.props.confirm(evt);
+    }
   }
   handleFieldChanged(evt) {
     this.setState({
