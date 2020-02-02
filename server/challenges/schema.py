@@ -16,6 +16,7 @@ from teams.models import SolvedChallenge
 
 d = dockerAPI()
 
+
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -36,7 +37,7 @@ class AddChallenge(graphene.Mutation):
         # Validate user is admin
         validate_user_is_admin(user)
 
-        # sanitize all the input fields 
+        # sanitize all the input fields
         validate_flag(flag)
         validate_flag_unique(flag)
         validate_points(points)
@@ -51,7 +52,7 @@ class AddChallenge(graphene.Mutation):
         #     validate_pathPrefix(path_prefix)
         #     validate_pathPrefix_unique(path_prefix)
 
-        #parse dockerfile for list of ports
+        # parse dockerfile for list of ports
         if upload:
             try:
                 ports = list()
@@ -64,57 +65,61 @@ class AddChallenge(graphene.Mutation):
                         ports.append(possible_port.split())
 
                 # flatten list
-                flattened_ports = list(set([val for sublist in ports for val in sublist]))
-                print (flattened_ports)
+                flattened_ports = list(
+                    set([val for sublist in ports for val in sublist]))
+                print(flattened_ports)
 
             except Exception as e:
                 raise Exception('Error parsing uploaded Dockerfile: ', e)
 
-
         challenge_category = Category.objects.get(id=category)
 
         # Save the challenge flag to the database
-        challenge = Challenge(category=challenge_category, title=title, description=description, flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports)
+        challenge = Challenge(category=challenge_category, title=title, description=description,
+                              flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports)
         challenge.save()
 
-        #set var for pathPrefix and tag
-        path_tag = str(challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', challenge.category.name.lower()) + str(challenge.points)
+        # set var for pathPrefix and tag
+        path_tag = str(challenge.id) + '_' + re.sub(
+            '[^A-Za-z0-9]+', '', challenge.category.name.lower()) + str(challenge.points)
         challenge.pathPrefix = path_tag
-        
+
         if upload:
             image_name = path_tag + ':latest'
 
-            #build image
+            # build image
             build = d.buildImage(fileobj=upload.file, tag=path_tag)
-        
-            #delete already saved challenge if build fails
+
+            # delete already saved challenge if build fails
             if not build:
                 chall_id = challenge.id
                 try:
                     challenge.delete()
                 except:
-                    #raise exception if unable to delete already saved challenge requiring manual intervention
-                    raise Exception('Unable to delete challenge ID: %i. Manual deletion necessary.' % (chall_id))
+                    # raise exception if unable to delete already saved challenge requiring manual intervention
+                    raise Exception(
+                        'Unable to delete challenge ID: %i. Manual deletion necessary.' % (chall_id))
 
-                raise Exception('Unable to build image.  Reverted challenge creation.')
+                raise Exception(
+                    'Unable to build image.  Reverted challenge creation.')
 
             challenge.upload = upload
             challenge.imageName = image_name
-        
-        challenge.save()
 
+        challenge.save()
 
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description, 'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix':path_tag, 'created': format(challenge.created, 'U')}).run(connection)
+            r.db(CTF_DB).table('challenges').insert({'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description,
+                                                     'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix': path_tag, 'created': format(challenge.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
-            raise Exception('Error adding challenge to realtime database: %s' % (e))
+            raise Exception(
+                'Error adding challenge to realtime database: %s' % (e))
         finally:
             connection.close()
 
         return AddChallenge(status='Challenge Created')
-
 
 
 class CheckFlag(graphene.Mutation):
@@ -128,7 +133,7 @@ class CheckFlag(graphene.Mutation):
         # Validate user is authenticated
         validate_user_is_authenticated(user)
 
-        # Sanitize flag input 
+        # Sanitize flag input
         validate_flag(flag)
 
         correct = False
@@ -143,31 +148,36 @@ class CheckFlag(graphene.Mutation):
                 user.team.save()
             correct = True
         else:
-            user.team.wrong_flags += 1    
+            user.team.wrong_flags += 1
             user.team.save()
             correct = False
 
         # Create list of solved challenges
         solved = []
         for sc in user.team.solved.all().order_by('timestamp'):
-            solved.append({'id': sc.challenge.id, 'points': sc.challenge.points, 'timestamp': format(sc.timestamp, 'U')})
-             
+            solved.append({'id': sc.challenge.id, 'points': sc.challenge.points,
+                           'timestamp': format(sc.timestamp, 'U')})
+
         # Push the realtime data to rethinkdb
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update({'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
+            r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update(
+                {'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
             if correct:
-                r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update({'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
+                r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update(
+                    {'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
         except RqlRuntimeError as e:
-            raise Exception('Error adding category to realtime database: %s' % (e))
+            raise Exception(
+                'Error adding category to realtime database: %s' % (e))
         finally:
             connection.close()
-        
+
         if correct:
-            return CheckFlag(status='Correct Flag') 
+            return CheckFlag(status='Correct Flag')
         else:
             return CheckFlag(status='Wrong Flag')
-        
+
+
 class DeleteChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -178,12 +188,14 @@ class DeleteChallenge(graphene.Mutation):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
-        
+
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').filter({'sid':id}).delete().run(connection)
+            r.db(CTF_DB).table('challenges').filter(
+                {'sid': id}).delete().run(connection)
         except RqlRuntimeError as e:
-            raise Exception('Error deleting challenge from realtime database: %s' % (e))
+            raise Exception(
+                'Error deleting challenge from realtime database: %s' % (e))
         finally:
             connection.close()
 
@@ -194,11 +206,12 @@ class DeleteChallenge(graphene.Mutation):
 
         else:
             # return DeleteChallenge(status='Error deleting challenge from database: %s' % (id))
-            raise Exception('Error deleting challenge from database: %s' % (id))
-
+            raise Exception(
+                'Error deleting challenge from database: %s' % (id))
 
         return DeleteChallenge(status='Challenge Deleted: %s' % (id))
-    
+
+
 class UpdateChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -213,58 +226,57 @@ class UpdateChallenge(graphene.Mutation):
         image_name = graphene.String(required=False)
         ports = graphene.String(required=False)
         upload = Upload(required=False)
-        
 
     def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
-        
-        rethink_updates = {}   
-        
+
+        rethink_updates = {}
+
         if Challenge.objects.filter(id__iexact=id).exists():
             chal = Challenge.objects.get(id__iexact=id)
             if title is not None:
                 validate_title(title)
                 chal.title = title
                 rethink_updates['title'] = title
-                
+
             if category is not None:
                 validate_category_exists(category)
                 challenge_category = Category.objects.get(id=category)
                 chal.category = challenge_category
                 rethink_updates['category'] = category
-                        
+
             if points is not None:
                 validate_points(points)
                 chal.points = points
                 rethink_updates['points'] = points
-                
+
             if description is not None:
                 validate_description(description)
                 chal.description = description
                 rethink_updates['description'] = description
-                
+
             if flag is not None:
                 validate_flag(flag)
                 validate_flag_unique(flag)
                 chal.flag = flag
                 rethink_updates['flag'] = flag
-                
+
             if hosted is not None:
                 chal.hosted = hosted
                 rethink_updates['hosted'] = hosted
-                
+
             if image_name is not None:
                 validate_imageName(image_name)
                 chal.imageName = image_name
                 rethink_updates['imageName'] = image_name
-                
+
             if ports is not None:
                 validate_ports(ports)
                 chal.ports = ports
                 rethink_updates['ports'] = ports
-            
+
             if upload is not None:
                 try:
                     ports = list()
@@ -273,42 +285,121 @@ class UpdateChallenge(graphene.Mutation):
                         start = 'EXPOSE '
 
                         if (start in line):
-                            possible_port = (line[line.find(start)+len(start):])
+                            possible_port = (
+                                line[line.find(start)+len(start):])
                             ports.append(possible_port.split())
 
                     # flatten list
-                    flattened_ports = list(set([val for sublist in ports for val in sublist]))
-                    print (flattened_ports)
+                    flattened_ports = list(
+                        set([val for sublist in ports for val in sublist]))
+                    print(flattened_ports)
                     chal.ports = flattened_ports
                     chal.upload = upload
                     # rethink doesn't need the file object, may add metadata later
                     # rethink_updates['upload'] = upload
-                    
+
                 except Exception as e:
                     raise Exception('Error parsing uploaded Dockerfile: ', e)
-                
+
             # set var for pathPrefix and tag
-            path_tag = str(chal.id) + '_' + re.sub('[^A-Za-z0-9]+', '', chal.category.name.lower()) + str(chal.points)
+            path_tag = str(
+                chal.id) + '_' + re.sub('[^A-Za-z0-9]+', '', chal.category.name.lower()) + str(chal.points)
             chal.pathPrefix = path_tag
             rethink_updates['pathPrefix'] = path_tag
             chal.save()
-            
-            
+
         else:
             raise Exception('Error - can\'t find challenge: %s' % (id))
 
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
-            r.db(CTF_DB).table('challenges').filter({'sid':id}).update(rethink_updates).run(connection)
+            r.db(CTF_DB).table('challenges').filter(
+                {'sid': id}).update(rethink_updates).run(connection)
         except RqlRuntimeError as e:
-            raise Exception('Error updating challenge from realtime database: %s' % (e))
+            raise Exception(
+                'Error updating challenge from realtime database: %s' % (e))
         finally:
             connection.close()
 
         return UpdateChallenge(status='Challenge Updated: %s' % (id))
 
 
+class UpdatePoints(graphene.Mutation):
+    status = graphene.String()
 
+    class Arguments:
+        chal_id = graphene.Int(required=True)
+        points = graphene.Int(required=True)
+
+    def mutate(self, info, chal_id, points):
+        user = info.context.user
+        # Validate user is admin
+        validate_user_is_admin(user)
+
+        # for team in teams - get solved challenges = id, remove points, remove correct flags, update rethinkdb.
+
+        # get all points for each team, add them up after the points update is done.
+
+        # rethindb data explorer javascript implementation
+        # r.db('redctf').table('teams').filter(
+        #     function (solved){
+        #         return solved('solved').contains(function(id){
+        #         return id('id').eq(68);
+        #         })
+        #     }
+        #     )
+
+        rethink_updates = {}
+
+        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        try:
+            # r.db(CTF_DB).table('teams').filter({'sid':id}).update(rethink_updates).run(connection)
+            request = r.db('redctf').table('teams') \
+                .concat_map(
+                lambda doc: doc['solved']
+                .concat_map(lambda data: [{'id': doc['id'], 'sid': doc['sid'], 'name': doc['name'], 'points': doc['points'], 'solved': data}])) \
+                .filter(
+                lambda doc:
+                doc['solved']['id'] == chal_id
+            ).run(connection)
+            print('update rethink results: {0}'.format(request))
+
+        except RqlRuntimeError as e:
+            raise Exception(
+                'Error updating challenge from realtime database: %s' % (e))
+        try:
+            for team in request:
+                print('Updating {0}\'s points.'.format(team['name']))
+                chal_diff_points = abs(team['solved']['points'] - points)
+
+                if points < team['solved']['points']:
+                    # update total team points
+                    rethink_updates['points'] = team['points'] + \
+                        chal_diff_points
+
+                elif points > team['solved']['points']:
+                    # update total team points
+                    rethink_updates['points'] = team['points'] + \
+                        chal_diff_points
+                else:
+                    print('no points change')
+
+                # set updated challenge points
+                rethink_updates['solved'] = {'points': points}
+
+                # run updates
+                r.db('redctf').table('teams') \
+                    .get(team['id'])\
+                    .update(rethink_updates).run(connection)
+
+        except Exception as ex:
+            raise Exception(
+                'Error updating points: {0}'.format(ex)
+            )
+
+        finally:
+            connection.close()
+        return UpdatePoints(status='Points updated')
 
 
 class Mutation(graphene.ObjectType):
@@ -316,3 +407,4 @@ class Mutation(graphene.ObjectType):
     check_flag = CheckFlag.Field()
     delete_challenge = DeleteChallenge.Field()
     update_challenge = UpdateChallenge.Field()
+    update_points = UpdatePoints.Field()
