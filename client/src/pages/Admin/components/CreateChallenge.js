@@ -54,6 +54,7 @@ export default class CreateChallenge extends Component {
   }
 
   handleHostedChoice = (e) => {
+    console.log(e);
   	this.setState({
   		hostedType: e.currentTarget.value
   	});
@@ -151,21 +152,23 @@ export default class CreateChallenge extends Component {
         	{/* TODO - Change to Hosted, add Tool Tips */}
         	<div className='hosted-radio-title'>Is Challenge Containerized?</div>
         	<div className='hosted-radios'>
-						<div className='hosted-radio-button'>
+						<div className='hosted-radio-button'
+              onClick={this.handleHostedChanged}>
 							<input type="radio"
 								name="hosted-containers"
 			 					checked={this.state.challenge.hosted}
-								value={true}
-								onChange={this.handleHostedChanged}/>
-							<label htmlFor="Yes"> Yes</label>
+								value={true}/>
+							<label className='radio-label'
+                htmlFor="Yes"> Yes</label>
 						</div>
-						<div className='hosted-radio-button'>
+						<div className='hosted-radio-button'
+                onClick={this.handleHostedChanged}>
 			 				<input type="radio"
 			 					name="hosted-containers"
 			 					checked={!this.state.challenge.hosted}
-			 					value={false}
-								onChange={this.handleHostedChanged}/>
-			 				<label htmlFor="No"> No</label>
+			 					value={false}/>
+			 				<label className='radio-label'
+                htmlFor="No"> No</label>
 		 				</div>
 	 				</div>
  				</div>
@@ -175,21 +178,23 @@ export default class CreateChallenge extends Component {
         <div className='hosted-radio-section'>
         	<div className='hosted-radio-title'>How would you like to load container?</div>
         	<div className='hosted-radios'>
-						<div className='hosted-radio-button'>
+						<div className='hosted-radio-button'
+                onClick={this.handleHostedChoice}>
 							<input type="radio"
 								name="hosted-type"
 			 					checked={this.state.hostedType === 'dockerfile'}
-								value={'dockerfile'}
-								onChange={this.handleHostedChoice}/>
-							<label htmlFor="dockerfile"> Use Dockerfile</label>
+								value={'dockerfile'}/>
+							<label className='radio-label'
+                htmlFor="dockerfile"> Use Dockerfile</label>
 						</div>
-						<div className='hosted-radio-button'>
+						<div className='hosted-radio-button'
+                onClick={this.handleHostedChoice}>
 			 				<input type="radio"
 			 					name="hosted-type"
 			 					checked={this.state.hostedType === 'dockerhub'}
-			 					value={'dockerhub'}
-								onChange={this.handleHostedChoice}/>
-			 				<label htmlFor="dockerhub"> Use Docker Hub</label>
+			 					value={'dockerhub'}/>
+			 				<label className='radio-label'
+                htmlFor="dockerhub"> Use Docker Hub</label>
 		 				</div>
 	 				</div>
  				</div>}
