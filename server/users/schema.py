@@ -12,6 +12,9 @@ from users.validators import validate_username, validate_password, validate_emai
 from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
 
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+
+
 d = dockerAPI()
 
 # # ======================== #
@@ -23,6 +26,28 @@ d = dockerAPI()
 # # Temp fix for stage 1 dev #
 # # ======================== #
 
+
+
+def perform_some_action_on_login(sender, user, **kwargs):
+    """
+    A signal receiver which performs some actions for
+    the user logging in.
+    """
+    ...
+    # your code here
+    print("caught logged in signal")
+
+def perform_some_action_on_logout(sender, user, **kwargs):
+    """
+    A signal receiver which performs some actions for
+    the user logging out.
+    """
+    ...
+    # your code here
+    print("caught logged out signal")
+
+user_logged_in.connect(perform_some_action_on_login)
+user_logged_out.connect(perform_some_action_on_logout)
 
 class Me(DjangoObjectType):
     class Meta:
