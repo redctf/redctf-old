@@ -37,6 +37,21 @@ def perform_some_action_on_login(sender, user, **kwargs):
     # your code here
     print("caught logged in signal")
 
+    # Push the realtime data to rethinkdb
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        if r.db(CTF_DB).table('users').filter({'sid':user.id}):
+            #TODO: put update code here
+        else:
+            r.db(CTF_DB).table('users').insert({ 'sid': user.id, 'authenticated': true }).run(connection)
+    except RqlRuntimeError as e:
+        raise Exception('Error adding challenge to realtime database: %s' % (e))
+    finally:
+        connection.close()
+
+
+
+
 def perform_some_action_on_logout(sender, user, **kwargs):
     """
     A signal receiver which performs some actions for
