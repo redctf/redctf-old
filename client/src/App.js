@@ -192,7 +192,7 @@ export default class App extends Component {
           path='/admin'
           render={props => (
             authenticated ? (
-              // TODO - render back end admin panel
+              <LazyRoute {...props} component={import('./pages/Admin/Admin')} />
             ) : (
               <Redirect to="/login"/>
             )
