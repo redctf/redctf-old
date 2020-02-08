@@ -18,6 +18,7 @@ const categories_collection = horizon('categories');
 const challenges_collection = horizon('challenges');
 const teams_collection = horizon('teams');
 const containers_collection = horizon('containers');
+const auth_collection = horizon('auth');
 
 /* Components */
 import TopBar from './components/TopBar';
@@ -31,12 +32,44 @@ export default class App extends Component {
     this.store = this.props.store;
   }
   componentDidMount() {
-    //this.authenticate();
+
+    //this.getMyInfo();
+
+    const port = 8000;
+    axios.defaults.baseURL = `${document.location.protocol}//${document.location.hostname}:${port}`;
+    axios.defaults.withCredentials = true;
+    const query = `query { me {id isSuperuser username}}`;
+    axios.post('/graphql/',
+      {
+        query: query,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log('my information inline:', response);
+      //this.store.appState.team = response.data.data.team;
+
+      const res = response.data;
+      
+      if (res.data.me !== null) {
+        this.props.store.appState.isSuperuser = res.data.me.isSuperuser;
+        this.store.appState.me = res.data.me;
+
+        // this.props.store.appState.authenticate().then(() => {
+        //   //this.props.history.push('/');
+        // });
+      }
+
+    })
+
 
     horizon.connect();
 
     horizon.onReady().subscribe(() => {
-      console.info('Connected to Horizon server');
+      console.info('Connected to Horizon server.');
     });
  
     horizon.onDisconnected().subscribe(() => {
@@ -93,15 +126,55 @@ export default class App extends Component {
       this.store.appState.teams = sortedTeams;
     });
     this.getTeamInfo();
+
+    //this.authenticate();
   }
   authenticate(e) {
     if (e) e.preventDefault();
+    console.log('got to authenticate in App.js')
+    //this.getMyInfo();
     //this.store.appState.authenticate();
+  }
+
+  getMyInfo() {
+    const port = 8000;
+    axios.defaults.baseURL = `${document.location.protocol}//${document.location.hostname}:${port}`;
+    axios.defaults.withCredentials = true;
+    const query = this.queryMe();
+    axios.post('/graphql/',
+      {
+        query: query,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .then((response) => {
+      console.log('my information:', response);
+      //this.store.appState.team = response.data.data.team;
+
+      const res = response.data;
+      
+      if (res.data.me !== null) {
+        this.props.store.appState.isSuperuser = res.data.me.isSuperuser;
+        this.store.appState.me = response.data.me;
+
+        // this.props.store.appState.authenticate().then(() => {
+        //   //this.props.history.push('/');
+        // });
+      }
+
+    })
+  }
+
+  queryMe() {
+    return `query { me {id isSuperuser username}}`;
   }
 
   getTeamInfo() {
     const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${document.location.protocol}//${document.location.hostname}:${port}`;
     axios.defaults.withCredentials = true;
     const query = this.queryTeam();
     axios.post('/graphql/',
@@ -123,6 +196,14 @@ export default class App extends Component {
     return `query { team {id name points users {id username}}}`;
   }
 
+  // requireAuth5() {
+  //   console.log('called requireAuth5');
+  //   return new Promise((resolve, reject) => {
+  //     console.log('returning false');
+  //     resolve(false);
+  //   });
+  // }
+  
   render() {
     const {
       authenticated,
@@ -134,6 +215,8 @@ export default class App extends Component {
 
     const PrivateRoute = ({ component: Component, ...rest }) => (
       // https://reacttraining.com/react-router/web/example/auth-workflow
+      //console.log('in PrivateRoute: ',this.authenticated);
+      //console.log('in PrivateRoute: '),
       <Route {...rest} render={props => (
         this.authenticated ? (
           <Component {...props}/>
@@ -203,12 +286,56 @@ export default class App extends Component {
           path='/challenges'
           render={props => (
             authenticated ? (
-              <LazyRoute {...props} component={import('./pages/Challenges')} />
+              console.log('testtrue'),<LazyRoute {...props} component={import('./pages/Challenges')} />
             ) : (
-              <Redirect to="/login"/>
+              console.log('testfalse'),<Redirect to="/login"/>
             )
           )}
         />
+        {/* <Route
+          exact
+          path='/challenges'
+          render={props => (
+            requireAuth4().then( res => { return res ? (
+              console.log('testtrue'),<LazyRoute {...props} component={import('./pages/Challenges')} />
+            ) : (
+              console.log('testfalse'),<Redirect to="/login"/>
+            ) })
+          )}
+        /> */}
+        {/* <Route
+          exact
+          path='/challenges'
+          render={props => (
+            this.requireAuth5().then( res => { return res }) ? (
+              console.log('$',this.requireAuth5().then( res => { return res })),console.log('testtrue'),<LazyRoute {...props} component={import('./pages/Challenges')} />
+            ) : (
+              console.log('testfalse'),<Redirect to="/login"/>
+            ) 
+          )}
+        /> */}
+        {/* <Route
+          exact
+          path='/challenges'
+          render={props => (
+            this.requireAuth5().then() ? (
+              console.log('$',this.requireAuth5()),console.log('testtrue'),<LazyRoute {...props} component={import('./pages/Challenges')} />
+            ) : (
+              console.log('testfalse'),<Redirect to="/login"/>
+            ) 
+          )}
+        /> */}
+        {/* <Route
+          exact
+          path='/challenges'
+          render={props => (
+            requireAuth3() === true ? (
+              console.log('testtrue'),<LazyRoute {...props} component={import('./pages/Challenges')} />
+            ) : (
+              console.log('testfalse'),<Redirect to="/instructions"/>
+            )
+          )}
+        /> */}
         <Route
           exact
           path='/instructions'
