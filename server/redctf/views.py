@@ -6,3 +6,8 @@ def admin_panel(request):
 
     html = "<html><body>This is the admin panel.</body></html>"
     return HttpResponse(html)
+
+    #  TODO  - lock down view to only super users
+    #  TODO  - replicate admin thru templating engine or raw JS/HTML
+    #  TODO  - update traefik to route accordingly
+    #  TODO  - Stretch goal, return non-super user template to discourage further tampering
