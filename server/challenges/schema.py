@@ -57,7 +57,6 @@ def updatePoints(self, info, chal_id, points):
         raise Exception(
             'Error updating challenge from realtime database: %s' % (e))
 
-    # TODO: check if nothing matches the filter to return with 'no points to update'
 
     try:
         # get each team object, then update the team's points and the solved challenge points accordingly.
@@ -82,8 +81,12 @@ def updatePoints(self, info, chal_id, points):
             for index, chal in enumerate(solved_object):
                 print('#{0}: {1}'.format(index, chal))
                 if chal['id'] == chal_id:
-                    solved_object[index]['points'] = points
-                    print('updated #{0} points = {1}'.format(
+                    if points == 0:
+                        del solved_object[index]
+                        # print('removed chal from solved: {0}'.format(d))
+                    else:
+                        solved_object[index]['points'] = points
+                        print('updated #{0} points = {1}'.format(
                         index, points))
 
         # if the updated points value is less than the existing value for the challenge subtract the chal_diff_points to team's total points
@@ -105,6 +108,12 @@ def updatePoints(self, info, chal_id, points):
                 'updated points value is equal to the existing points value')
         # set backend updated team points
         django_team_object.points = rethink_updates['points']
+        """
+        Trying to delete an SolvedChallenge object when points are 0 (passed in from DeleteChallege). The Team object contains the many to many relationship solved challenge object which contains the challenge ID. 
+        """
+        if points == 0:
+            print('delete django nested object.')
+            # django_team_object.solved
         django_team_object.save()
         
         # set updated challenge points
@@ -297,6 +306,8 @@ class DeleteChallenge(graphene.Mutation):
         # Validate user is admin
         validate_user_is_admin(user)
 
+        removePoints = updatePoints(self, info, id, 0)
+        
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').filter(
