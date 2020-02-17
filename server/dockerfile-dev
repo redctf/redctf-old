@@ -8,5 +8,5 @@ ENV PYTHONUNBUFFERED 1
 
 # install dependencies
 RUN pip install --upgrade pip
-ADD requirements.txt /code/
-RUN pip install -r requirements.txt
+COPY requirements.dev.txt requirements.common.txt /code/
+RUN pip install -r requirements.dev.txt -r requirements.common.txt
