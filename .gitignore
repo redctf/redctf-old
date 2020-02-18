@@ -4,6 +4,7 @@
 *.sqlite3
 *.idea
 node_modules/
+dist/
 server/challenges.json
 server/teams.json
 **/migrations/
