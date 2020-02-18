@@ -1,0 +1,61 @@
+###########
+# BUILDER #
+###########
+
+FROM node:11.10.1 as react-builder
+#COPY . /code
+COPY ./client /code
+WORKDIR /code
+
+RUN npm run build
+
+
+
+
+
+#########
+# FINAL #
+#########
+
+FROM nginx:1.17.8
+
+# # create directory for the app user
+# RUN mkdir -p /home/app
+
+# # create the app user
+# RUN addgroup --system app && adduser --system app && adduser app app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/redctf
+RUN mkdir $HOME && \
+        mkdir $APP_HOME && \
+        mkdir $APP_HOME/static && \
+        mkdir $APP_HOME/media
+WORKDIR $APP_HOME
+
+# bring in config and code
+RUN rm /etc/nginx/conf.d/default.conf && \
+        rm /etc/nginx/nginx.conf
+COPY ./server/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./server/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=react-builder /code/dist/ $APP_HOME/static
+
+# # chown all the files to the app user
+# RUN chown -R app:app $APP_HOME
+
+# # change to the app user
+# #USER app
+
+
+#WORKDIR /app
+
+# add permissions for nginx user
+RUN chown -R nginx:nginx $APP_HOME && chmod -R 755 $APP_HOME && \
+        chown -R nginx:nginx /var/cache/nginx && \
+        chown -R nginx:nginx /var/log/nginx && \
+        chown -R nginx:nginx /etc/nginx/conf.d
+RUN touch /var/run/nginx.pid && \
+        chown -R nginx:nginx /var/run/nginx.pid
+
+USER nginx

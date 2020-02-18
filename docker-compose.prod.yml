@@ -35,7 +35,8 @@ services:
       dockerfile: dockerfile-prod
     container_name: django
     restart: unless-stopped
-    command: bash -c "gunicorn redctf.wsgi:application --bind 0.0.0.0:8000"
+    command: bash -c "gunicorn redctf.wsgi:application --log-file=- --bind 0.0.0.0:8000"
+    #command: bash -c "python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       # So that Django can interact with Docker host
       - /var/run/docker.sock:/var/run/docker.sock
@@ -72,27 +73,27 @@ services:
     env_file:
       - ./server/.env.prod.db
 
-  react:
-    build: ./client/
-    container_name: react
-    restart: unless-stopped
-    command: bash -c "cd /code && yarn install && yarn start"
-#    volumes:
-#      - ./client:/code
-    ports:
-      - "3000:3000"
-    depends_on:
-      - django
-    networks:
-      - traefik
-    labels:
-      - traefik.http.services.react-backend.loadbalancer.server.port=3000
-      - traefik.http.routers.react.service=react-backend
-      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
-      - traefik.http.routers.react.middlewares=errorhandler@docker
-      # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
-      - traefik.http.routers.default2.rule=PathPrefix(`/`)
-      - traefik.http.routers.default2.middlewares=errorhandler@docker
+#   react:
+#     build: ./client/
+#     container_name: react
+#     restart: unless-stopped
+#     command: bash -c "cd /code && yarn install && yarn start"
+# #    volumes:
+# #      - ./client:/code
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - django
+#     networks:
+#       - traefik
+#     labels:
+#       - traefik.http.services.react-backend.loadbalancer.server.port=3000
+#       - traefik.http.routers.react.service=react-backend
+#       - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
+#       - traefik.http.routers.react.middlewares=errorhandler@docker
+#       # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
+#       - traefik.http.routers.default2.rule=PathPrefix(`/`)
+#       - traefik.http.routers.default2.middlewares=errorhandler@docker
 
 
   reverse-proxy:
@@ -127,9 +128,13 @@ services:
         - traefik
 
   nginx:
-    build: ./server/nginx
+    build:
+      context: .
+      dockerfile: ./server/nginx/dockerfile-nginx
+    container_name: nginx
+    restart: unless-stopped  
     ports:
-      - 1337:80
+      - 3000:8080
     volumes:
       # for serving client (react) files
       - static_volume_prod:/home/app/redctf/static
