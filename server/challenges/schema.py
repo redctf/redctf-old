@@ -44,12 +44,7 @@ def updatePoints(self, info, chal_id, points):
     
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     rethink_updates = {}
-    
-    
-
-        
-    
-            
+   
     if teams:
         try:
             for team in teams: 
@@ -122,32 +117,7 @@ def updatePoints(self, info, chal_id, points):
     else:
         print('no matching teams ')
    
-    # # set points for challenge update in rethink
-    # rethink_challenge_updates = {}
-    # rethink_challenge_updates['points'] = points
     
-    # try:
-    #     r.db(CTF_DB).table('challenges').filter(
-    #         {'sid': chal_id}).update(rethink_challenge_updates).run(connection)
-        
-    # except RqlRuntimeError as e:
-    #     raise Exception(
-    #         'Error updating challenge in realtime database: %s' % (e))
-        
-    # finally:
-    #     connection.close()
-
-    # # ID is primary key for django, SID is PK in Rethink
-    # try:
-    #     chal = Challenge.objects.get(id=chal_id)
-    #     chal.points = points
-    #     chal.save()
-
-    # except Exception as ex:
-    #     # return DeleteChallenge(status='Error deleting challenge from database: %s' % (chal_id))
-    #     raise Exception(
-    #         'Error updating challenge from database: %s' % (chal_id))
-
     return True
         
     
