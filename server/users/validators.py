@@ -20,9 +20,8 @@ def validate_username_unique(value):
         raise Exception('Username not available')
 
 def validate_email(value):
-    return True
-    # if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", value):
-    #     raise Exception("Email invalid")
+    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", value):
+        raise Exception("Email invalid")
 
 def validate_email_unique(value):
     if User.objects.filter(email__iexact=value).exists():
