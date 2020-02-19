@@ -37,7 +37,7 @@ class CreateTeam(graphene.Mutation):
         validate_username_unique(username)
         validate_email(email)
         validate_email_unique(email)
-        validate_password(password)
+        # validate_password(password)
 
         # Create unique team token
         token = str(uuid.uuid4())
