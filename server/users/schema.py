@@ -51,7 +51,7 @@ class CreateUser(graphene.Mutation):
         validate_username_unique(username)
         validate_email(email)
         validate_email_unique(email)
-        validate_password(password)
+        # validate_password(password)
 
         # Validate token
         validate_token(token)
@@ -108,7 +108,7 @@ class ChangePassword(graphene.Mutation):
         user = info.context.user
         # Validate user is authenticated
         validate_user_is_authenticated(user)
-        validate_password(password)
+        # validate_password(password)
 
         user.set_password(password)
         user.save()
@@ -127,7 +127,7 @@ class LogIn(graphene.Mutation):
     def mutate(self, info, username, password):
         # Validate username and password
         validate_username(username)
-        validate_password(password)
+        # validate_password(password)
 
         user = authenticate(username=username, password=password)
 
