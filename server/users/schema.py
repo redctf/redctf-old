@@ -195,8 +195,9 @@ class UpdateUser(graphene.Mutation):
         hidden = graphene.Boolean(required=False)
         token = graphene.String(required=False)
         active = graphene.Boolean(required=False)
+        newUsername = graphene.String(required=False)
         
-    def mutate(self, info, username, password=None, email=None, hidden=None, token=None, active=None):
+    def mutate(self, info, username, password=None, email=None, hidden=None, token=None, active=None, newUsername=None):
 
         user = info.context.user
         # Validate user is admin
@@ -204,7 +205,11 @@ class UpdateUser(graphene.Mutation):
 
         if User.objects.filter(username__iexact=username).exists():
             targetUser = User.objects.get(username__iexact=username)            
-                            
+                      
+            if newUsername is not None:
+                validate_username(newUsername)
+                validate_username_unique(newUsername)
+                targetUser.username = newUsername      
             if password is not None:
                 targetUser.password = password
 
