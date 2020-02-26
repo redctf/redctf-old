@@ -209,9 +209,10 @@ class UpdateUser(graphene.Mutation):
             if newUsername is not None:
                 validate_username(newUsername)
                 validate_username_unique(newUsername)
-                targetUser.username = newUsername      
+                targetUser.username = newUsername   
+                   
             if password is not None:
-                targetUser.password = password
+                targetUser.set_password = password
 
             if email is not None:
                 validate_email(email)
