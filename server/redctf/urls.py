@@ -22,7 +22,8 @@ from graphene_file_upload.django import FileUploadGraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('adminpanel/', views.admin_panel),
+    # path('adminpanel/', views.admin_panel),
+    path('adminpanel/', views.basic, name='basic'),
     #path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('graphql/', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
 ]
