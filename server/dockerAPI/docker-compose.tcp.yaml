@@ -1,0 +1,21 @@
+version: "2"
+services:
+  openssh-server:
+    image: linuxserver/openssh-server
+    container_name: openssh-server
+    hostname: openssh-server #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=US/Central
+      - SUDO_ACCESS=false #optional
+      - PASSWORD_ACCESS=true #optional
+      - USER_PASSWORD=redctf #optional
+      - USER_NAME=redctf #optional
+   
+    labels:
+      - traefik.tcp.routers.tcprouter0.service=openssh-server
+      - traefik.tcp.routers.tcprouter0.rule=HostSNI(`*`) 
+      - traefik.tcp.routers.tcprouter0.entrypoints=ssh 
+      - traefik.tcp.services.openssh-server.loadbalancer.server.port=2222
+    restart: unless-stopped
