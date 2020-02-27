@@ -8,7 +8,7 @@ from django.utils.dateformat import format
 from users.models import User
 from teams.models import Team
 from containers.models import Container
-from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated
+from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated, validate_user_is_admin
 from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
 
@@ -51,7 +51,7 @@ class CreateUser(graphene.Mutation):
         validate_username_unique(username)
         validate_email(email)
         validate_email_unique(email)
-        validate_password(password)
+        # validate_password(password)
 
         # Validate token
         validate_token(token)
@@ -108,7 +108,7 @@ class ChangePassword(graphene.Mutation):
         user = info.context.user
         # Validate user is authenticated
         validate_user_is_authenticated(user)
-        validate_password(password)
+        # validate_password(password)
 
         user.set_password(password)
         user.save()
@@ -127,7 +127,7 @@ class LogIn(graphene.Mutation):
     def mutate(self, info, username, password):
         # Validate username and password
         validate_username(username)
-        validate_password(password)
+        # validate_password(password)
 
         user = authenticate(username=username, password=password)
 
@@ -185,9 +185,84 @@ class Query(object):
 
         return user
 
+class UpdateUser(graphene.Mutation):
+    status = graphene.String()
 
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=False)
+        email = graphene.String(required=False)
+        hidden = graphene.Boolean(required=False)
+        token = graphene.String(required=False)
+        active = graphene.Boolean(required=False)
+        newUsername = graphene.String(required=False)
+        
+    def mutate(self, info, username, password=None, email=None, hidden=None, token=None, active=None, newUsername=None):
+
+        user = info.context.user
+        # Validate user is admin
+        validate_user_is_admin(user)    
+
+        if User.objects.filter(username__iexact=username).exists():
+            targetUser = User.objects.get(username__iexact=username)            
+                      
+            if newUsername is not None:
+                validate_username(newUsername)
+                validate_username_unique(newUsername)
+                targetUser.username = newUsername   
+                   
+            if password is not None:
+                targetUser.set_password = password
+
+            if email is not None:
+                validate_email(email)
+                validate_email_unique(email)
+                targetUser.email = email
+
+            if hidden is not None:
+                targetUser.hidden = hidden
+
+            if active is not None:
+                targetUser.active = active
+
+            targetUser.save()
+
+        else:
+            raise Exception('Error - can\'t find user: %s' % (username))
+
+        return UpdateUser(status='User Updated: %s' % (username))
+    
+class DeleteUser(graphene.Mutation):
+    status = graphene.String()
+
+    class Arguments:
+        username = graphene.String(required=True)
+
+    def mutate(self, info, username):
+        user = info.context.user
+        # Validate user is admin
+        validate_user_is_admin(user)
+                
+        if User.objects.filter(username__iexact=username).exists():
+            targetUser = User.objects.get(username__iexact=username)
+                        
+            try: 
+                targetUser.delete()
+                    
+            except Exception as ex:
+                raise Exception('error with user delete: {0}'.format(ex))
+
+
+        
+        else:
+            print('no matching usernames')
+
+        return DeleteUser(status='Username Deleted: %s' % (username))
+            
 class Mutation(object):
     create_user = CreateUser.Field()
     change_password = ChangePassword.Field()
     login = LogIn.Field()
     logout = LogOut.Field()
+    update_user = UpdateUser.Field()
+    delete_user = DeleteUser.Field()
