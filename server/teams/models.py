@@ -24,6 +24,9 @@ class Team(models.Model):
     wrong_flags = models.IntegerField(default=0)
     solved = models.ManyToManyField(SolvedChallenge)
     created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
 
 class TeamAdmin(admin.ModelAdmin):
     #This inner class indicates to the admin interface how to display a post

@@ -17,11 +17,15 @@ class Challenge(models.Model):
   points = models.IntegerField(default=0)
   flag = models.CharField(max_length=100)
   hosted = models.BooleanField(default=False)
-  imageName = models.CharField(max_length=100, default=None, null=True)
-  ports = models.CharField(max_length=100, default=None, null=True)
-  pathPrefix = models.CharField(max_length=100, default=None, null=True)
-  upload = models.FileField(upload_to=user_directory_path, default=None, null=True)
+  imageName = models.CharField(max_length=100, default=None, null=True, blank=True)
+  ports = models.CharField(max_length=100, default=None, null=True, blank=True)
+  pathPrefix = models.CharField(max_length=100, default=None, null=True, blank=True)
+  upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
   created = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return 'id:' + str(self.id) + ' - ' + self.title + '_' + str(self.points) 
+
 
 class ChallengeAdmin(admin.ModelAdmin):
   #This inner class indicates to the admin interface how to display a post
