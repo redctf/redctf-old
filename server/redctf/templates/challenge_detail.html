@@ -1,0 +1,20 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div>
+        <a class="btn btn-default" href="{% url 'challenge_edit' pk=challenge.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        <h2>title: {{ challenge.title }}</h2>
+        <p>description: {{ challenge.description|linebreaksbr }}</p>
+        <p>category: {{ challenge.category}}</p>
+        <p>points: {{challenge.points}}</p>
+        <p>flag: {{challenge.flag}}</p>
+        <p>hosted: {{challenge.hosted}}</p>
+        {% if challenge.hosted %}
+            <div>
+                <p>imageName: {{ challenge.imageName }}</p>
+                <p>ports: {{ challenge.ports }}</p>
+                <p>pathPrefix: {{ challenge.pathPrefix }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

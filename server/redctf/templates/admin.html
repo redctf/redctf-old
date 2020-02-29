@@ -1,56 +1,29 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Simple is Better Than Complex</title>
+  <title>CTF Admin</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'style/admin.css' %}">
 </head>
-<body>
 
-  <form method="post" novalidate>
-    {% csrf_token %}
-
-    {% if form.non_field_errors %}
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    {% for hidden_field in form.hidden_fields %}
-      {% if hidden_field.errors %}
-        <ul>
-          {% for error in hidden_field.errors %}
-            <li>(Hidden field {{ hidden_field.name }}) {{ error }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-      {{ hidden_field }}
-    {% endfor %}
-
-    <table border="1">
-      {% for field in form.visible_fields %}
-        <tr>
-          <th>{{ field.label_tag }}</th>
-          <td>
-            {% if field.errors %}
-              <ul>
-                {% for error in field.errors %}
-                  <li>{{ error }}</li>
-                {% endfor %}
-              </ul>
-            {% endif %}
-            {{ field }}
-            {% if field.help_text %}
-              <br />{{ field.help_text }}
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-
-    <button type="submit">Submit</button>
-  </form>
+  <body>
+    <div>
+        <h1><a href="{% url 'admin_panel' %}">CTF Admin</a></h1>
+    </div>
+    <div class="container">
+      <div class="row">
+        <a href="{% url 'challenge_list' %}">Challenges</a>
+      </div>
+      <div class="row">
+          <div class="col-md-8">
+            {% block content %}
+            {% endblock %}
+          </div>
+      </div>
+    </div>
 
 </body>
 </html>

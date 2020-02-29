@@ -14,6 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.contrib import staticfiles
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import re_path
 from django.urls import path
 from redctf import views
 from django.views.decorators.csrf import csrf_exempt
@@ -22,8 +26,20 @@ from graphene_file_upload.django import FileUploadGraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('adminpanel/', views.admin_panel),
-    path('adminpanel/', views.basic, name='basic'),
+    
+    path('adminpanel/', views.admin_panel, name='admin_panel'),
+    path('challenge/', views.challenge_list, name='challenge_list'),
+    path('challenge/new/', views.challenge_new, name='challenge_new'),
+    path('challenge/<int:pk>/', views.challenge_detail, name='challenge_detail'),
+    path('challenge/<int:pk>/edit/', views.challenge_edit, name='challenge_edit'),
+
     #path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('graphql/', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^static/(?P<path>.*)$', staticfiles.views.serve),
+    ]
+
+urlpatterns += staticfiles_urlpatterns()

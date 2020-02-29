@@ -1,0 +1,13 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+
+    <a href="{% url 'challenge_new' %}"><span class="glyphicon glyphicon-plus"></span> Create Challenge</a>
+
+    {% for challenge in challenges %}
+        <div>
+            <h2><a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.title }}</a></h2>
+            <p>{{ challenge.description|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
