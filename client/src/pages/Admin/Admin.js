@@ -10,14 +10,11 @@ export default class Admin extends Component {
   // }
 
   render() {
-    // const adminPanel = this.getAdminPanel;
-    // console.log('adminPanel', adminPanel);
-    
+    const port = 8000;
     return (
-      <div className="page posts">
-        {/*<div dangerouslySetInnerHTML={this.adminPanel} />;*/}
+      <div className="page">
         <iframe className='admin-iframe'
-          src="http://localhost:8000/adminpanel/" /> 
+          src={`${location.protocol}//${location.hostname}:${port}/adminpanel/`} /> 
       </div>
     );
   }
