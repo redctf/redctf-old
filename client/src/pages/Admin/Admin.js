@@ -16,10 +16,8 @@ export default class Admin extends Component {
     return (
       <div className="page posts">
         {/*<div dangerouslySetInnerHTML={this.adminPanel} />;*/}
-        <iframe src="http://localhost:8000/adminpanel/" 
-          height="500"
-          width="500"
-        /> 
+        <iframe className='admin-iframe'
+          src="http://localhost:8000/adminpanel/" /> 
       </div>
     );
   }

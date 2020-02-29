@@ -258,7 +258,19 @@
 }
 
 
+.admin-iframe {
+  height: calc(100vw - 100px);
+  min-width: 960px;
+  max-width: 960px;
+  padding: 48px 24px;
+  margin: 0 auto;
 
+  @media screen and (max-width: 960px) {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 48px 24px;
+  }
+}
 
 
 
