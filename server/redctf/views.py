@@ -20,8 +20,7 @@ def admin_panel(request):
     if request.user.is_superuser:
         return render(request, 'admin.html')
     else:
-        html = "<html><body><h2>Ah ah ah, you didn't say the magic word</h2></body></html>"
-        return HttpResponse(html)
+        return render(request, 'ahahah.html')
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
