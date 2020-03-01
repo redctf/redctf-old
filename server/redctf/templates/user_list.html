@@ -1,0 +1,25 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary" href="{% url 'challenge_new' %}" role="button">Create User</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Team</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'challenge_detail' pk=user.pk %}">{{ user.pk }}</a></th>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.team }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,13 +1,37 @@
 {% extends 'admin.html' %}
 
 {% block content %}
-
-    <a href="{% url 'challenge_new' %}"><span class="glyphicon glyphicon-plus"></span> Create Challenge</a>
-
-    {% for challenge in challenges %}
-        <div>
-            <h2><a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.title }}</a></h2>
-            <p>{{ challenge.description|linebreaksbr }}</p>
-        </div>
-    {% endfor %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary" href="{% url 'challenge_new' %}" role="button">Create Challenge</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Challenge</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for challenge in challenges %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.pk }}</a></th>
+                        <td>
+                            <div class="col">
+                                <div class="row">
+                                    {{ challenge.title }}
+                                    <!-- <a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.title }}</a> -->
+                                </div>
+                                <div class="row">
+                                    {{ challenge.description|linebreaksbr }}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ challenge.category }}</td>
+                        <td>{{ challenge.points }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
