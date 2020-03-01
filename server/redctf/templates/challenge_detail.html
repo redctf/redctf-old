@@ -1,8 +1,9 @@
 {% extends 'admin.html' %}
 
 {% block content %}
-    <div>
-        <a class="btn btn-default" href="{% url 'challenge_edit' pk=challenge.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary" href="{% url 'challenge_list' %}" role="button">Back</a>
+        <a class="btn btn-outline-primary" href="{% url 'challenge_edit' pk=challenge.pk %}" role="button">Edit</a>
         <h2>title: {{ challenge.title }}</h2>
         <p>description: {{ challenge.description|linebreaksbr }}</p>
         <p>category: {{ challenge.category}}</p>

@@ -25,13 +25,30 @@ from graphene_django.views import GraphQLView
 from graphene_file_upload.django import FileUploadGraphQLView
 
 urlpatterns = [
+    #django admin
     path('admin/', admin.site.urls),
     
+    #ctf admin
     path('adminpanel/', views.admin_panel, name='admin_panel'),
+
+    ################ challenges ################
     path('challenge/', views.challenge_list, name='challenge_list'),
     path('challenge/new/', views.challenge_new, name='challenge_new'),
     path('challenge/<int:pk>/', views.challenge_detail, name='challenge_detail'),
     path('challenge/<int:pk>/edit/', views.challenge_edit, name='challenge_edit'),
+    ############################################
+
+    ################ containers ################
+    path('container/', views.container_list, name='container_list'),
+    ############################################
+
+    ################## teams ###################
+    path('team/', views.team_list, name='team_list'),
+    ############################################
+
+    ################## users ###################
+    path('user/', views.user_list, name='user_list'),
+    ############################################
 
     #path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('graphql/', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),

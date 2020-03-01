@@ -6,7 +6,14 @@ from django.contrib.auth.decorators import user_passes_test
 
 from users.models import User
 from challenges.models import Challenge
+from containers.models import Container
+from teams.models import Team
+from users.models import User
 from .forms import ChallengeForm
+from .forms import ContainerForm
+from .forms import TeamForm
+from .forms import UserForm
+
 
 #     #  TODO  - lock down view to only super users
 #     #  TODO  - replicate admin thru templating engine or raw JS/HTML
@@ -22,6 +29,9 @@ def admin_panel(request):
     else:
         return render(request, 'ahahah.html')
 
+
+
+################ challenges ################
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_list(request):
@@ -70,3 +80,31 @@ def challenge_edit(request, pk):
         form = ChallengeForm(instance=challenge)
 
     return render(request, 'challenge_edit.html', {'form': form})
+############################################
+
+################ containers ################
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_list(request):
+    containers = Container.objects.all().order_by('created')
+    return render(request, 'container_list.html', {'containers' : containers})
+
+############################################
+
+################## teams ###################
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def team_list(request):
+    teams = Team.objects.all().order_by('created')
+    return render(request, 'team_list.html', {'teams' : teams})
+
+############################################
+
+################## users ###################
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def user_list(request):
+    users = User.objects.all().order_by('created')
+    return render(request, 'user_list.html', {'users' : users})
+
+############################################

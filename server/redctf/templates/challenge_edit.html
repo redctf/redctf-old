@@ -2,15 +2,10 @@
 
 {% block content %}
 
-  <!-- <form action="/challenge/new/" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-  </form> -->
   <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="save btn btn-default">Save</button>
+    <button type="submit" class="btn btn-outline-primary">Save</button>
   </form>
 
 {% endblock %}
