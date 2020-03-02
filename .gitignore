@@ -3,7 +3,7 @@
 *.pyc
 *.sqlite3
 *.idea
-*0001_initial.py
+**0001_initial.py
 node_modules/ 
 rethinkdb_data/
 server/challenges.json
@@ -18,3 +18,8 @@ portainer/config.json
 server/**/*initial.py
 server/teams/migrations/0001_initial.py
 !0001_initial.py
+server/categories/migrations/0001_initial.py
+server/challenges/migrations/0001_initial.py
+server/ctfs/migrations/0001_initial.py
+server/teams/migrations/0001_initial.py
+server/users/migrations/0001_initial.py
