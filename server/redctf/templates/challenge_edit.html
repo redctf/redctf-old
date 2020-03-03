@@ -2,9 +2,109 @@
 
 {% block content %}
 
+  <!-- <form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-outline-primary">Save</button>
+  </form> -->
+  
   <form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.title.errors }}
+        <label for="{{ form.title.id_for_label }}">Title:</label>
+        {{ form.title }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.description.errors }}
+        <label for="{{ form.description.id_for_label }}">Description:</label>
+        {{ form.description }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.category.errors }}
+        <label for="{{ form.category.id_for_label }}">Category:</label>
+        {{ form.category }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.points.errors }}
+        <label for="{{ form.points.id_for_label }}">Points: </label>
+        {{ form.points }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.flag.errors }}
+        <label for="{{ form.flag.id_for_label }}">Flag: </label>
+        {{ form.flag }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.hosted.errors }}
+        <div class="custom-control custom-switch">
+        <!-- <div class="form-check"> -->
+          {{ form.hosted }}
+          <label class="custom-control-label" for="{{ form.hosted.id_for_label }}">Hosted</label>
+          <!-- <label class="form-check-label" for="{{ form.hosted.id_for_label }}">Hosted</label> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.imageName.errors }}
+        <label for="{{ form.imageName.id_for_label }}">Image Name: </label>
+        {{ form.imageName }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.ports.errors }}
+        <label for="{{ form.ports.id_for_label }}">Ports: </label>
+        {{ form.ports }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.pathPrefix.errors }}
+        <label for="{{ form.pathPrefix.id_for_label }}">Path Prefix: </label>
+        {{ form.pathPrefix }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.upload.errors }}
+        <label for="{{ form.upload.id_for_label }}">Upload: </label>
+        {{ form.upload }}
+      </div>
+    </div>
+
+    <!-- <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.upload.errors }}
+        <div class="custom-file">
+          <label class="custom-file-label" for="{{ form.upload.id_for_label }}">Upload: </label>
+          {{ form.upload }}
+        </div>
+      </div>
+    </div> -->
+
     <button type="submit" class="btn btn-outline-primary">Save</button>
   </form>
 

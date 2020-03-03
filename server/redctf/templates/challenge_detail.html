@@ -4,18 +4,39 @@
     <div class="container-fluid">
         <a class="btn btn-outline-primary" href="{% url 'challenge_list' %}" role="button">Back</a>
         <a class="btn btn-outline-primary" href="{% url 'challenge_edit' pk=challenge.pk %}" role="button">Edit</a>
-        <h2>title: {{ challenge.title }}</h2>
-        <p>description: {{ challenge.description|linebreaksbr }}</p>
-        <p>category: {{ challenge.category}}</p>
-        <p>points: {{challenge.points}}</p>
-        <p>flag: {{challenge.flag}}</p>
-        <p>hosted: {{challenge.hosted}}</p>
-        {% if challenge.hosted %}
-            <div>
-                <p>imageName: {{ challenge.imageName }}</p>
-                <p>ports: {{ challenge.ports }}</p>
-                <p>pathPrefix: {{ challenge.pathPrefix }}</p>
-            </div>
-        {% endif %}
+        <dl class="row">
+            <dt class="col-sm-3">Title: </dt>
+            <dd class="col-sm-9">{{ challenge.title }}</dd>
+          
+            <dt class="col-sm-3">Description: </dt>
+            <dd class="col-sm-9">{{ challenge.description }}</dd>
+          
+            <dt class="col-sm-3">Category: </dt>
+            <dd class="col-sm-9">{{ challenge.category }}</dd>
+
+            <dt class="col-sm-3">Points: </dt>
+            <dd class="col-sm-9">{{ challenge.points }}</dd>
+
+            <dt class="col-sm-3">Flag: </dt>
+            <dd class="col-sm-9">{{ challenge.flag }}</dd>
+            
+            <dt class="col-sm-3">Hosted: </dt>
+            <dd class="col-sm-9">{{ challenge.hosted }}</dd>
+
+            {% if challenge.hosted %}
+                <dt class="col-sm-3">Image Name: </dt>
+                <dd class="col-sm-9">{{ challenge.imageName }}</dd>
+
+                <dt class="col-sm-3">Ports: </dt>
+                <dd class="col-sm-9">{{ challenge.ports }}</dd>
+
+                <dt class="col-sm-3">Path Prefix: </dt>
+                <dd class="col-sm-9">{{ challenge.pathPrefix }}</dd>
+
+                <dt class="col-sm-3">Upload: </dt>
+                <dd class="col-sm-9">{{ challenge.upload }}</dd>
+
+            {% endif %}
+        </dl>
     </div>
 {% endblock %}
