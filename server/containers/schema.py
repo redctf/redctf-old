@@ -240,7 +240,7 @@ def scaleChallenge(self, challenge_id, registeredUsers, active_uid_list):
     elif buffer < nullContainerCount:
         # print('this shouldn\'t happen since the containers are deleted when users log out.')
         while buffer < nullContainerCount:
-            removeContainer(nullContainers[nullContainerCount-1])
+            removeContainer(self, nullContainers[nullContainerCount-1])
             nullContainerCount = len(Container.objects.filter(
                 challenge__id=challenge_id).filter(user_id=None))
 
@@ -259,11 +259,16 @@ def getNullContainers(challenge_id):
     return nullContainers
 
 
-def removeContainer(containerObject):
+def removeContainer(self, containerObject):
     print('deleting container')
 
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     containerName = containerObject.name
+    challenge_id = containerObject.challenge_id
+    nullContainers = getNullContainers(challenge_id)
+    registeredUsers = getRegisteredUserCount(self)
+    active_uid_list = getActiveSessions(self)
+    
     try:
         delete = d.removeContainer(containerName)
         if delete is not None:
@@ -287,6 +292,11 @@ def removeContainer(containerObject):
 
     finally:
         connection.close()
+    # try:
+    #     scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
+    # except:
+    #     raise Exception('unknown issue with scaling nullContainers')
+    
     status = 'deleted container: {0}'.format(containerName)
     return status
 

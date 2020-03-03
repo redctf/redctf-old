@@ -11,8 +11,10 @@ from containers.models import Container
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_authenticated, validate_user_is_admin
 from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
+from containers.schema import *
 
 d = dockerAPI()
+
 
 # # ======================== #
 # # Temp fix for stage 1 dev #
@@ -148,26 +150,21 @@ class LogOut(graphene.Mutation):
         #look up container that belongs to logged in user
         try:
             cont_objs = Container.objects.filter(user__exact=user)
-
+            
+            if len(cont_objs) == 0:
+                print('Container does not exist for user.')
+                
             for cont in cont_objs:
-                #remove container
+                removeContainer(self, cont)
                 try:
-                    d.removeContainer(containerName=cont.name)
+                    challenge_id = cont.challenge_id
+                    nullContainers = getNullContainers(challenge_id)
+                    registeredUsers = getRegisteredUserCount(self)
+                    active_uid_list = getActiveSessions(self)
+                    scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
                 except:
-                    print('%s was not found our we are unable to remove container from docker host.', (cont.name) )
-                #delete realtime database object
-                try:
-                    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-                    r.db(CTF_DB).table('containers').filter({'sid':cont.id}).delete().run(connection)
-                except RqlRuntimeError as e:
-                    raise Exception('Error deleting container from realtime database: %s' % (e))
-                finally:
-                    connection.close()
-                #delete database object
-                try:
-                    cont.delete()
-                except Exception as e:
-                    raise Exception('Was not able to delete container from database: ', e)
+                    raise Exception('unknown issue with scaling nullContainers')
+                            
 
         except:
             print('Container does not exist for user.')
