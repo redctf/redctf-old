@@ -1,16 +1,19 @@
 from scale import scale
+from users.models import User
+from django.contrib.sessions.models import Session
+from django.utils import timezone
 
 s = scale()
 
 # example data - no need for separate file - will eventually just query docker to see what values are available. 
-challenge = 11111
+challengeID = 3
 registeredUsers = 10
 activeSessions = 10
 activeContainers = 10
 minimumContainers = 2
 
 try:
-    buf = s.calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeContainers, challenge)
+    buf = s.calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeContainers, challengeID)
     
 except Exception as ex:
     print(ex)

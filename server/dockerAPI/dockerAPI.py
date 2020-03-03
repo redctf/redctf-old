@@ -94,11 +94,11 @@ class dockerAPI:
             return False
         return True
 
-    def createContainer(self, username, imageName, port, containerName=None, pathPrefix=None, netIsolation=None, containerType=None):
+    def createContainer(self, imageName, port, containerName=None, pathPrefix=None, netIsolation=None, containerType=None, username=None):
         """
         Create a container for a user.
         :from: https://docker-py.readthedocs.io/en/stable/containers.html
-        :param username: string, contributes to container name
+        :param username: string, contributes to container name if netIsolation = true
         :param imageName: string, image name to use for container; imageName:versionNumber
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
@@ -139,26 +139,27 @@ class dockerAPI:
 
         # for using network isolation per user basis.
         if netIsolation:
+            # make sure username is available and passed in when netIsolation=true 
+            if username is not None:
+                # check if network exists already
+                network = self.checkIfNetworkExists(username)
+                if network is False:
+                    print("no network found")
+                    # create network if none exists
+                    try:
+                        print("creating network: {0}".format(username))
+                        self.createNetwork(username)
+                        print('network create successful for: {0}'.format(username))
+                    except Exception as ex:
+                        print(ex)
 
-            # check if network exists already
-            network = self.checkIfNetworkExists(username)
-            if network is False:
-                print("no network found")
-                # create network if none exists
-                try:
-                    print("creating network: {0}".format(username))
-                    self.createNetwork(username)
-                    print('network create successful for: {0}'.format(username))
-                except Exception as ex:
-                    print(ex)
+                # doesn't take commands yet.
+                r_containerName = ("{0}_{1}".format(name, username))
+                r_ports = {"{0}/tcp".format(port): None}
+                r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
+                r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
 
-            # doesn't take commands yet.
-            r_containerName = ("{0}_{1}".format(name, username))
-            r_ports = {"{0}/tcp".format(port): None}
-            r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
-            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
-
-            return r
+                return r
 
         else:
             # check if network exists already
@@ -193,23 +194,23 @@ class dockerAPI:
             # define middleware chain
             r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-chain".format(r_containerName)
             
-            for container in containerType:
-                # http containers only - will strip path using middleware
-                if container == "http":
-                    middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
-                    r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
-                    r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
-                
-                # placeholder https logic
-                elif container == "https":
-                    print("https container type")
-                
-                # placeholder tcp logic
-                elif container == "tcp":
-                    print("tcp container type")
-                
-                else:
-                    print("unknown container type")
+            
+            # http containers only - will strip path using middleware
+            if containerType == "http":
+                middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
+                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
+                r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
+            
+            # placeholder https logic
+            elif containerType == "https":
+                print("https container type")
+            
+            # placeholder tcp logic
+            elif containerType == "tcp":
+                print("tcp container type")
+            
+            else:
+                print("unknown container type")
                     
             # define middleware chain middleware list - only appends if http above is true
             r_labels["traefik.http.middlewares.{0}-chain.chain.middlewares".format(r_containerName)] = middleware_chain
