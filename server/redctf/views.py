@@ -89,6 +89,48 @@ def container_list(request):
     containers = Container.objects.all().order_by('created')
     return render(request, 'container_list.html', {'containers' : containers})
 
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_detail(request, pk):
+    container = get_object_or_404(Container, pk=pk)
+    return render(request, 'container_detail.html', {'container': container})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_new (request):
+
+    if request.method == 'POST':
+        form = ContainerForm(request.POST)
+        if form.is_valid():
+            new_container = form.save()
+
+            return redirect('container_detail', pk=new_container.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ContainerForm()
+
+    return render(request, 'container_edit.html', {'form': form})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_edit(request, pk):
+    container = get_object_or_404(Container, pk=pk)
+    if request.method == "POST":
+        form = ContainerForm(request.POST, instance=container)
+        # check whether it's valid:
+        if form.is_valid():
+            # save the for to the db
+            new_container = form.save()
+
+            # redirect to container detail page
+            return redirect('container_detail', pk=new_container.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ContainerForm(instance=container)
+
+    return render(request, 'container_edit.html', {'form': form})
 ############################################
 
 ################## teams ###################

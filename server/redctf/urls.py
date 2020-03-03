@@ -40,6 +40,9 @@ urlpatterns = [
 
     ################ containers ################
     path('container/', views.container_list, name='container_list'),
+    path('container/new/', views.container_new, name='container_new'),
+    path('container/<int:pk>/', views.container_detail, name='container_detail'),
+    path('container/<int:pk>/edit/', views.container_edit, name='container_edit'),
     ############################################
 
     ################## teams ###################
