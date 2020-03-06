@@ -47,10 +47,10 @@ class GetUserContainer(graphene.Mutation):
             try:
                 try:
                     assigned_cont_obj = assignContainerToUser(
-                        self, challenge_id, user.id)
+                        challenge_id, user.id)
                 except:
                     assigned_cont_obj = newContainer(
-                        self, challenge_id, user.id)
+                        challenge_id, user.id)
                     print("############")
                     print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
                         assigned_cont_obj.name, assigned_cont_obj.image, assigned_cont_obj.labels, assigned_cont_obj.short_id, assigned_cont_obj.status))
@@ -69,19 +69,11 @@ class GetUserContainer(graphene.Mutation):
 class ScaleAllChallenges(graphene.Mutation):
     status = graphene.String()
 
-
-    def mutate(self, info):
+    def mutate():
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
-        registeredUsers = getRegisteredUserCount(self)
-        active_uid_list = getActiveSessions(self)
 
-        challengeIDs = Challenge.objects.exclude(hosted=False)
-        for challenge in challengeIDs:
-            print('scaling challenge # {0}'.format(challenge.id))
-            scaleChallenge(self, challenge.id, registeredUsers, active_uid_list)
-        
 
         return ScaleAllChallenges(status='all challenges scaled')
 
@@ -91,7 +83,6 @@ class ScaleChallenge(graphene.Mutation):
 
     class Arguments:
         challenge_id = graphene.Int(required=True)
-        
 
     def mutate(self, info, challenge_id):
         user = info.context.user
@@ -103,10 +94,10 @@ class ScaleChallenge(graphene.Mutation):
         if Challenge.objects.filter(id=challenge_id):
             print('valid challenge')
 
-            registeredUsers = getRegisteredUserCount(self)
-            active_uid_list = getActiveSessions(self)
+            registeredUsers = getRegisteredUserCount()
+            active_uid_list = getActiveSessions()
 
-            scaleChallenge(self, challenge_id,
+            scaleChallenge(challenge_id,
                            registeredUsers, active_uid_list)
 
         else:
@@ -115,7 +106,7 @@ class ScaleChallenge(graphene.Mutation):
         return ScaleChallenge(status='challenge scaled')
 
 
-def getActiveSessions(self):
+def getActiveSessions():
     try:
         sessions = Session.objects.filter(expire_date__gte=timezone.now())
 
@@ -133,61 +124,60 @@ def getActiveSessions(self):
         raise(ex)
 
 
-def assignContainerToUser(self, challenge_id, userID):
+def assignContainerToUser(challenge_id, userID):
 
     user = User.objects.get(id=userID)
     nullContainers = getNullContainers(challenge_id)
-    registeredUsers = getRegisteredUserCount(self)
-    active_uid_list = getActiveSessions(self)
+    registeredUsers = getRegisteredUserCount()
+    active_uid_list = getActiveSessions()
     # scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    
+
     if len(nullContainers) == 0:
         try:
-            # TODO: should we scale then assign or should we build one then scale. 
-            scaleChallenge(self, challenge_id,
+            # TODO: should we scale then assign or should we build one then scale.
+            scaleChallenge(challenge_id,
                            registeredUsers, active_uid_list)
 
         except:
             raise Exception('unknown issue with scaling nullContainers')
-        
+
     try:
         assigned_cont_obj = Container.objects.get(id=nullContainers[0].id)
         assigned_cont_obj.user = user
         assigned_cont_obj.save()
         try:
-            
+
             rethinkContainers = r.db(CTF_DB).table('containers').filter(
                 {'sid': assigned_cont_obj.id}).run(connection)
             # use for loop to access the object(s) values and assign to team id variable
             for rethink_container in rethinkContainers:
                     # print(rethink_team['id'])
-                    rethink_container_id = rethink_container['id']
+                rethink_container_id = rethink_container['id']
             # update rethinkdb entry
             update = r.db(CTF_DB).table('containers').get(
-                rethink_container_id).update({'user':userID}).run(connection)
+                rethink_container_id).update({'user': userID}).run(connection)
 
         except RqlRuntimeError as e:
             raise Exception(
                 'Error deleting container from realtime database: %s' % (e))
-        
-        
+
     except:
         print('error assigning user an existing container - creating new container to be assigned.')
-        assigned_cont_obj = newContainer(self, challenge_id, userID)
+        assigned_cont_obj = newContainer(challenge_id, userID)
 
     finally:
         connection.close()
 
     try:
-        scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
+        scaleChallenge(challenge_id, registeredUsers, active_uid_list)
     except:
         raise Exception('unknown issue with scaling nullContainers')
-        
+
     return assigned_cont_obj
 
 
-def getRegisteredUserCount(self):
+def getRegisteredUserCount():
     try:
         registeredUserCount = User.objects.count()
         return registeredUserCount
@@ -196,7 +186,7 @@ def getRegisteredUserCount(self):
         print(ex)
 
 
-def getAllChallengeIDs(self):
+def getAllChallengeIDs():
 
     try:
         challengeIDs = Challenge.objects.all()
@@ -205,46 +195,62 @@ def getAllChallengeIDs(self):
         print(ex)
 
 
-def getAssignedContainers(self, challenge_id):
+def getAssignedContainers(challenge_id):
     activeContainers = Container.objects.filter(
         challenge__id=challenge_id).exclude(user__id=None)
 
     return activeContainers
 
 
-def scaleChallenge(self, challenge_id, registeredUsers, active_uid_list):
+def getAllContainersByChallengeID(challenge_id):
+    containers = Container.objects.filter(
+        challenge__id=challenge_id)
 
-    assignedContainers = getAssignedContainers(self, challenge_id)
+    return containers
+
+def scaleAllChallenges():
+    
+    registeredUsers = getRegisteredUserCount()
+    active_uid_list = getActiveSessions()
+
+    challengeIDs = Challenge.objects.exclude(hosted=False)
+    for challenge in challengeIDs:
+        print('scaling challenge # {0}'.format(challenge.id))
+        scaleChallenge(challenge.id,
+                        registeredUsers, active_uid_list)
+    return
+
+def scaleChallenge(challenge_id, registeredUsers, active_uid_list):
+
+    assignedContainers = getAssignedContainers(challenge_id)
     activeSessionCount = len(active_uid_list)
     activeContainerCount = len(assignedContainers)
-
-    containers = Container.objects.filter(challenge__id=challenge_id)
-
-    # for container in containers:
-    #     if container.user != None:
-    #         if container.id not in assignedContainers:
-    #             removeContainer(container)
-
-    buffer = calculateBuffer(self, registeredUsers, activeSessionCount,
+    
+    buffer = calculateBuffer(registeredUsers, activeSessionCount,
                              MINIMUM_CONTAINER_COUNT, activeContainerCount, challenge_id)
-
+    challengeContainers = getAllContainersByChallengeID(challenge_id)
+    challengeContainerCount = len(challengeContainers)
     nullContainers = getNullContainers(challenge_id)
     nullContainerCount = len(nullContainers)
 
-    if buffer > nullContainerCount:
-        while buffer > nullContainerCount:
-            newContainer(self, challenge_id)
-            nullContainerCount = len(Container.objects.filter(
-                challenge__id=challenge_id).filter(user_id=None))
-
-    elif buffer < nullContainerCount:
-        # print('this shouldn\'t happen since the containers are deleted when users log out.')
-        while buffer < nullContainerCount:
-            removeContainer(self, nullContainers[nullContainerCount-1])
-            nullContainerCount = len(Container.objects.filter(
-                challenge__id=challenge_id).filter(user_id=None))
-
-    elif buffer == nullContainerCount:
+    # buffer is total number of containers required based upon calculateBuffer
+    # MINIMUM_CONTAINER_COUNT is the minimum number of spare containers (assigned to null)
+    # ensure we have enough total containers per challenge as well as at least the MINIMUM_CONTAINER_COUNT 
+    
+    if buffer > challengeContainerCount:
+        while buffer > challengeContainerCount:
+            newContainer(challenge_id)
+            challengeContainerCount = len(getAllContainersByChallengeID(
+                challenge_id))
+            nullContainerCount = len(getNullContainers(challenge_id))
+            
+    # ensure we remove extra containers per challenge buffer calculation as well as at least the MINIMUM_CONTAINER_COUNT  
+    elif buffer < challengeContainerCount:
+        while buffer < challengeContainerCount :
+            removeContainer(nullContainers[nullContainerCount-1])
+            nullContainerCount = len(getNullContainers(challenge_id))
+            
+    elif buffer == challengeContainerCount:
         print('Correct # of containers according to buffer logic')
 
     else:
@@ -259,16 +265,16 @@ def getNullContainers(challenge_id):
     return nullContainers
 
 
-def removeContainer(self, containerObject):
+def removeContainer(containerObject):
     print('deleting container')
 
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     containerName = containerObject.name
     challenge_id = containerObject.challenge_id
     nullContainers = getNullContainers(challenge_id)
-    registeredUsers = getRegisteredUserCount(self)
-    active_uid_list = getActiveSessions(self)
-    
+    registeredUsers = getRegisteredUserCount()
+    active_uid_list = getActiveSessions()
+
     try:
         delete = d.removeContainer(containerName)
         if delete is not None:
@@ -296,33 +302,49 @@ def removeContainer(self, containerObject):
     #     scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
     # except:
     #     raise Exception('unknown issue with scaling nullContainers')
-    
+
     status = 'deleted container: {0}'.format(containerName)
     return status
 
 
-def calculateBuffer(self, registeredUsers, activeSessions, minimumContainers, activeContainers, challenge):
+def calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeContainers, challenge_id):
 
     # buf = registeredUsers, activeSessions, minimumContainers, activeContainers, challenge
 
     buffer = activeContainers + \
         ((0.2 * (activeSessions - activeContainers)) +
          (0.05 * (registeredUsers - activeSessions)))
+        
+    
 
-    if math.ceil(buffer) < minimumContainers:
-        roundedBuffer = minimumContainers
-        print("buffer = {0} < minimimumContainers = {1} - using minimum amount of contianers instead".format(
-            buffer, roundedBuffer))
-    else:
-        roundedBuffer = math.ceil(buffer)
+    # if math.ceil(buffer) < minimumContainers:
+    #     roundedBuffer = minimumContainers
+    #     print("buffer = {0} < minimimumContainers = {1} - using minimum amount of containers instead".format(
+    #         buffer, roundedBuffer))
+    # else:
+    #     roundedBuffer = math.ceil(buffer)
 
-        print("buffer = {0}, rounded up to nearest int = {1}".format(
-            buffer, roundedBuffer))
+    #     print("buffer = {0}, rounded up to nearest int = {1}".format(
+    #         buffer, roundedBuffer))
+    # 
+    roundedBuffer = math.ceil(buffer)
+    nullContainerCount = len(getNullContainers(challenge_id))
+    
+    # if buffer is lower than # of minimum containers then increase  
+    # if roundedBuffer < minimumContainers:
+    #     while roundedBuffer < minimumContainers:
+    #         roundedBuffer += 1
+            
+    if nullContainerCount < minimumContainers:
+        roundedBuffer += abs(nullContainerCount - minimumContainers)
+
+    print("buffer = {0}, rounded up to nearest int = {1}".format(
+        buffer, roundedBuffer))
 
     return roundedBuffer
 
 
-def newContainer(self, challenge_id, userID=None):
+def newContainer(challenge_id, userID=None):
 
     chall_obj = Challenge.objects.get(id=challenge_id)
     if userID is not None:

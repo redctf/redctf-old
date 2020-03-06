@@ -1,5 +1,6 @@
 import graphene
 import rethinkdb as r
+from threading import Thread
 from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
@@ -12,6 +13,8 @@ from users.validators import validate_username, validate_password, validate_emai
 from teams.validators import validate_token
 from django.contrib.auth import authenticate, login, logout
 from containers.schema import *
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+
 
 d = dockerAPI()
 
@@ -25,16 +28,80 @@ d = dockerAPI()
 # # Temp fix for stage 1 dev #
 # # ======================== #
 
+def perform_some_action_on_login(sender, user, **kwargs):
+    """
+    A signal receiver which performs some actions for
+    the user logging in.
+    """
+
+    # your code here
+    print("caught logged in signal")
+
+    try:
+        scaleAllChallenges()
+        # scale = Thread(target=scaleAllChallenges)
+        # scale.start()
+        # print('logged in after scale started')
+
+    except:
+        raise Exception(
+            'unknown issue with login')
+
+    return
+
+
+def perform_some_action_on_logout(sender, user, **kwargs):
+    """
+    A signal receiver which performs some actions for
+    the user logging out.
+    """
+
+    # your code here
+    print("caught logged out signal")
+    # destroy all user's containers
+    # look up container that belongs to logged in user
+    try:
+        cont_objs = Container.objects.filter(user__exact=user)
+
+        if len(cont_objs) == 0:
+            print('No containers assigned to user.')
+
+        for cont in cont_objs:
+            removeContainer(cont)
+            try:
+                challenge_id = cont.challenge_id
+                # challengeContainers = getAllContainersByChallengeID(challenge_id)
+                registeredUsers = getRegisteredUserCount()
+                active_uid_list = getActiveSessions()
+                scaleChallenge(challenge_id,
+                               registeredUsers, active_uid_list)
+            except:
+                raise Exception(
+                    'unknown issue with scaling nullContainers')
+        ScaleAllChallenges()
+
+    except:
+        print('Container does not exist for user.')
+        # if none exists, log out
+
+    return
+
+
+user_logged_in.connect(Thread(perform_some_action_on_login))
+user_logged_out.connect(Thread(perform_some_action_on_logout))
+
 
 class Me(DjangoObjectType):
     class Meta:
         model = User
-        #only_fields = ('id', 'username', 'is_superuser')
-        #filter_fields = ('id', 'username', 'is_superuser')
+        # only_fields = ('id', 'username', 'is_superuser')
+        # filter_fields = ('id', 'username', 'is_superuser')
+
 
 class TeamType(DjangoObjectType):
     class Meta:
         model = Team
+
 
 class CreateUser(graphene.Mutation):
     status = graphene.String()
@@ -77,7 +144,7 @@ class CreateUser(graphene.Mutation):
         user = User(
             username=username,
             email=email,
-            team = Team.objects.get(token=token),
+            team=Team.objects.get(token=token),
             hidden=hidden
         )
         user.set_password(password)
@@ -99,6 +166,7 @@ class CreateUser(graphene.Mutation):
         # # ======================== #
 
         return CreateUser(status='User account created', user=user)
+
 
 class ChangePassword(graphene.Mutation):
     status = graphene.String()
@@ -140,38 +208,16 @@ class LogIn(graphene.Mutation):
 
         return LogIn(id=user.id, isSuperuser=user.is_superuser)
 
+
 class LogOut(graphene.Mutation):
     status = graphene.String()
 
     def mutate(self, info):
         user = info.context.user
-        
-        #destroy all user's containers
-        #look up container that belongs to logged in user
-        try:
-            cont_objs = Container.objects.filter(user__exact=user)
-            
-            if len(cont_objs) == 0:
-                print('Container does not exist for user.')
-                
-            for cont in cont_objs:
-                removeContainer(self, cont)
-                try:
-                    challenge_id = cont.challenge_id
-                    nullContainers = getNullContainers(challenge_id)
-                    registeredUsers = getRegisteredUserCount(self)
-                    active_uid_list = getActiveSessions(self)
-                    scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
-                except:
-                    raise Exception('unknown issue with scaling nullContainers')
-                            
-
-        except:
-            print('Container does not exist for user.')
-            #if none exists, log out
 
         logout(info.context)
         return LogOut(status='Logged Out')
+
 
 class Query(object):
     me = graphene.Field(Me)
@@ -181,6 +227,7 @@ class Query(object):
         validate_user_is_authenticated(user)
 
         return user
+
 
 class UpdateUser(graphene.Mutation):
     status = graphene.String()
@@ -193,21 +240,21 @@ class UpdateUser(graphene.Mutation):
         token = graphene.String(required=False)
         active = graphene.Boolean(required=False)
         newUsername = graphene.String(required=False)
-        
+
     def mutate(self, info, username, password=None, email=None, hidden=None, token=None, active=None, newUsername=None):
 
         user = info.context.user
         # Validate user is admin
-        validate_user_is_admin(user)    
+        validate_user_is_admin(user)
 
         if User.objects.filter(username__iexact=username).exists():
-            targetUser = User.objects.get(username__iexact=username)            
-                      
+            targetUser = User.objects.get(username__iexact=username)
+
             if newUsername is not None:
                 validate_username(newUsername)
                 validate_username_unique(newUsername)
-                targetUser.username = newUsername   
-                   
+                targetUser.username = newUsername
+
             if password is not None:
                 targetUser.set_password = password
 
@@ -228,7 +275,8 @@ class UpdateUser(graphene.Mutation):
             raise Exception('Error - can\'t find user: %s' % (username))
 
         return UpdateUser(status='User Updated: %s' % (username))
-    
+
+
 class DeleteUser(graphene.Mutation):
     status = graphene.String()
 
@@ -239,23 +287,22 @@ class DeleteUser(graphene.Mutation):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
-                
+
         if User.objects.filter(username__iexact=username).exists():
             targetUser = User.objects.get(username__iexact=username)
-                        
-            try: 
+
+            try:
                 targetUser.delete()
-                    
+
             except Exception as ex:
                 raise Exception('error with user delete: {0}'.format(ex))
 
-
-        
         else:
             print('no matching usernames')
 
         return DeleteUser(status='Username Deleted: %s' % (username))
-            
+
+
 class Mutation(object):
     create_user = CreateUser.Field()
     change_password = ChangePassword.Field()
