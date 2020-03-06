@@ -17,124 +17,110 @@ from teams.validators import validate_team_id
 
 d = dockerAPI()
 
-def updatePoints(self, info, chal_id, points):
+def getDjangoTeamsWithSolvedChallengesByID(self, info, chal_id):
     status = graphene.String()
 
     user = info.context.user
     # Validate user is admin
     validate_user_is_admin(user)
 
-    # for team in teams - get solved challenges = id, remove points, remove correct flags, update rethinkdb.
+    # get the django team object
+    if Team.objects.filter(solved__challenge_id=chal_id).exists():
+        teams = Team.objects.filter(solved__challenge_id=chal_id)
+        return teams
+    else:
+        return False
 
-    # get all points for each team, add them up after the points update is done.
-
-    # rethindb data explorer javascript implementation
-    # r.db('redctf').table('teams').filter(
-    #     function (solved){
-    #         return solved('solved').contains(function(id){
-    #         return id('id').eq(68);
-    #         })
-    #     }
-    #     )
-
-    rethink_updates = {}
-
-    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    try:
-        # r.db(CTF_DB).table('teams').filter({'sid':id}).update(rethink_updates).run(connection)
-        # get teams with solved challenges containing chal_id
-        request = r.db('redctf').table('teams') \
-            .concat_map(
-            lambda doc: doc['solved']
-            .concat_map(lambda data: [{'id': doc['id'], 'sid': doc['sid'], 'name': doc['name'], 'points': doc['points'], 'solved': data}])) \
-            .filter(
-            lambda doc:
-            doc['solved']['id'] == chal_id
-        ).run(connection)
-        print('update rethink results: {0}'.format(request))
-
-    except RqlRuntimeError as e:
-        raise Exception(
-            'Error updating challenge from realtime database: %s' % (e))
-
-
-    try:
-        # get each team object, then update the team's points and the solved challenge points accordingly.
-        for team in request:
-            print('Updating {0}\'s points.'.format(team['name']))
-
-            # calculate the difference in points from old points value to new.
-            chal_diff_points = abs(team['solved']['points'] - points)
-
-            # get the team object to have the full solved array to do a single nested udpate
-            team_object = r.db('redctf').table(
-                'teams').get(team['id']).run(connection)
-            solved_object = team_object['solved']
-
-            # get the django team object
-            if Team.objects.filter(id__iexact=team_object['sid']).exists():
-                django_team_object = Team.objects.get(id__iexact=team_object['sid'])
-            else:
-                raise Exception(
-                    'unable to find team in backend'
-                )
-            for index, chal in enumerate(solved_object):
-                print('#{0}: {1}'.format(index, chal))
-                if chal['id'] == chal_id:
-                    if points == 0:
-                        del solved_object[index]
-                        # print('removed chal from solved: {0}'.format(d))
-                    else:
-                        solved_object[index]['points'] = points
-                        print('updated #{0} points = {1}'.format(
-                        index, points))
-
-        # if the updated points value is less than the existing value for the challenge subtract the chal_diff_points to team's total points
-        if points < team['solved']['points']:
-            # update total team points
-            rethink_updates['points'] = team['points'] - \
-                chal_diff_points
-            
-
-        # if the updated points value is greater than the existing value for the challenge add the chal_diff_points to team's total points
-        elif points > team['solved']['points']:
-            # update total team points
-            rethink_updates['points'] = team['points'] + \
-                chal_diff_points
-
-        else:
-            print('no points change')
-            raise Exception(
-                'updated points value is equal to the existing points value')
-        # set backend updated team points
-        django_team_object.points = rethink_updates['points']
-        """
-        Trying to delete an SolvedChallenge object when points are 0 (passed in from DeleteChallege). The Team object contains the many to many relationship solved challenge object which contains the challenge ID. 
-        """
-        if points == 0:
-            print('delete django nested object.')
-            # django_team_object.solved
-        django_team_object.save()
-        
-        # set updated challenge points
-        rethink_updates['solved'] = solved_object
-
-        # run updates
-        update = r.db('redctf').table('teams') \
-            .get(team['id'])\
-            .update(rethink_updates).run(connection)
-        print('updates: {0}'.format(update))
-
-    except Exception as ex:
-        raise Exception(
-            'Error updating points: {0}'.format(ex)
-        )
     
-    finally:
-        connection.close()
-        status = 'Points updated'
-    return status
+    
+def updatePoints(self, info, chal_id, points):
+    status = graphene.String()
 
+    user = info.context.user
+    # Validate user is admin
+    validate_user_is_admin(user)
+    
+    teams = getDjangoTeamsWithSolvedChallengesByID(self, info, chal_id) 
+    
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    rethink_updates = {}
+   
+    if teams:
+        try:
+            for team in teams: 
+                print('Updating {0}\'s points.'.format(team.name))  
+                        
+                # calculate the difference in points from old points value to new.
+                challenge = Challenge.objects.get(id=chal_id)
+                chal_diff_points = abs(challenge.points - points)
+                rethink_teams = r.db(CTF_DB).table('teams').filter({'sid':team.id}).run(connection)    
+
+                # use for loop to access the object(s) values and assign to team id variable
+                for rethink_team in rethink_teams: 
+                    # print(rethink_team['id'])   
+                    rethink_team_id = rethink_team['id']
+                
+                rethink_team_object = r.db('redctf').table(
+                'teams').get(rethink_team_id).run(connection)
+                
+                # get rethink team solved object 
+                solved_object = rethink_team_object['solved']
+                
+                # print(rethink_team_id)
+            
+                
+                # if the updated points value is less than the existing value for the challenge subtract the chal_diff_points to team's total points
+                if points < challenge.points:
+                    # update total team points
+                    team.points -= chal_diff_points
+                    
+                # if the updated points value is greater than the existing value for the challenge add the chal_diff_points to team's total points
+                elif points > challenge.points:
+                    # update total team points
+                    team.points += chal_diff_points
+
+                else:
+                    print('no points change')
+                    raise Exception(
+                        'updated points value is equal to the existing points value')
+                
+                # set backend updated team points
+                team.save()
+                
+                # set update for rethinkdb team points
+                rethink_updates['points'] = team.points
+                
+                # update the team's solved challenge points
+                solved_challenge = team.solved.get(challenge_id=chal_id)
+                solved_challenge.points = points
+                
+                
+                # find challenges to update within rethink solved object
+                for index, challenge in enumerate(solved_object):
+                    if challenge['id'] == chal_id:
+                        solved_object[index]['points'] = points
+                
+                # update solved object for rethink update
+                rethink_updates['solved'] = solved_object
+                
+                # run updates on rethink
+                update = r.db('redctf').table('teams') \
+                    .get(rethink_team_id)\
+                    .update(rethink_updates).run(connection)
+                print('updates: {0}'.format(update))
+
+                    
+                
+        except Exception as ex:
+            raise Exception('error with teams')
+            
+    else:
+        print('no matching teams ')
+   
+    
+    return True
+        
+    
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -299,37 +285,111 @@ class DeleteChallenge(graphene.Mutation):
     status = graphene.String()
 
     class Arguments:
-        id = graphene.Int(required=True)
+        chal_id = graphene.Int(required=True)
 
-    def mutate(self, info, id):
+    def mutate(self, info, chal_id):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
 
-        removePoints = updatePoints(self, info, id, 0)
+        # update total team points
+        # removePoints = removePoints(self, info, id, 0)
         
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+        
+        # update each team with solved challenges 
+        teams = getDjangoTeamsWithSolvedChallengesByID(self, info, chal_id)
+        
+        rethink_updates = {}
+        if teams:
+            # print('matching teams')
+            try:
+                for team in teams: 
+                    print('Updating {0}\'s points.'.format(team.name))  
+                            
+                    # calculate the difference in points from old points value to new.
+                    challenge = Challenge.objects.get(id=chal_id)
+                    
+                    rethink_teams = r.db(CTF_DB).table('teams').filter({'sid':team.id}).run(connection)    
+                    
+                    # use for loop to access the object(s) values and assign to team id variable
+                    for rethink_team in rethink_teams: 
+                        print(rethink_team['id'])   
+                        rethink_team_id = rethink_team['id']
+                    
+                    rethink_team_object = r.db('redctf').table(
+                    'teams').get(rethink_team_id).run(connection)
+                    
+                    # get rethink team solved object 
+                    solved_object = rethink_team_object['solved']
+
+                    # set django team points
+                    team.points -= challenge.points
+                    
+                    # set django correct_flags
+                    team.correct_flags -= 1 
+                                    
+                    # save backend updated team points
+                    team.save()
+                    
+                    # set update for rethinkdb team points
+                    rethink_updates['points'] = team.points
+                    
+                    # set update for rethinkdb team correct flags
+                    rethink_updates['correct_flags'] = team.correct_flags
+                    
+                    # remove solved challenge object
+                    solved_challenge = team.solved.get(challenge_id=chal_id)
+                    
+                    
+                    rethink_updated_solved_object = []
+                    # find solved challenges to delete within rethink solved object
+                    # this will update the solved challenges to be everything except the one being deleted. 
+                    for index, challenge in enumerate(solved_object):
+                        if challenge['id'] != chal_id:
+                            rethink_updated_solved_object.append(challenge)
+                    
+                    # update solved object for rethink update (with challenge removedt)
+                    rethink_updates['solved'] = rethink_updated_solved_object
+                    
+                    # run updates on rethink
+                    update = r.db('redctf').table('teams') \
+                        .get(rethink_team_id)\
+                        .update(rethink_updates).run(connection)
+                    print('updates: {0}'.format(update))
+                    
+                    # delete rethink solved challenge
+                    solved_challenge.delete()
+                    
+            except Exception as ex:
+                raise Exception('error with teams: {0}'.format(ex))
+
+
+        
+        else:
+            print('no matching teams')
+            
         try:
             r.db(CTF_DB).table('challenges').filter(
-                {'sid': id}).delete().run(connection)
+                {'sid': chal_id}).delete().run(connection)
+            
         except RqlRuntimeError as e:
             raise Exception(
                 'Error deleting challenge from realtime database: %s' % (e))
         finally:
             connection.close()
-
         # ID is primary key for django, SID is PK in Rethink
-        if Challenge.objects.filter(id__iexact=id).exists():
-            chal = Challenge.objects.get(id__iexact=id)
+        try:
+            chal = Challenge.objects.get(id=chal_id)
             chal.delete()
 
-        else:
-            # return DeleteChallenge(status='Error deleting challenge from database: %s' % (id))
+        except Exception as ex:
+            # return DeleteChallenge(status='Error deleting challenge from database: %s' % (chal_id))
             raise Exception(
-                'Error deleting challenge from database: %s' % (id))
+                'Error deleting challenge from database: %s' % (chal_id))
 
-        return DeleteChallenge(status='Challenge Deleted: %s' % (id))
-
+        return DeleteChallenge(status='Challenge Deleted: %s' % (chal_id))
+        
 
 class UpdateChallenge(graphene.Mutation):
     status = graphene.String()
@@ -355,8 +415,8 @@ class UpdateChallenge(graphene.Mutation):
 
         rethink_updates = {}
 
-        if Challenge.objects.filter(id__iexact=id).exists():
-            chal = Challenge.objects.get(id__iexact=id)
+        if Challenge.objects.filter(id=id).exists():
+            chal = Challenge.objects.get(id =id)
             if title is not None:
                 validate_title(title)
                 chal.title = title
@@ -435,14 +495,17 @@ class UpdateChallenge(graphene.Mutation):
             raise Exception('Error - can\'t find challenge: %s' % (id))
 
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-        try:
-            r.db(CTF_DB).table('challenges').filter(
-                {'sid': id}).update(rethink_updates).run(connection)
-        except RqlRuntimeError as e:
-            raise Exception(
-                'Error updating challenge from realtime database: %s' % (e))
-        finally:
-            connection.close()
+        if len(rethink_updates) != 0:
+            
+
+            try:
+                r.db(CTF_DB).table('challenges').filter(
+                    {'sid': id}).update(rethink_updates).run(connection)
+            except RqlRuntimeError as e:
+                raise Exception(
+                    'Error updating challenge from realtime database: %s' % (e))
+            finally:
+                connection.close()
 
         return UpdateChallenge(status='Challenge Updated: %s' % (id))
 
