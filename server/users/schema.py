@@ -87,8 +87,8 @@ def perform_some_action_on_logout(sender, user, **kwargs):
     return
 
 
-user_logged_in.connect(Thread(perform_some_action_on_login))
-user_logged_out.connect(Thread(perform_some_action_on_logout))
+user_logged_in.connect(perform_some_action_on_login)
+user_logged_out.connect(perform_some_action_on_logout)
 
 
 class Me(DjangoObjectType):
@@ -149,6 +149,11 @@ class CreateUser(graphene.Mutation):
         )
         user.set_password(password)
         user.save()
+        
+        try: 
+            scaleAllChallenges()
+        except Exception as ex:
+            raise Exception('error when registering user')
 
         # # ======================== #
         # # Temp fix for stage 1 dev #
