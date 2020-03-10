@@ -1,0 +1,71 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+ 
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        {{ form.name }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.token.errors }}
+        <label for="{{ form.token.id_for_label }}">Token:</label>
+        {{ form.token }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.points.errors }}
+        <label for="{{ form.points.id_for_label }}">Points:</label>
+        {{ form.points }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.hidden.errors }}
+        <div class="custom-control custom-switch">
+        <!-- <div class="form-check"> -->
+          {{ form.hidden }}
+          <label class="custom-control-label" for="{{ form.hidden.id_for_label }}">Hidden</label>
+          <!-- <label class="form-check-label" for="{{ form.hidden.id_for_label }}">Hidden</label> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.correct_flags.errors }}
+        <label for="{{ form.correct_flags.id_for_label }}">Correct Flags:</label>
+        {{ form.correct_flags }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.wrong_flags.errors }}
+        <label for="{{ form.wrong_flags.id_for_label }}">Wrong Flags:</label>
+        {{ form.wrong_flags }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.solved.errors }}
+        <label for="{{ form.solved.id_for_label }}">Solved:</label>
+        {{ form.solved }}
+      </div>
+    </div>
+   
+    <button type="submit" class="btn btn-outline-primary">Save</button>
+  </form>
+
+{% endblock %}

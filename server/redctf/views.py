@@ -121,7 +121,7 @@ def container_new (request):
         if form.is_valid():
             new_container = form.save()
 
-            return redirect('containers/container_detail', pk=new_container.pk)
+            return redirect('container_detail', pk=new_container.pk)
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -156,6 +156,56 @@ def container_edit(request, pk):
 def team_list(request):
     teams = Team.objects.all().order_by('created')
     return render(request, 'teams/team_list.html', {'teams' : teams})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def team_detail(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    return render(request, 'teams/team_detail.html', {'team': team})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def team_delete(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    team.delete()
+    return redirect(team_list)
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def team_new (request):
+
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            new_team = form.save()
+
+            return redirect('team_detail', pk=new_team.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TeamForm()
+
+    return render(request, 'teams/team_edit.html', {'form': form})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def team_edit(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    if request.method == "POST":
+        form = TeamForm(request.POST, instance=team)
+        # check whether it's valid:
+        if form.is_valid():
+            # save the for to the db
+            new_team = form.save()
+
+            # redirect to team detail page
+            return redirect('team_detail', pk=new_team.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TeamForm(instance=team)
+
+    return render(request, 'teams/team_edit.html', {'form': form})
 
 ############################################
 
