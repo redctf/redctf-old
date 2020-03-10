@@ -2,9 +2,9 @@
 
 {% block content %}
     <div class="container-fluid">
-        <a class="btn btn-outline-primary" href="{% url 'user_list' %}" role="button">Back</a>
-        <a class="btn btn-outline-primary" href="{% url 'user_edit' pk=user.pk %}" role="button">Edit</a>
-        <a class="btn btn-outline-primary" href="{% url 'user_delete' pk=user.pk %}" role="button">Delete</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'user_list' %}" role="button">Back</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'user_edit' pk=user.pk %}" role="button">Edit</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'user_delete' pk=user.pk %}" role="button">Delete</a>
         <dl class="row">
             <dt class="col-sm-3">Username: </dt>
             <dd class="col-sm-9">{{ user.username }}</dd>
