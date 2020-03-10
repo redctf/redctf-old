@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count
 from categories.models import Category
 from django.contrib import admin
 
@@ -22,6 +23,9 @@ class Challenge(models.Model):
   pathPrefix = models.CharField(max_length=100, default=None, null=True, blank=True)
   upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
   created = models.DateTimeField(auto_now_add=True)
+
+  def solved_count(self):
+    return self.solvedchallenge_set.count()
 
   def __str__(self):
     return 'id:' + str(self.id) + ' - ' + self.title + '_' + str(self.points) 
