@@ -216,4 +216,54 @@ def user_list(request):
     users = User.objects.all().order_by('created')
     return render(request, 'users/user_list.html', {'users' : users})
 
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def user_detail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, 'users/user_detail.html', {'user': user})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def user_delete(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.delete()
+    return redirect(user_list)
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def user_new (request):
+
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+
+            return redirect('user_detail', pk=new_user.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = UserForm()
+
+    return render(request, 'users/user_edit.html', {'form': form})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def user_edit(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=user)
+        # check whether it's valid:
+        if form.is_valid():
+            # save the for to the db
+            new_user = form.save()
+
+            # redirect to user detail page
+            return redirect('user_detail', pk=new_user.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = UserForm(instance=user)
+
+    return render(request, 'users/user_edit.html', {'form': form})
+
 ############################################

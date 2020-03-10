@@ -1,0 +1,20 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary" href="{% url 'user_list' %}" role="button">Back</a>
+        <a class="btn btn-outline-primary" href="{% url 'user_edit' pk=user.pk %}" role="button">Edit</a>
+        <a class="btn btn-outline-primary" href="{% url 'user_delete' pk=user.pk %}" role="button">Delete</a>
+        <dl class="row">
+            <dt class="col-sm-3">Username: </dt>
+            <dd class="col-sm-9">{{ user.username }}</dd>
+          
+            <dt class="col-sm-3">Team: </dt>
+            <dd class="col-sm-9">{{ user.team }}</dd>
+          
+            <dt class="col-sm-3">Hidden: </dt>
+            <dd class="col-sm-9">{{ user.hidden }}</dd>
+
+        </dl>
+    </div>
+{% endblock %}
