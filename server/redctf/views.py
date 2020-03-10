@@ -83,7 +83,7 @@ def challenge_edit(request, pk):
             new_challenge = form.save()
 
             # redirect to challenge detail page
-            return redirect('challenges/challenge_detail', pk=new_challenge.pk)
+            return redirect('challenge_detail', pk=new_challenge.pk)
 
     # if a GET (or any other method) we'll create a blank form
     else:
