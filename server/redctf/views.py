@@ -4,9 +4,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.auth.decorators import user_passes_test
 
+from django.db.models import Count
+
 from users.models import User
 from challenges.models import Challenge
 from containers.models import Container
+from teams.models import SolvedChallenge
 from teams.models import Team
 from users.models import User
 from .forms import ChallengeForm
@@ -36,13 +39,20 @@ def admin_panel(request):
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_list(request):
     challenges = Challenge.objects.all().order_by('created')
-    return render(request, 'challenge_list.html', {'challenges' : challenges})
+    return render(request, 'challenges/challenge_list.html', {'challenges' : challenges})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-    return render(request, 'challenge_detail.html', {'challenge': challenge})
+    return render(request, 'challenges/challenge_detail.html', {'challenge': challenge})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def challenge_delete(request, pk):
+    challenge = get_object_or_404(Challenge, pk=pk)
+    challenge.delete()
+    return redirect(challenge_list)
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -53,13 +63,13 @@ def challenge_new (request):
         if form.is_valid():
             new_challenge = form.save()
 
-            return redirect('challenge_detail', pk=new_challenge.pk)
+            return redirect('challenges/challenge_detail', pk=new_challenge.pk)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ChallengeForm()
 
-    return render(request, 'challenge_edit.html', {'form': form})
+    return render(request, 'challenges/challenge_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -73,13 +83,13 @@ def challenge_edit(request, pk):
             new_challenge = form.save()
 
             # redirect to challenge detail page
-            return redirect('challenge_detail', pk=new_challenge.pk)
+            return redirect('challenges/challenge_detail', pk=new_challenge.pk)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ChallengeForm(instance=challenge)
 
-    return render(request, 'challenge_edit.html', {'form': form})
+    return render(request, 'challenges/challenge_edit.html', {'form': form})
 ############################################
 
 ################ containers ################
@@ -87,13 +97,20 @@ def challenge_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def container_list(request):
     containers = Container.objects.all().order_by('created')
-    return render(request, 'container_list.html', {'containers' : containers})
+    return render(request, 'containers/container_list.html', {'containers' : containers})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def container_detail(request, pk):
     container = get_object_or_404(Container, pk=pk)
-    return render(request, 'container_detail.html', {'container': container})
+    return render(request, 'containers/container_detail.html', {'container': container})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_delete(request, pk):
+    container = get_object_or_404(Container, pk=pk)
+    container.delete()
+    return redirect(container_list)
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -104,13 +121,13 @@ def container_new (request):
         if form.is_valid():
             new_container = form.save()
 
-            return redirect('container_detail', pk=new_container.pk)
+            return redirect('containers/container_detail', pk=new_container.pk)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ContainerForm()
 
-    return render(request, 'container_edit.html', {'form': form})
+    return render(request, 'containers/container_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -130,7 +147,7 @@ def container_edit(request, pk):
     else:
         form = ContainerForm(instance=container)
 
-    return render(request, 'container_edit.html', {'form': form})
+    return render(request, 'containers/container_edit.html', {'form': form})
 ############################################
 
 ################## teams ###################
@@ -138,7 +155,7 @@ def container_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def team_list(request):
     teams = Team.objects.all().order_by('created')
-    return render(request, 'team_list.html', {'teams' : teams})
+    return render(request, 'teams/team_list.html', {'teams' : teams})
 
 ############################################
 
@@ -147,6 +164,6 @@ def team_list(request):
 @user_passes_test(lambda u: u.is_superuser)
 def user_list(request):
     users = User.objects.all().order_by('created')
-    return render(request, 'user_list.html', {'users' : users})
+    return render(request, 'users/user_list.html', {'users' : users})
 
 ############################################

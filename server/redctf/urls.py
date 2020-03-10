@@ -36,6 +36,7 @@ urlpatterns = [
     path('challenge/new/', views.challenge_new, name='challenge_new'),
     path('challenge/<int:pk>/', views.challenge_detail, name='challenge_detail'),
     path('challenge/<int:pk>/edit/', views.challenge_edit, name='challenge_edit'),
+    path('challenge/<int:pk>/delete/', views.challenge_delete, name='challenge_delete'),
     ############################################
 
     ################ containers ################
@@ -43,6 +44,7 @@ urlpatterns = [
     path('container/new/', views.container_new, name='container_new'),
     path('container/<int:pk>/', views.container_detail, name='container_detail'),
     path('container/<int:pk>/edit/', views.container_edit, name='container_edit'),
+    path('container/<int:pk>/delete/', views.container_delete, name='container_delete'),
     ############################################
 
     ################## teams ###################

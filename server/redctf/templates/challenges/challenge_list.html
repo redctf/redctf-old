@@ -10,6 +10,7 @@
                     <th scope="col">Challenge</th>
                     <th scope="col">Category</th>
                     <th scope="col">Points</th>
+                    <th scope="col">Solved</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +30,7 @@
                         </td>
                         <td>{{ challenge.category }}</td>
                         <td>{{ challenge.points }}</td>
+                        <td>{{ challenge.solved_count }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
