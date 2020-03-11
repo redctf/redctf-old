@@ -27,7 +27,7 @@ args = parser.parse_args()
 try:
 	# r = d.createContainer(args.user, args.imageName, args.ports, args.containerName, args.pathPrefix, args.netIsolation)
 	#print(r.attrs)
-	r = d.createContainer(user, imageName, ports, containerName, pathPrefix, netIsolation, containerType)
+	r = d.createContainer(imageName, ports, containerName, pathPrefix, netIsolation, containerType, user)
 	print("############")
 	print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(r.name, r.image, r.labels, r.short_id, r.status))
 	print("############")

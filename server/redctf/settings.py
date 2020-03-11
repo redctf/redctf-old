@@ -147,3 +147,5 @@ CORS_ORIGIN_WHITELIST = ( 'http://localhost:3000', 'http://localhost:8000', 'htt
 'http://ctf.csgidev.com:3000', 'http://ctf.csgidev.com:8000')
 CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True
+
+MINIMUM_CONTAINER_COUNT = os.environ.get('MINIMUM_CONTAINER_COUNT') or 2 
