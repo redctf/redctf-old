@@ -1,6 +1,6 @@
 import graphene
 import rethinkdb as r
-from threading import Thread
+import threading
 from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
@@ -38,12 +38,9 @@ def perform_some_action_on_login(sender, user, **kwargs):
     print("caught logged in signal")
 
     try:
-        scaleAllChallenges()
-        # scale = Thread(target=scaleAllChallenges)
-        # scale.start()
-        # print('logged in after scale started')
+        threadedScaleAllChallenges()
 
-    except:
+    except Exception as ex:
         raise Exception(
             'unknown issue with login')
 
@@ -59,6 +56,19 @@ def perform_some_action_on_logout(sender, user, **kwargs):
     # your code here
     print("caught logged out signal")
     # destroy all user's containers
+    try:
+        # scaleAllChallenges()
+        
+        processContainersOnLogout(user)
+
+    except Exception as ex:
+        raise Exception(
+            'unknown issue with logout')
+
+    return
+
+def processContainersOnLogout(user):
+    
     # look up container that belongs to logged in user
     try:
         cont_objs = Container.objects.filter(user__exact=user)
@@ -68,25 +78,13 @@ def perform_some_action_on_logout(sender, user, **kwargs):
 
         for cont in cont_objs:
             removeContainer(cont)
-            try:
-                challenge_id = cont.challenge_id
-                # challengeContainers = getAllContainersByChallengeID(challenge_id)
-                registeredUsers = getRegisteredUserCount()
-                active_uid_list = getActiveSessions()
-                scaleChallenge(challenge_id,
-                               registeredUsers, active_uid_list)
-            except:
-                raise Exception(
-                    'unknown issue with scaling nullContainers')
-        ScaleAllChallenges()
+            
+        scaleAllChallenges()
 
     except:
         print('Container does not exist for user.')
         # if none exists, log out
-
-    return
-
-
+        
 user_logged_in.connect(perform_some_action_on_login)
 user_logged_out.connect(perform_some_action_on_logout)
 
@@ -151,7 +149,7 @@ class CreateUser(graphene.Mutation):
         user.save()
         
         try: 
-            scaleAllChallenges()
+            threadedScaleAllChallenges()
         except Exception as ex:
             raise Exception('error when registering user')
 

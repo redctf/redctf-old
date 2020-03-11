@@ -279,19 +279,22 @@ class dockerAPI:
         """
         # get the container object
         container = self.getContainerObject(containerName)
+        if container:
+            
+            # stop the container
+            self.stopContainer(container)
 
-        # stop the container
-        self.stopContainer(container)
+            # remove the container
+            try:
+                r = container.remove()
+                if r is None:
+                    print("Removed container")
+            except Exception as ex:
+                print(ex)
 
-        # remove the container
-        try:
-            r = container.remove()
-            if r is None:
-                print("Removed container")
-        except Exception as ex:
-            print(ex)
-
-        return r
+            return r
+        else:
+            raise Exception('issue deleting container')
 
     def pruneContainers(self):
         """

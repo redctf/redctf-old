@@ -1,5 +1,6 @@
 import graphene
 import math
+import threading
 import rethinkdb as r
 from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
@@ -73,7 +74,6 @@ class ScaleAllChallenges(graphene.Mutation):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
-
 
         return ScaleAllChallenges(status='all challenges scaled')
 
@@ -170,7 +170,8 @@ def assignContainerToUser(challenge_id, userID):
         connection.close()
 
     try:
-        scaleChallenge(challenge_id, registeredUsers, active_uid_list)
+        threading.Thread(scaleChallenge(
+            challenge_id, registeredUsers, active_uid_list))
     except:
         raise Exception('unknown issue with scaling nullContainers')
 
@@ -208,8 +209,17 @@ def getAllContainersByChallengeID(challenge_id):
 
     return containers
 
+
+def threadedScaleAllChallenges():
+    scale = threading.Thread(target=scaleAllChallenges)
+    scale.start()
+    print('thread started')
+
+    return
+
+
 def scaleAllChallenges():
-    
+
     registeredUsers = getRegisteredUserCount()
     active_uid_list = getActiveSessions()
 
@@ -217,15 +227,16 @@ def scaleAllChallenges():
     for challenge in challengeIDs:
         print('scaling challenge # {0}'.format(challenge.id))
         scaleChallenge(challenge.id,
-                        registeredUsers, active_uid_list)
+                       registeredUsers, active_uid_list)
     return
+
 
 def scaleChallenge(challenge_id, registeredUsers, active_uid_list):
 
     assignedContainers = getAssignedContainers(challenge_id)
     activeSessionCount = len(active_uid_list)
     activeContainerCount = len(assignedContainers)
-    
+
     buffer = calculateBuffer(registeredUsers, activeSessionCount,
                              MINIMUM_CONTAINER_COUNT, activeContainerCount, challenge_id)
     challengeContainers = getAllContainersByChallengeID(challenge_id)
@@ -235,21 +246,39 @@ def scaleChallenge(challenge_id, registeredUsers, active_uid_list):
 
     # buffer is total number of containers required based upon calculateBuffer
     # MINIMUM_CONTAINER_COUNT is the minimum number of spare containers (assigned to null)
-    # ensure we have enough total containers per challenge as well as at least the MINIMUM_CONTAINER_COUNT 
-    
+    # ensure we have enough total containers per challenge as well as at least the MINIMUM_CONTAINER_COUNT
+
     if buffer > challengeContainerCount:
         while buffer > challengeContainerCount:
             newContainer(challenge_id)
             challengeContainerCount = len(getAllContainersByChallengeID(
                 challenge_id))
+            # this is used in the next if statement
             nullContainerCount = len(getNullContainers(challenge_id))
+
+    # ensure we remove extra containers per challenge buffer calculation as well as at least the MINIMUM_CONTAINER_COUNT
+    # elif buffer < challengeContainerCount and nullContainerCount > MINIMUM_CONTAINER_COUNT:
+    #     while buffer < challengeContainerCount:
+        
+    #         if nullContainerCount > MINIMUM_CONTAINER_COUNT and nullContainerCount > 0:
+    #             removeContainer(nullContainers[nullContainerCount-1])
+    #             challengeContainerCount = len(getAllContainersByChallengeID(
+    #                 challenge_id))
+    #             nullContainers = getNullContainers(challenge_id)
+    #         else:
+    #             raise Exception('error with removing containers')
             
-    # ensure we remove extra containers per challenge buffer calculation as well as at least the MINIMUM_CONTAINER_COUNT  
     elif buffer < challengeContainerCount:
-        while buffer < challengeContainerCount :
-            removeContainer(nullContainers[nullContainerCount-1])
-            nullContainerCount = len(getNullContainers(challenge_id))
-            
+        while buffer < challengeContainerCount:
+        
+            if nullContainerCount > 0:
+                removeContainer(nullContainers[nullContainerCount-1])
+                challengeContainerCount = len(getAllContainersByChallengeID(
+                    challenge_id))
+                nullContainers = getNullContainers(challenge_id)
+            else:
+                raise Exception('error with removing containers')
+
     elif buffer == challengeContainerCount:
         print('Correct # of containers according to buffer logic')
 
@@ -263,6 +292,12 @@ def getNullContainers(challenge_id):
     nullContainers = Container.objects.filter(
         challenge__id=challenge_id).filter(user_id=None)
     return nullContainers
+
+
+def removeAllContainers():
+    # TODO: do I need this?
+
+    return
 
 
 def removeContainer(containerObject):
@@ -314,8 +349,6 @@ def calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeCo
     buffer = activeContainers + \
         ((0.2 * (activeSessions - activeContainers)) +
          (0.05 * (registeredUsers - activeSessions)))
-        
-    
 
     # if math.ceil(buffer) < minimumContainers:
     #     roundedBuffer = minimumContainers
@@ -326,17 +359,17 @@ def calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeCo
 
     #     print("buffer = {0}, rounded up to nearest int = {1}".format(
     #         buffer, roundedBuffer))
-    # 
+    #
     roundedBuffer = math.ceil(buffer)
     nullContainerCount = len(getNullContainers(challenge_id))
-    
-    # if buffer is lower than # of minimum containers then increase  
+
+    # if buffer is lower than # of minimum containers then increase
     # if roundedBuffer < minimumContainers:
     #     while roundedBuffer < minimumContainers:
     #         roundedBuffer += 1
-            
-    if nullContainerCount < minimumContainers:
-        roundedBuffer += abs(nullContainerCount - minimumContainers)
+
+    # if nullContainerCount < minimumContainers:
+    #     roundedBuffer += abs(nullContainerCount - minimumContainers)
 
     print("buffer = {0}, rounded up to nearest int = {1}".format(
         buffer, roundedBuffer))
