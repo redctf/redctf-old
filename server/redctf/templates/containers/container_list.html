@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container-fluid">
-        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'container_new' %}" role="button">Create Container</a>
+        <!-- <a class="btn btn-outline-primary mb-3" href="% url 'container_new' %" role="button">Create Container</a> -->
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -15,7 +15,8 @@
             <tbody>
                 {% for container in containers %}
                     <tr>
-                        <th scope="row"><a href="{% url 'container_detail' pk=container.pk %}">{{ container.pk }}</a></th>
+                        <!-- <th scope="row"><a href="% url 'container_detail' pk=container.pk %">{{ container.pk }}</a></th> -->
+                        <th scope="row">{{ container.pk }}</th>
                         <td>{{ container.name }}</td>
                         <td>{{ container.challenge }}</td>
                         <td>{{ container.user }}</td>
