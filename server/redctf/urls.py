@@ -31,6 +31,14 @@ urlpatterns = [
     #ctf admin
     path('adminpanel/', views.admin_panel, name='admin_panel'),
 
+    ################ categories ################
+    path('category/', views.category_list, name='category_list'),
+    path('category/new/', views.category_new, name='category_new'),
+    path('category/<int:pk>/', views.category_detail, name='category_detail'),
+    path('category/<int:pk>/edit/', views.category_edit, name='category_edit'),
+    path('category/<int:pk>/delete/', views.category_delete, name='category_delete'),
+    ############################################
+
     ################ challenges ################
     path('challenge/', views.challenge_list, name='challenge_list'),
     path('challenge/new/', views.challenge_new, name='challenge_new'),

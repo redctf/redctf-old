@@ -1,10 +1,25 @@
 from django import forms
 from django.forms import ModelForm
+from categories.models import Category
 from challenges.models import Challenge
 from containers.models import Container
 from teams.models import Team
 from users.models import User
 
+class CategoryForm(ModelForm):
+
+    class Meta:
+        model = Category
+        #fields = '__all__'
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(
+				attrs={
+					'class': 'form-control',
+                    'type': 'text'
+					}
+				),
+            }
 
 class ChallengeForm(ModelForm):
 

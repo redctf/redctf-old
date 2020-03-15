@@ -1,0 +1,19 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+ 
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        {{ form.name }}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-outline-primary">Save</button>
+  </form>
+
+{% endblock %}

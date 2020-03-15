@@ -1,0 +1,13 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'category_list' %}" role="button">Back</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'category_edit' pk=category.pk %}" role="button">Edit</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'category_delete' pk=category.pk %}" role="button">Delete</a>
+        <dl class="row">
+            <dt class="col-sm-3">Name: </dt>
+            <dd class="col-sm-9">{{ category.name }}</dd>
+        </dl>
+    </div>
+{% endblock %}

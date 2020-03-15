@@ -12,10 +12,12 @@ from django.db.models import Count
 
 from users.models import User
 from challenges.models import Challenge
+from categories.models import Category
 from containers.models import Container
 from teams.models import SolvedChallenge
 from teams.models import Team
 from users.models import User
+from .forms import CategoryForm
 from .forms import ChallengeForm
 from .forms import ContainerForm
 from .forms import TeamForm
@@ -39,6 +41,7 @@ d = dockerAPI()
 #     #  TODO  - add team token generation to resetdb.py
 #     #  TODO  - don't push token to rethink by implementing get token query to only return your team's token
 #     #  TODO  - user password set for add and edit user
+#     #  TODO  - when deleting category it doesn't disappear from challenge board
 
 
 @xframe_options_exempt
@@ -51,6 +54,107 @@ def admin_panel(request):
         return render(request, 'ahahah.html')
 
 
+################## categories ###################
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def category_list(request):
+    categories = Category.objects.all().order_by('created')
+    return render(request, 'categories/category_list.html', {'categories' : categories})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def category_detail(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    return render(request, 'categories/category_detail.html', {'category': category})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def category_delete(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    #try rethink delete, then django delete
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        r.db(CTF_DB).table('categories').filter({'sid':category.id}).delete().run(connection)
+        category.delete()
+    except Exception as e:
+        #raise Exception('Error deleting category from realtime database: %s' % (e))
+        print('Error deleting category: %s' % (e))
+    finally:
+        connection.close()
+
+    return redirect(category_list)
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def category_new (request):
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+
+            #create category object so we have id
+            new_category = form.save()
+
+            # Push category to rethinkdb database
+            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+            try:
+                r.db(CTF_DB).table('categories').insert({ 'sid': new_category.id, 'name': new_category.name, 'created': format(new_category.created, 'U')}).run(connection)
+            except Exception as e:
+                raise Exception('Error adding category: %s' % (e))
+            finally:
+                connection.close()
+
+
+            return redirect('category_detail', pk=new_category.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CategoryForm()
+
+    return render(request, 'categories/category_edit.html', {'form': form})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def category_edit(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
+        # check whether it's valid:
+        if form.is_valid():
+
+            if form.has_changed():
+
+                # save category object
+                new_category = form.save()
+
+                rethink_updates = {}
+
+                for i in form.changed_data:
+                    rethink_updates[i] = form.cleaned_data[i]
+
+                print(rethink_updates)
+
+                connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+                if len(rethink_updates) != 0:
+                    try:
+                        r.db(CTF_DB).table('categories').filter( {'sid': new_category.id} ).update(rethink_updates).run(connection)
+                    except RqlRuntimeError as e:
+                        #raise Exception('Error updating category from realtime database: %s' % (e))
+                        print('Error updating category from realtime database: %s' % (e))
+                    finally:
+                        connection.close()
+        
+            # redirect to category detail page
+            return redirect('category_detail', pk=new_category.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CategoryForm(instance=category)
+
+    return render(request, 'categories/category_edit.html', {'form': form})
+
+############################################
 
 ################ challenges ################
 @xframe_options_exempt
