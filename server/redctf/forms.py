@@ -11,7 +11,7 @@ class ChallengeForm(ModelForm):
     class Meta:
         model = Challenge
         #fields = '__all__'
-        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'imageName', 'ports', 'pathPrefix', 'upload']
+        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'imageName', 'ports', 'upload']
         widgets = {
             'title': forms.TextInput(
 				attrs={
@@ -61,12 +61,6 @@ class ChallengeForm(ModelForm):
                     'type': 'text'
 					}
 				),
-            'pathPrefix': forms.TextInput(
-				attrs={
-					'class': 'form-control',
-                    'type': 'text'
-					}
-				),
             'upload': forms.ClearableFileInput(
 				attrs={
 					'class': 'form-control-file',
@@ -108,15 +102,9 @@ class TeamForm(ModelForm):
     class Meta:
         model = Team
         #fields = '__all__'
-        fields = ['name', 'token', 'points', 'hidden', 'correct_flags',  'wrong_flags', 'solved']
+        fields = ['name', 'points', 'hidden', 'correct_flags',  'wrong_flags', 'solved']
         widgets = {
             'name': forms.TextInput(
-				attrs={
-					'class': 'form-control',
-                    'type': 'text'
-					}
-				),
-            'token': forms.TextInput(
 				attrs={
 					'class': 'form-control',
                     'type': 'text'
