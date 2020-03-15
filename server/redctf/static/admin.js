@@ -1,5 +1,7 @@
 $(document).ready(function() {
-    $('.table').DataTable();
+    $('.table').DataTable( {
+      stateSave: true
+    } );
 
     $( ".card" ).hover(
         function() {
