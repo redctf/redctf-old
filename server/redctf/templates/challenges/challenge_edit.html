@@ -8,7 +8,7 @@
     <button type="submit" class="btn btn-outline-primary">Save</button>
   </form> -->
   
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-row">
@@ -79,13 +79,13 @@
       </div>
     </div>
     
-    <div class="form-row">
+    <!-- <div class="form-row">
       <div class="fieldWrapper form-group col">
         {{ form.pathPrefix.errors }}
         <label for="{{ form.pathPrefix.id_for_label }}">Path Prefix: </label>
         {{ form.pathPrefix }}
       </div>
-    </div>
+    </div> -->
     
     <div class="form-row">
       <div class="fieldWrapper form-group col">
