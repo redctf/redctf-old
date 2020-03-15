@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="row row-cols-1 row-cols-md-4">
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='THLIST'
+            viewBox='0 0 512 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z"/>
+          </svg>
+          <h5 class="card-title mt-3">Dashboard</h4>
+          <a href="{% url 'admin_panel' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='TABLE'
+            viewBox='0 0 512 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM224 416H64v-96h160v96zm0-160H64v-96h160v96zm224 160H288v-96h160v96zm0-160H288v-96h160v96z"/>
+          </svg>
+          <h5 class="card-title mt-3">Categories</h4>
+          <a href="{% url 'category_list' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='CUBES'
+            viewBox='0 0 512 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M488.6 250.2L392 214V105.5c0-15-9.3-28.4-23.4-33.7l-100-37.5c-8.1-3.1-17.1-3.1-25.3 0l-100 37.5c-14.1 5.3-23.4 18.7-23.4 33.7V214l-96.6 36.2C9.3 255.5 0 268.9 0 283.9V394c0 13.6 7.7 26.1 19.9 32.2l100 50c10.1 5.1 22.1 5.1 32.2 0l103.9-52 103.9 52c10.1 5.1 22.1 5.1 32.2 0l100-50c12.2-6.1 19.9-18.6 19.9-32.2V283.9c0-15-9.3-28.4-23.4-33.7zM358 214.8l-85 31.9v-68.2l85-37v73.3zM154 104.1l102-38.2 102 38.2v.6l-102 41.4-102-41.4v-.6zm84 291.1l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6zm240 112l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6z"/>
+          </svg>
+          <h5 class="card-title mt-3">Challenges</h4>
+          <a href="{% url 'challenge_list' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='DOCKER'
+            viewBox='0 0 640 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1l-13.3-8.9zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1h-66.1v60.1h66.1v-60.1z"/>
+          </svg>
+          <h5 class="card-title mt-3">Containers</h4>
+          <a href="{% url 'container_list' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='USER'
+            viewBox='0 0 496 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z"/>
+          </svg>
+          <h5 class="card-title mt-3">Users</h4>
+          <a href="{% url 'user_list' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='USERS'
+            viewBox='0 0 640 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M192 256c61.9 0 112-50.1 112-112S253.9 32 192 32 80 82.1 80 144s50.1 112 112 112zm76.8 32h-8.3c-20.8 10-43.9 16-68.5 16s-47.6-6-68.5-16h-8.3C51.6 288 0 339.6 0 403.2V432c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-28.8c0-63.6-51.6-115.2-115.2-115.2zM480 256c53 0 96-43 96-96s-43-96-96-96-96 43-96 96 43 96 96 96zm48 32h-3.8c-13.9 4.8-28.6 8-44.2 8s-30.3-3.2-44.2-8H432c-20.4 0-39.2 5.9-55.7 15.4 24.4 26.3 39.7 61.2 39.7 99.8v38.4c0 2.2-.5 4.3-.6 6.4H592c26.5 0 48-21.5 48-48 0-61.9-50.1-112-112-112z"/>
+          </svg>
+          <h5 class="card-title mt-3">Teams</h4>
+          <a href="{% url 'team_list' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+    <div class="col mb-4">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <svg
+            className='Icon'
+            height='32'
+            title='TOOLS'
+            viewBox='0 0 512 512'
+            width='32'>
+            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M501.1 395.7L384 278.6c-23.1-23.1-57.6-27.6-85.4-13.9L192 158.1V96L64 0 0 64l96 128h62.1l106.6 106.6c-13.6 27.8-9.2 62.3 13.9 85.4l117.1 117.1c14.6 14.6 38.2 14.6 52.7 0l52.7-52.7c14.5-14.6 14.5-38.2 0-52.7zM331.7 225c28.3 0 54.9 11 74.9 31l19.4 19.4c15.8-6.9 30.8-16.5 43.8-29.5 37.1-37.1 49.7-89.3 37.9-136.7-2.2-9-13.5-12.1-20.1-5.5l-74.4 74.4-67.9-11.3L334 98.9l74.4-74.4c6.6-6.6 3.4-17.9-5.7-20.2-47.4-11.7-99.6.9-136.6 37.9-28.5 28.5-41.9 66.1-41.2 103.6l82.1 82.1c8.1-1.9 16.5-2.9 24.7-2.9zm-103.9 82l-56.7-56.7L18.7 402.8c-25 25-25 65.5 0 90.5s65.5 25 90.5 0l123.6-123.6c-7.6-19.9-9.9-41.6-5-62.7zM64 472c-13.2 0-24-10.8-24-24 0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.2-10.7 24-24 24z"/>
+          </svg>
+          <h5 class="card-title mt-3">Settings</h4>
+          <a href="{% url 'admin_panel' %}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

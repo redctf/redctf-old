@@ -49,7 +49,7 @@ d = dockerAPI()
 def admin_panel(request):
 
     if request.user.is_superuser:
-        return render(request, 'admin.html')
+        return render(request, 'adminpanel.html')
     else:
         return render(request, 'ahahah.html')
 
