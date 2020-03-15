@@ -1,11 +1,18 @@
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db.models import Count
 from categories.models import Category
 from django.contrib import admin
 
-def user_directory_path(instance, filename):
+def user_directory_path(instance, filename): 
   # file will be uploaded to MEDIA_ROOT/uploads/challenge_<id>/<filename>
   return 'uploads/challenge_{0}/{1}'.format(instance.id, filename)
+
+class OverwriteStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        self.delete(name)
+        return name
 
 # Create your models here.
 class Challenge(models.Model):
@@ -21,7 +28,8 @@ class Challenge(models.Model):
   imageName = models.CharField(max_length=100, default=None, null=True, blank=True)
   ports = models.CharField(max_length=100, default=None, null=True, blank=True)
   pathPrefix = models.CharField(max_length=100, default=None, null=True, blank=True)
-  upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
+  #upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
+  upload = models.FileField(storage=OverwriteStorage(), upload_to=user_directory_path, default=None, null=True, blank=True)
   created = models.DateTimeField(auto_now_add=True)
 
   def solved_count(self):
