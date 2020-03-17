@@ -36,7 +36,8 @@ class Challenge(models.Model):
     return self.solvedchallenge_set.count()
 
   def __str__(self):
-    return 'id:' + str(self.id) + ' - ' + self.title + '_' + str(self.points) 
+    return self.title + ' - ' + str(self.points) + 'pts' 
+    #return 'id:' + str(self.id) + ' - ' + self.title + '_' + str(self.points) 
 
 
 class ChallengeAdmin(admin.ModelAdmin):
