@@ -55,6 +55,14 @@ urlpatterns = [
     # path('container/<int:pk>/delete/', views.container_delete, name='container_delete'),
     ############################################
 
+    ################ ctfs ################
+    path('ctf/', views.ctf_list, name='ctf_list'),
+    path('ctf/new/', views.ctf_new, name='ctf_new'),
+    path('ctf/<int:pk>/', views.ctf_detail, name='ctf_detail'),
+    path('ctf/<int:pk>/edit/', views.ctf_edit, name='ctf_edit'),
+    path('ctf/<int:pk>/delete/', views.ctf_delete, name='ctf_delete'),
+    ############################################
+
     ################## teams ###################
     path('team/', views.team_list, name='team_list'),
     path('team/new/', views.team_new, name='team_new'),

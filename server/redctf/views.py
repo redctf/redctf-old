@@ -14,12 +14,14 @@ from users.models import User
 from challenges.models import Challenge
 from categories.models import Category
 from containers.models import Container
+from ctfs.models import Ctf
 from teams.models import SolvedChallenge
 from teams.models import Team
 from users.models import User
 from .forms import CategoryForm
 from .forms import ChallengeForm
 from .forms import ContainerForm
+from .forms import CtfForm
 from .forms import TeamForm
 from .forms import UserForm
 
@@ -395,6 +397,109 @@ def challenge_edit(request, pk):
         form = ChallengeForm(instance=challenge)
 
     return render(request, 'challenges/challenge_edit.html', {'form': form})
+############################################
+
+################## ctfs ###################
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def ctf_list(request):
+    ctfs = Ctf.objects.all().order_by('created')
+    return render(request, 'ctfs/ctf_list.html', {'ctfs' : ctfs})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def ctf_detail(request, pk):
+    ctf = get_object_or_404(Ctf, pk=pk)
+    return render(request, 'ctfs/ctf_detail.html', {'ctf': ctf})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def ctf_delete(request, pk):
+    ctf = get_object_or_404(Ctf, pk=pk)
+
+    #try rethink delete, then django delete
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    try:
+        r.db(CTF_DB).table('ctfs').filter({'sid':ctf.id}).delete().run(connection)
+        ctf.delete()
+    except Exception as e:
+        #raise Exception('Error deleting ctf from realtime database: %s' % (e))
+        print('Error deleting ctf: %s' % (e))
+    finally:
+        connection.close()
+
+    return redirect(ctf_list)
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def ctf_new (request):
+
+    if request.method == 'POST':
+        form = CtfForm(request.POST)
+        if form.is_valid():
+
+            #create ctf object
+            new_ctf = form.save()
+
+            # Push ctf to rethinkdb database
+            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+            try:
+                r.db(CTF_DB).table('ctfs').insert({ 'sid': new_ctf.id, 'start': format(new_ctf.start, 'U'), 'end': format(new_ctf.end, 'U'), 'created': format(new_ctf.created, 'U')}).run(connection)
+            except Exception as e:
+                raise Exception('Error adding ctf: %s' % (e))
+            finally:
+                connection.close()
+
+
+            return redirect('ctf_detail', pk=new_ctf.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CtfForm()
+
+    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def ctf_edit(request, pk):
+    ctf = get_object_or_404(Ctf, pk=pk)
+    if request.method == "POST":
+        form = CtfForm(request.POST, instance=ctf)
+        # check whether it's valid:
+        if form.is_valid():
+
+            if form.has_changed():
+
+                # save ctf object
+                new_ctf = form.save()
+
+                rethink_updates = {}
+
+                for i in form.changed_data:
+                    #only edit datetimes in ctf model so format everything as such (will need to update as add more to model)
+                    rethink_updates[i] = format(form.cleaned_data[i], 'U')
+
+                print(rethink_updates)
+
+                connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+                if len(rethink_updates) != 0:
+                    try:
+                        r.db(CTF_DB).table('ctfs').filter( {'sid': new_ctf.id} ).update(rethink_updates).run(connection)
+                    except RqlRuntimeError as e:
+                        #raise Exception('Error updating ctf from realtime database: %s' % (e))
+                        print('Error updating ctf from realtime database: %s' % (e))
+                    finally:
+                        connection.close()
+        
+            # redirect to ctf detail page
+            return redirect('ctf_detail', pk=new_ctf.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CtfForm(instance=ctf)
+
+    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+
 ############################################
 
 ################ containers ################

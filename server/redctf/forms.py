@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from categories.models import Category
 from challenges.models import Challenge
 from containers.models import Container
+from ctfs.models import Ctf
 from teams.models import Team
 from users.models import User
 
@@ -110,6 +111,28 @@ class ContainerForm(ModelForm):
 					}
 				),
 			}
+
+
+class CtfForm(ModelForm):
+
+    class Meta:
+        model = Ctf
+        #fields = '__all__'
+        fields = ['start', 'end']
+        widgets = {
+            'start': forms.TextInput(
+				attrs={
+					'class': 'form-control',
+                    'type': 'text'
+					}
+				),
+            'end': forms.TextInput(
+				attrs={
+					'class': 'form-control',
+                    'type': 'text'
+					}
+				),
+            }
 
 
 class TeamForm(ModelForm):
