@@ -25,7 +25,28 @@
             <dd class="col-sm-9">{{ team.wrong_flags }}</dd>
 
             <dt class="col-sm-3">Solved: </dt>
-            <dd class="col-sm-9">{{ team.solved }}</dd>
+            <dd class="col-sm-12 mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Challenge</th>
+                            <th scope="col">Timestamp (UTC)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solve in team.solved.all %}
+                            <tr>
+                                <!-- <th scope="row"><a href="{% url 'team_detail' pk=team.pk %}">{{ solve.challenge }}</a></th> -->
+                                <td>{{ solve.id }}</td>
+                                <td>{{ solve.challenge }}</td>
+                                <td>{{ solve.timestamp }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </dd>
 
         </dl>
     </div>
