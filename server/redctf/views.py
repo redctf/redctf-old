@@ -176,6 +176,79 @@ def challenge_detail(request, pk):
 def challenge_delete(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
 
+
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+
+    teams = getDjangoTeamsWithSolvedChallengesByID(challenge.id)
+    
+    rethink_updates = {}
+    if teams:
+        # print('matching teams')
+        try:
+            for team in teams: 
+                print('Updating {0}\'s points.'.format(team.name))  
+                            
+                # calculate the difference in points from old points value to new.
+                    
+                rethink_teams = r.db(CTF_DB).table('teams').filter({'sid':team.id}).run(connection)    
+                    
+                # use for loop to access the object(s) values and assign to team id variable
+                for rethink_team in rethink_teams: 
+                    print(rethink_team['id'])   
+                    rethink_team_id = rethink_team['id']
+                    
+                rethink_team_object = r.db('redctf').table(
+                'teams').get(rethink_team_id).run(connection)
+                    
+                # get rethink team solved object 
+                solved_object = rethink_team_object['solved']
+
+                # set django team points
+                team.points -= challenge.points
+                    
+                # set django correct_flags
+                team.correct_flags -= 1 
+                                    
+                # save backend updated team points
+                team.save()
+                    
+                # set update for rethinkdb team points
+                rethink_updates['points'] = team.points
+                    
+                # set update for rethinkdb team correct flags
+                rethink_updates['correct_flags'] = team.correct_flags
+                    
+                # remove solved challenge object
+                solved_challenge = team.solved.get(challenge_id=challenge.id)
+                    
+                    
+                rethink_updated_solved_object = []
+                # find solved challenges to delete within rethink solved object
+                # this will update the solved challenges to be everything except the one being deleted. 
+                for index, challenge in enumerate(solved_object):
+                    if challenge['id'] != challenge.id:
+                        rethink_updated_solved_object.append(challenge)
+                    
+                # update solved object for rethink update (with challenge removedt)
+                rethink_updates['solved'] = rethink_updated_solved_object
+                    
+                # run updates on rethink
+                update = r.db('redctf').table('teams') \
+                    .get(rethink_team_id)\
+                    .update(rethink_updates).run(connection)
+                print('updates: {0}'.format(update))
+                    
+                # delete rethink solved challenge
+                solved_challenge.delete()
+                    
+        except Exception as ex:
+            #raise Exception('error with teams: {0}'.format(ex))
+            print('error with teams: {0}'.format(ex))
+        
+    else:
+        print('no matching teams')
+
+
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     try:
         r.db(CTF_DB).table('challenges').filter({'sid':challenge.id}).delete().run(connection)
@@ -731,3 +804,16 @@ def user_edit(request, pk):
     return render(request, 'users/user_edit.html', {'form': form})
 
 ############################################
+
+
+
+
+
+def getDjangoTeamsWithSolvedChallengesByID(chal_id):
+
+    # get the django team object
+    if Team.objects.filter(solved__challenge_id=chal_id).exists():
+        teams = Team.objects.filter(solved__challenge_id=chal_id)
+        return teams
+    else:
+        return False
