@@ -610,6 +610,8 @@ def team_new (request):
             new_team.token = token
             #commit so that you have team.id
             new_team.save()
+            #have to specifically save many-to-many relationships when using commit=False
+            form.save_m2m()
 
             # Push team to rethinkdb database
             connection = r.connect(host=RDB_HOST, port=RDB_PORT)
