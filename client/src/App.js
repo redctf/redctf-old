@@ -47,8 +47,7 @@ export default class App extends Component {
       console.log({horizon_ctf: allCtfs}),
       error => console.error(error);
       this.store.appState.ctfs = allCtfs;
-    })
-
+    });
     users_collection.order('id').watch().subscribe(allItems => {
       console.log({horizon_users: allItems}),
       error => console.error(error) 

@@ -8,6 +8,12 @@ module.exports = {
     vendor: ["react", "react-dom", "react-router"],
     app: ["babel-polyfill", "./src/index"]
   },
+  optimization: {
+    splitChunks: {
+      chunks: "all"
+    },
+    minimize: true 
+  },
   output: {
     path: path.join(__dirname, "dist"),
     publicPath: "/",
@@ -54,17 +60,22 @@ module.exports = {
             query: {
               mozjpeg: {
                 progressive: true,
+                quality: 65
               },
               gifsicle: {
                 interlaced: false,
               },
               optipng: {
+                enabled: false,
                 optimizationLevel: 7,
               },
               pngquant: {
                 quality: [0.65, 0.90],
                 speed: 4
               },
+              webp: {
+                quality: 75
+              }
             }
           }
         ]
@@ -87,21 +98,6 @@ module.exports = {
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(true),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "vendor",
-      minChunks: Infinity
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      compress: {
-        warnings: false,
-        drop_console: true,
-        screw_ie8: true
-      },
-      output: {
-        comments: false
-      }
-    }),
     new ExtractTextPlugin("assets/styles.css"),
     new HtmlWebpackPlugin({
       hash: false,
