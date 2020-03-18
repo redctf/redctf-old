@@ -4,13 +4,11 @@ services:
   rethinkdb:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
-    networks: 
-      - "traefik"
     ports:
       - "28015:28015"
       - "8088:8080"
     volumes:
-      - ./server/rethinkdb:/data
+      - rethink_data_dev:/data
     networks:
       - traefik
 
@@ -18,8 +16,6 @@ services:
     image: rethinkdb/horizon
     container_name: horizon
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
-    networks: 
-      - "traefik"
     volumes:
       - ./client:/usr/app
     ports:
@@ -30,7 +26,9 @@ services:
       - traefik
 
   django:
-    build: ./server/
+    build:
+      context: ./server/
+      dockerfile: dockerfile-dev
     container_name: django
     command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
@@ -45,13 +43,27 @@ services:
       - RDB_PORT=28015
     depends_on:
       - horizon
+      - postgres
     networks:
       - traefik
-
+    env_file:
+      - ./server/.env.dev
     labels:
       - traefik.http.routers.errorhandler.service=errorhandler-backend
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
 
+  postgres:
+    image: postgres:12.2
+    container_name: postgres
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    networks:
+      - traefik
+    environment:
+      - POSTGRES_USER=redctf
+      - POSTGRES_PASSWORD=redctf
+      - POSTGRES_DB=redctf_dev
+    
   react:
     build: ./client/
     container_name: react
@@ -104,4 +116,7 @@ services:
 
 networks:
   traefik:
-        
+
+volumes:
+  rethink_data_dev:
+  postgres_data_dev:
