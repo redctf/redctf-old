@@ -7,8 +7,12 @@ FROM node:11.10.1 as react-builder
 COPY ./client /code
 WORKDIR /code
 
-RUN npm run build
 
+# this seems quite hacky, but it works
+RUN npm rebuild
+RUN npm uninstall
+RUN npm install
+RUN npm run build
 
 
 
@@ -59,3 +63,9 @@ RUN touch /var/run/nginx.pid && \
         chown -R nginx:nginx /var/run/nginx.pid
 
 USER nginx
+
+
+
+############################
+# WE NEED TO CLEAN THIS UP #
+############################
