@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary mb-3" href="{% url 'user_new' %}" role="button">Create User</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Hidden</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'user_detail' pk=user.pk %}">{{ user.pk }}</a></th>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.team }}</td>
+                        <td>{{ user.hidden }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

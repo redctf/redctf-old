@@ -8,6 +8,9 @@ class Category(models.Model):
   """
   name = models.CharField(max_length=50)
   created = models.DateTimeField(auto_now_add=True)
+  
+  def __str__(self):
+    return self.name
 
 class CategoryAdmin(admin.ModelAdmin):
   #This inner class indicates to the admin interface how to display a post

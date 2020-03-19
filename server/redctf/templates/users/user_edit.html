@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ 
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.username.errors }}
+        <label for="{{ form.username.id_for_label }}">Username:</label>
+        {{ form.username }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.team.errors }}
+        <label for="{{ form.team.id_for_label }}">Team:</label>
+        {{ form.team }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.hidden.errors }}
+        <div class="custom-control custom-switch">
+        <!-- <div class="form-check"> -->
+          {{ form.hidden }}
+          <label class="custom-control-label" for="{{ form.hidden.id_for_label }}">Hidden</label>
+          <!-- <label class="form-check-label" for="{{ form.hidden.id_for_label }}">Hidden</label> -->
+        </div>
+      </div>
+    </div>
+   
+    <button type="submit" class="btn btn-outline-primary">Save</button>
+  </form>
+
+{% endblock %}

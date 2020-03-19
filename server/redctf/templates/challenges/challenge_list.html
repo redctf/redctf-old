@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary mb-3" href="{% url 'challenge_new' %}" role="button">Create Challenge</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Challenge</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Solved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for challenge in challenges %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.pk }}</a></th>
+                        <td>
+                            <div class="col">
+                                <div class="row">
+                                    {{ challenge.title }}
+                                    <!-- <a href="{% url 'challenge_detail' pk=challenge.pk %}">{{ challenge.title }}</a> -->
+                                </div>
+                                <div class="row">
+                                    {{ challenge.description|linebreaksbr }}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ challenge.category }}</td>
+                        <td>{{ challenge.points }}</td>
+                        <td>{{ challenge.solved_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

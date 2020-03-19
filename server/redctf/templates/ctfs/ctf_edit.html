@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ 
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.start.errors }}
+        <label for="{{ form.start.id_for_label }}">Start:</label>
+        {{ form.start }}
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.end.errors }}
+        <label for="{{ form.end.id_for_label }}">End:</label>
+        {{ form.end }}
+      </div>
+    </div>
+   
+    <button type="submit" class="btn btn-outline-primary">Save</button>
+  </form>
+
+{% endblock %}

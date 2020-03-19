@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'team_list' %}" role="button">Back</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'team_edit' pk=team.pk %}" role="button">Edit</a>
+        <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'team_delete' pk=team.pk %}" role="button">Delete</a>
+        <dl class="row">
+            <dt class="col-sm-3">Name: </dt>
+            <dd class="col-sm-9">{{ team.name }}</dd>
+          
+            <dt class="col-sm-3">Token: </dt>
+            <dd class="col-sm-9">{{ team.token }}</dd>
+          
+            <dt class="col-sm-3">Points: </dt>
+            <dd class="col-sm-9">{{ team.points }}</dd>
+
+            <dt class="col-sm-3">Hidden: </dt>
+            <dd class="col-sm-9">{{ team.hidden }}</dd>
+
+            <dt class="col-sm-3">Correct Flags: </dt>
+            <dd class="col-sm-9">{{ team.correct_flags }}</dd>
+
+            <dt class="col-sm-3">Wrong Flags: </dt>
+            <dd class="col-sm-9">{{ team.wrong_flags }}</dd>
+
+            <dt class="col-sm-3">Solved: </dt>
+            <dd class="col-sm-12 mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Challenge</th>
+                            <th scope="col">Timestamp (UTC)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solve in team.solved.all %}
+                            <tr>
+                                <!-- <th scope="row"><a href="{% url 'team_detail' pk=team.pk %}">{{ solve.challenge }}</a></th> -->
+                                <td>{{ solve.id }}</td>
+                                <td>{{ solve.challenge }}</td>
+                                <td>{{ solve.timestamp }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </dd>
+
+        </dl>
+    </div>
+{% endblock %}

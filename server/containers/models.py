@@ -18,6 +18,9 @@ class Container(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
 
+  def __str__(self):
+    return self.name
+
 class ContainerAdmin(admin.ModelAdmin):
     # This inner class indicates to the admin interface how to display a post
     # See the Django documentation for more information

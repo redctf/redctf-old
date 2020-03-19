@@ -190,7 +190,7 @@ export default class App extends Component {
           exact
           path='/admin'
           render={props => (
-            (authenticated && isSuperuser) ? (
+            authenticated ? (
               <LazyRoute {...props} component={import('./pages/Admin/Admin')} />
             ) : (
               <Redirect to="/login"/>

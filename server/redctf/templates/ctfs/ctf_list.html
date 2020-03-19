@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <a class="btn btn-outline-primary mb-3" href="{% url 'ctf_new' %}" role="button">Create CTF</a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Start</th>
+                    <th scope="col">End</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ctf in ctfs %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'ctf_detail' pk=ctf.pk %}">{{ ctf.pk }}</a></th>
+                        <td>{{ ctf.start }}</td>
+                        <td>{{ ctf.end }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
