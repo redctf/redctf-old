@@ -37,7 +37,6 @@ from django.utils.dateformat import format
 d = dockerAPI()
 
 #     #  TODO  - update traefik to route accordingly
-#     #  TODO  - update rethinkdb
 #     #  TODO  - handle exceptions (ex: dockerfile doesn't build)
 #     #  TODO  - update or delete solved challenges on team model as well as a good way to create/edit/delete solved challenges
 #     #  TODO  - add team token generation to resetdb.py
@@ -225,9 +224,9 @@ def challenge_delete(request, pk):
                 rethink_updated_solved_object = []
                 # find solved challenges to delete within rethink solved object
                 # this will update the solved challenges to be everything except the one being deleted. 
-                for index, challenge in enumerate(solved_object):
-                    if challenge['id'] != challenge.id:
-                        rethink_updated_solved_object.append(challenge)
+                for index, rethink_solved_chall in enumerate(solved_object):
+                    if rethink_solved_chall['id'] != challenge.id:
+                        rethink_updated_solved_object.append(rethink_solved_chall)
                     
                 # update solved object for rethink update (with challenge removedt)
                 rethink_updates['solved'] = rethink_updated_solved_object
@@ -367,6 +366,11 @@ def challenge_edit(request, pk):
                     if i == 'upload':
                         print ('uploaded file changed')
                         upload_update_needed = True
+                    if i == 'points':
+                        print('points changed')
+                        rethink_updates[i] = form.cleaned_data[i]
+                        u = updatePoints(new_challenge, form.initial['points'])
+                        print('update points: {0}'.format(u))
                     else:
                         #but don't update the fields that get auto updated ^
                         rethink_updates[i] = form.cleaned_data[i]
@@ -817,3 +821,83 @@ def getDjangoTeamsWithSolvedChallengesByID(chal_id):
         return teams
     else:
         return False
+
+
+def updatePoints(new_challenge, initial_points):
+
+    teams = getDjangoTeamsWithSolvedChallengesByID(new_challenge.id) 
+    
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    rethink_updates = {}
+   
+    if teams:
+        try:
+            for team in teams: 
+                print('Updating {0}\'s points.'.format(team.name))  
+                        
+                # calculate the difference in points from old points value to new.
+                chal_diff_points = abs(new_challenge.points - initial_points)
+                rethink_teams = r.db(CTF_DB).table('teams').filter({'sid':team.id}).run(connection)    
+
+                # use for loop to access the object(s) values and assign to team id variable
+                for rethink_team in rethink_teams: 
+                    # print(rethink_team['id'])   
+                    rethink_team_id = rethink_team['id']
+                
+                rethink_team_object = r.db('redctf').table(
+                'teams').get(rethink_team_id).run(connection)
+                
+                # get rethink team solved object 
+                solved_object = rethink_team_object['solved']
+                
+                # print(rethink_team_id)
+            
+                
+                # if the initial points value is less than the new value for the challenge add the chal_diff_points to team's total points
+                if initial_points < new_challenge.points:
+                    # update total team points
+                    team.points += chal_diff_points
+                    
+                # if the initial points value is greater than the new value for the challenge subtract the chal_diff_points to team's total points
+                elif initial_points > new_challenge.points:
+                    # update total team points
+                    team.points -= chal_diff_points
+
+                else:
+                    print('no points change')
+                    #raise Exception('updated points value is equal to the existing points value')
+                    print('updated points value is equal to the existing points value')
+                
+                # set backend updated team points
+                team.save()
+                
+                # set update for rethinkdb team points
+                rethink_updates['points'] = team.points
+                
+                # update the team's solved challenge points
+                solved_challenge = team.solved.get(challenge_id=new_challenge.id)
+                solved_challenge.points = new_challenge.points
+                
+                
+                # find challenges to update within rethink solved object
+                for index, rethink_solved_chall in enumerate(solved_object):
+                    if rethink_solved_chall['id'] == new_challenge.id:
+                        solved_object[index]['points'] = new_challenge.points
+                
+                # update solved object for rethink update
+                rethink_updates['solved'] = solved_object
+                
+                # run updates on rethink
+                update = r.db('redctf').table('teams') \
+                    .get(rethink_team_id)\
+                    .update(rethink_updates).run(connection)
+                print('updates: {0}'.format(update))
+
+        except Exception as ex:
+            #raise Exception('error with teams')
+            print('error with teams')
+            
+    else:
+        print('no matching teams ')
+   
+    return True
