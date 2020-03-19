@@ -11,23 +11,21 @@ class Container(models.Model):
     Container model class.
     """
     name = models.CharField(max_length=512)
-    challenge = models.ForeignKey(
-        Challenge, default=None, null=True, on_delete=models.CASCADE, related_name='challenges')
-    user = models.ForeignKey(
-        User, default=None, null=True, on_delete=models.CASCADE, related_name='users')
+    challenge = models.ForeignKey(Challenge, default=None, null=True, on_delete=models.CASCADE, related_name='challenges')
+    user = models.ForeignKey(User, default=None, null=True, on_delete=models.CASCADE, related_name='users')
     created = models.DateTimeField(auto_now_add=True)
 
 
-  def __str__(self):
-    return self.name
+    def __str__(self):
+        return self.name
 
 class ContainerAdmin(admin.ModelAdmin):
     # This inner class indicates to the admin interface how to display a post
     # See the Django documentation for more information
-    list_display = ('name', 'challenge_title', 'challenge', 'created',
-                    'user')
+    list_display = ('name', 'challenge_title', 'challenge', 'created', 'user')
 
     def challenge_title(self, obj):
         return obj.challenge.title
+
     challenge_title.short_desription = 'Challenge Title'
     challenge_title.admin_order_field = 'challenge_title'
