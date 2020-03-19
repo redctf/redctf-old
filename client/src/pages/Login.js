@@ -104,6 +104,9 @@ export default class Login extends Component {
 		const loginDisabled = (this.state.username !== '' && this.state.password !== '') ? '' : 'disabled';
 		return (
 			<div className="page login">
+				<div className="kernelcon-ctf" />
+				<div className='kernelcon-text'>A Virtual Experience for a Virtual Conference</div>
+
 				<form onKeyPress={this.handleKeyPress}>
 					<div className='login-window'>
 						<div className='login-inputs'>

@@ -17,6 +17,7 @@ body {
 
 .wrapper {
 	min-height: 100vh;
+	background-color: $ebony;
 }
 
 #root, .wrapper, .page, .authComponent {
@@ -33,14 +34,34 @@ body {
 	width: 100%;
 	height: 60px;
 	padding: 18px 0;
-	border-top: 1px solid #eee;
 	font-size: 13px;
-	color: #666;
+	color: $link-water;
+	background-color: $black-forest;
+
 	a {
 		margin-left: .5ch;
+		color: $white;
+
 		&:first-child {
 		margin-right: .5ch;
 		}
 	}
 }
 
+
+.glow {
+  color: #fff;
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 4px $shakespeare, 0 0 6px $shakespeare, 0 0 8px $shakespeare, 0 0 10px $shakespeare, 0 0 12px $shakespeare, 0 0 14px $shakespeare;
+  }
+  to {
+    text-shadow: 0 0 2px #fff, 0 0 4px $shakespeare, 0 0 6px $shakespeare, 0 0 8px $shakespeare, 0 0 10px $shakespeare, 0 0 12px $shakespeare, 0 0 14px $shakespeare;
+  }
+}

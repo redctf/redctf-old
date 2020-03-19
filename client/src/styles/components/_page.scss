@@ -1,7 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+
 .page {
-	background: #fff;
+	background: $ebony;
 }
 
+.kernelcon-ctf {
+  display: flex;
+  height: 200px;
+  background: url(tron_kernelcon.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-bottom: 30px;
+}
+.kernelcon-text {
+  display: flex;
+  width: 100%;
+  font-size: 1.8em;
+  justify-content: center;
+  padding: 0px 20px;
+  margin-bottom: 50px;
+  color: $monte-carlo;
+  font-family: 'Press Start 2P'
+}
 .page-header {
   font-size: 32px;
   font-weight: 100;

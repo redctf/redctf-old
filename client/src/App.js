@@ -244,14 +244,14 @@ export default class App extends Component {
 
         <footer className='footer'>
           {testval}
-          <a href='https://twitter.com/redctf' target='_blank'>
-            @red_ctf
+          <a className='glow' href='https://twitter.com/_kernelcon_' target='_blank'>
+            @_kernelcon_
           </a>
           {' '}
-          | github:
+          | url:
           {' '}
-          <a href='https://github.com/redctf/redctf' target='_blank'>
-            redctf
+          <a className='glow' href='https://kernelcon.org/' target='_blank'>
+            kernelcon
           </a>
         </footer>
       </div>

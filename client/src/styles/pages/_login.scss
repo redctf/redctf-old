@@ -96,10 +96,11 @@
 .login-window {
   margin: 0 auto;
   width: 400px;
-  border: 1px solid #aaa;
   display: flex;
   padding: 15px;
   flex-direction: column;
+  background-color: $swamp;
+  box-shadow: 0 0 2px #fff, 0 0 4px $shakespeare, 0 0 6px $shakespeare, 0 0 8px $shakespeare, 0 0 10px $shakespeare, 0 0 12px $shakespeare, 0 0 14px $shakespeare;
 }
 
 .req-input {
@@ -141,12 +142,11 @@
 }
 
 .disabled {
-  background-color: #aaa;
-  border-color: grey;
+  background-color: $biscay;
+  border: none;
 
   &:hover {
-    background-color: #aaa;
-    border-color: grey;
+    background-color: $faded-jade;
     cursor: not-allowed;
   }
 }
