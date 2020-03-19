@@ -56,7 +56,6 @@
   fill: currentColor;
 }
 
-
 .admin-section {
   display: flex;
   flex-direction: column;
@@ -213,6 +212,19 @@
       .hosted-radio-button {
         display: flex;
       }
+      &:hover {
+        cursor: pointer;
+      }
+
+      .hosted-radio-button {
+        display: flex;
+
+        .radio-label {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
     }
 
     label {
@@ -252,8 +264,6 @@
         }
       }
     }
-
-
   }
 }
 

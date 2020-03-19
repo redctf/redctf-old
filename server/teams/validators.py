@@ -15,3 +15,7 @@ def validate_teamname_unique(value):
 def validate_token(value):
     if not re.match(r"^[a-zA-Z0-9-]{1,150}$", value):
         raise Exception("Token invalid")
+
+def validate_team_id(value):
+    if not Team.objects.filter(id__iexact=value).exists():
+        raise Exception('team_id doesnt exist')

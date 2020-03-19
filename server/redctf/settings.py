@@ -20,12 +20,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '21amv(3e6m^n%)9qbftq92hzke8#r#kz#c6lvckdk!kl=do%q8'
+#SECRET_KEY = '*************************************************'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ['*']
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -85,10 +90,21 @@ WSGI_APPLICATION = 'redctf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -130,13 +146,17 @@ USE_L10N = True
 USE_TZ = True
 
 
-# MEDIA_ROOT for storing model file uploads
+# MEDIA_ROOT for storing model file uploads (user uploads)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+# Don't need MEDIA_URL unless user needs to access uploaded files
+#MEDIA_URL = "/media/"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "redctf/static/"),
@@ -152,3 +172,5 @@ CORS_ORIGIN_WHITELIST = ( 'http://localhost:3000', 'http://localhost:8000', 'htt
 'http://ctf.csgidev.com:3000', 'http://ctf.csgidev.com:8000')
 CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True
+
+MINIMUM_CONTAINER_COUNT = os.environ.get('MINIMUM_CONTAINER_COUNT') or 2 

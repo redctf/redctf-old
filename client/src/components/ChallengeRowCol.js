@@ -26,7 +26,7 @@ export default class ChallengeRowCol extends Component {
       }
     });
 
-    console.log('challengeData', challenges);
+    // console.log('challengeData', challenges);
 
     challengeData.sort(function(a,b){return (a.points > b.points) ? 1 : ((b.points > a.points) ? -1 : 0); } );
 

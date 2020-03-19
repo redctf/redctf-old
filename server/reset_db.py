@@ -46,6 +46,9 @@ def resetDjangoDB():
     with contextlib.suppress(FileNotFoundError):
         os.remove(DATABASES['default']['NAME'])
     
+    # Clear all data from django db
+    os.system('python3 manage.py flush --no-input')
+    
     # Remove migrations
     os.system('find . -path "*/migrations/*.py" -not -name "__init__.py" -delete')
     os.system('find . -path "*/migrations/*.pyc"  -delete')

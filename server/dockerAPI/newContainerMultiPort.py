@@ -35,7 +35,7 @@ ports = []
 print(d.version())
 ports = "{\"80/tcp\":None, \"9090/tcp\":None}"
 try:
-	r = d.createContainer(args.user, args.containerName, "80", "natePathPrefix")
+	r = d.createContainer(args.containerName, "80", "natePathPrefix", args.user)
 	print(r)
 except Exception as ex:
 	print(ex)
