@@ -29,8 +29,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Challenge</th>
+                            <th scope="col">Challenge ID</th>
+                            <th scope="col">Challenge Title/Points</th>
                             <th scope="col">Timestamp (UTC)</th>
                         </tr>
                     </thead>
@@ -38,7 +38,7 @@
                         {% for solve in team.solved.all %}
                             <tr>
                                 <!-- <th scope="row"><a href="{% url 'team_detail' pk=team.pk %}">{{ solve.challenge }}</a></th> -->
-                                <td>{{ solve.id }}</td>
+                                <td>{{ solve.challenge.id }}</td>
                                 <td>{{ solve.challenge }}</td>
                                 <td>{{ solve.timestamp }}</td>
                             </tr>
