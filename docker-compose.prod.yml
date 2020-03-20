@@ -139,6 +139,17 @@ services:
       # for serving client (react) files
       - static_volume_prod:/home/app/redctf/static
       - media_volume_prod:/home/app/redctf/media
+    labels:
+      - traefik.http.services.nginx-backend.loadbalancer.server.port=3000
+      - traefik.http.routers.nginx.service=react-backend
+      # routes (in order of React routes): 
+      # login, register, posts, admin, challenges, instructions, 
+      # scoreboard, team
+      - traefik.http.routers.nginx.rule= PathPrefix(`/login`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/admin`) || PathPrefix(`/challenges`) || PathPrefix(`/instructions`) || PathPrefix(`/scoreboard`) ||PathPrefix(`/team`)
+      - traefik.http.routers.nginx.middlewares=errorhandler@docker
+      # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
+      - traefik.http.routers.default2.rule=PathPrefix(`/`)
+      - traefik.http.routers.default2.middlewares=errorhandler@docker
     depends_on:
       - django
     networks:
