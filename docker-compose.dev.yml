@@ -5,7 +5,7 @@ services:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
     ports:
-      - "28015:28015"
+      #rethinkdb admin interface
       - "8088:8080"
     volumes:
       - rethink_data_dev:/data
@@ -18,12 +18,14 @@ services:
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
     volumes:
       - ./client:/usr/app
-    ports:
-      - "8181:8181"
     depends_on:
       - rethinkdb
     networks:
       - traefik
+    labels:
+      - traefik.http.routers.horizon.rule= PathPrefix(`/horizon`)
+      - traefik.http.services.horizon.loadbalancer.server.port=8181
+      - traefik.http.routers.horizon.service=horizon
 
   django:
     build:
@@ -36,7 +38,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./server:/code
     ports:
-      - "8000:8000"
+      # for ptvsd django debugging
       - "3456:3456"
     environment:
       - RDB_HOST=rethinkdb
@@ -49,6 +51,7 @@ services:
     env_file:
       - ./server/.env.dev
     labels:
+      - traefik.http.routers.errorhandler.rule= PathPrefix(`/graphql`) || PathPrefix(`/djangoadmin`) || PathPrefix(`/adminpanel`) || PathPrefix(`/category`) || PathPrefix(`/challenge`) || PathPrefix(`/container`) || PathPrefix(`/ctf`) || PathPrefix(`/team`) || PathPrefix(`/user`) || PathPrefix(`/static`)
       - traefik.http.routers.errorhandler.service=errorhandler-backend
       - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
 
@@ -79,7 +82,7 @@ services:
     labels:
       - traefik.http.services.react-backend.loadbalancer.server.port=3000
       - traefik.http.routers.react.service=react-backend
-      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
+      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/teams`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
       - traefik.http.routers.react.middlewares=errorhandler@docker
       # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
       - traefik.http.routers.default2.rule=PathPrefix(`/`)
