@@ -47,8 +47,9 @@ export default class CreateChallenge extends Component {
   onSubmit(e) {
     console.log('6');
     if (this.state.challenge.category) {
-      const port = 8000;
-      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      //const port = 8000;
+      //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       axios.defaults.withCredentials = true;
 
       const mutation = this.addChallenge();
@@ -69,8 +70,9 @@ export default class CreateChallenge extends Component {
   
   onCategorySubmitted(e) {
     console.log('5');
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    //const port = 8000;
+    //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     const mutation = this.addCategory();
     axios.post('/graphql/',
       {

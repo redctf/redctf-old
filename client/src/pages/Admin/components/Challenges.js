@@ -42,8 +42,9 @@ export default class Challenges extends Component {
     // TODO - add in checks (i.e. do not allow submit if all fields not filled out properly)
     // validateForm()   (...or something)
 
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    //const port = 8000;
+    //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     axios.defaults.withCredentials = true;
     const c = this.state.challenge;
 

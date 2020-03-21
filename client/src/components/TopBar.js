@@ -21,8 +21,9 @@ export default class TopBar extends Component {
 		
 		// log out of back end
 		if (this.store.authenticated) {
-			const port = 8000;
-			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+			//const port = 8000;
+			//axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+			axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
 			axios.defaults.withCredentials = true;
 			const mutation = this.postLogout();
 			axios.post('/graphql/',
@@ -56,7 +57,7 @@ export default class TopBar extends Component {
 		return (
 			<div className="topbar">
 				{authenticated && <TopNav location={this.props.location} />}
-				{authenticated && <span className='team-name'><ActiveLink to="/team" teamId={teamIdParam}>{teamName}</ActiveLink></span>}
+				{authenticated && <span className='team-name'><ActiveLink to="/teams" teamId={teamIdParam}>{teamName}</ActiveLink></span>}
 				{authenticated && isSuperuser && <span className='team-name'><ActiveLink to="/admin">Admin</ActiveLink></span>}
 				{authenticated && <Button
 					onClick={this.authenticate.bind(this)}

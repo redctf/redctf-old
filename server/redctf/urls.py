@@ -26,7 +26,7 @@ from graphene_file_upload.django import FileUploadGraphQLView
 
 urlpatterns = [
     #django admin
-    path('admin/', admin.site.urls),
+    path('djangoadmin/', admin.site.urls),
     
     #ctf admin
     path('adminpanel/', views.admin_panel, name='admin_panel'),
