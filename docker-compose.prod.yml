@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   rethinkdb:
     image: rethinkdb:2.3.6
@@ -13,7 +12,6 @@ services:
       - rethink_data_prod:/data
     networks:
       - traefik
-
   horizon:
     image: rethinkdb/horizon
     container_name: horizon
@@ -28,7 +26,6 @@ services:
       - rethinkdb
     networks:
       - traefik
-
   django:
     build:
       context: ./server/
@@ -58,10 +55,9 @@ services:
       - traefik
     env_file:
       - ./server/.env.prod
-    labels:
-      - traefik.http.routers.errorhandler.service=errorhandler-backend
-      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
-
+    # labels:
+    #   - traefik.http.routers.errorhandler.service=errorhandler-backend
+    #   - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
   postgres:
     image: postgres:12.2
     container_name: postgres
@@ -72,29 +68,6 @@ services:
       - traefik
     env_file:
       - ./server/.env.prod.db
-
-#   react:
-#     build: ./client/
-#     container_name: react
-#     restart: unless-stopped
-#     command: bash -c "cd /code && yarn install && yarn start"
-# #    volumes:
-# #      - ./client:/code
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - django
-#     networks:
-#       - traefik
-#     labels:
-#       - traefik.http.services.react-backend.loadbalancer.server.port=3000
-#       - traefik.http.routers.react.service=react-backend
-#       - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
-#       - traefik.http.routers.react.middlewares=errorhandler@docker
-#       # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
-#       - traefik.http.routers.default2.rule=PathPrefix(`/`)
-#       - traefik.http.routers.default2.middlewares=errorhandler@docker
-
 
   reverse-proxy:
       # The official v2.0 Traefik docker image
@@ -112,41 +85,53 @@ services:
       volumes:
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
-        
       labels:
         # error handling definition:
-        - traefik.http.middlewares.errorhandler.errors.status=404
-        - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
-        - traefik.http.middlewares.errorhandler.errors.query=/graphql/
-        - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+        # - traefik.http.middlewares.errorhandler.errors.status=404
+        # - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
+        # - traefik.http.middlewares.errorhandler.errors.query=/graphql/
+        - traefik.http.routers.api.rule=PathPrefix(`/dashboard`)
+        # - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
         - "traefik.http.routers.api.service=api@internal"
-        - traefik.http.routers.api.middlewares=errorhandler@docker
-       
+        # - traefik.http.routers.api.middlewares=errorhandler@docker
       depends_on:
         - django
       networks:
         - traefik
-
   nginx:
     build:
       context: .
       dockerfile: ./server/nginx/dockerfile-nginx
     container_name: nginx
     restart: unless-stopped  
-    ports:
-      - 3000:8080
+    # ports:
+    #   - 3000:8080
     volumes:
       # for serving client (react) files
       - static_volume_prod:/home/app/redctf/static
       - media_volume_prod:/home/app/redctf/media
+    labels:
+      - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
+      - traefik.http.routers.nginx.service=nginx-backend
+      # routes: 
+      # login, register, posts, admin, challenges, instructions, 
+      # scoreboard, team, category, challenge, container, ctf, team, 
+      # user, graphql, djangoadmin
+      - traefik.http.routers.nginx.rule= PathPrefix(`/login`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/admin`) || PathPrefix(`/challenges`) || PathPrefix(`/instructions`) || PathPrefix(`/scoreboard`) || PathPrefix(`/team`) || PathPrefix(`/graphql`) || PathPrefix(`/static`) || PathPrefix(`/media`)
+      # - traefik.http.routers.nginx.middlewares=errorhandler@docker
+      # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
+      # - traefik.http.routers.errorhandler.rule=PathPrefix(`/`)
+      - traefik.http.routers.default2.rule=PathPrefix(`/`)
+      # - traefik.http.routers.default2.middlewares=errorhandler-backend
+      # - traefik.http.routers.errorhandler.middlewares=errorhandler@docker
+      # - traefik.http.routers.errorhandler.service=errorhandler-backend
+      # - traefik.http.services.errorhandler-backend.loadbalancer.server.port=3000
     depends_on:
       - django
     networks:
       - traefik
-
 networks:
   traefik:
-        
 volumes:
   rethink_data_prod:
   postgres_data_prod:
