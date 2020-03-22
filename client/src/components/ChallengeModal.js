@@ -16,8 +16,6 @@ export default class ChallengeModal extends Component {
   }
 
   onSubmit(e) {
-    //const port = 8000;
-    //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     const mutation = ''
     axios.post('/graphql/',
@@ -50,12 +48,10 @@ export default class ChallengeModal extends Component {
       document.cookie = newCookie;
 
       // redirect to path
-      window.location = 'http://'+window.location.hostname+':80/'+this.props.path;
-      // window.location = this.props.path;
+      window.open(`${location.protocol}//${location.hostname}/${this.props.path}`,  '_blank');
+
     } else {
       // container does not exist, must create using graphQL call
-      //const port = 8000;
-      //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
       axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       const mutation = `mutation { getUserContainer ( challengeId: ${this.props.sid}) {status, containerName, nextHop } }`;
     
@@ -77,8 +73,7 @@ export default class ChallengeModal extends Component {
         document.cookie = newCookie;
 
         // redirect to path
-        window.location = 'http://'+window.location.hostname+':80/'+result.nextHop;
-        // window.location = result.nextHop;
+        window.open(`${location.protocol}//${location.hostname}/${result.nextHop}`,  '_blank');
         console.log(result.status);
       })
     }
