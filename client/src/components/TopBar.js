@@ -21,8 +21,6 @@ export default class TopBar extends Component {
 		
 		// log out of back end
 		if (this.store.authenticated) {
-			//const port = 8000;
-			//axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
 			axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
 			axios.defaults.withCredentials = true;
 			const mutation = this.postLogout();

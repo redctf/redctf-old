@@ -29,8 +29,6 @@ export default class Register extends Component {
     if (this.state.regNewTeam) {
       mutation  = this.registerTeam();
 
-      //const port = 8000;
-      //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
       axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       axios.post('/graphql/',
         {
@@ -50,8 +48,6 @@ export default class Register extends Component {
           let token = res.data.createTeam.token;
           mutation = this.registerUser(token);
 
-          //const port = 8000;
-          //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
           axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
           axios.post('/graphql/',
             {
@@ -94,8 +90,6 @@ export default class Register extends Component {
     } else {
       mutation  = this.joinTeam();
 
-      //const port = 8000;
-      //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
       axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       axios.post('/graphql/',
         {

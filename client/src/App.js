@@ -92,7 +92,7 @@ export default class App extends Component {
       console.log({horizon_teams: sortedTeams}), error => console.error(error);
       this.store.appState.teams = sortedTeams;
     });
-    this.getTeamInfo();
+    //this.getTeamInfo();
   }
   authenticate(e) {
     if (e) e.preventDefault();
@@ -100,8 +100,6 @@ export default class App extends Component {
   }
 
   getTeamInfo() {
-    //const port = 8000;
-    //axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
     axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     axios.defaults.withCredentials = true;
     const query = this.queryTeam();
