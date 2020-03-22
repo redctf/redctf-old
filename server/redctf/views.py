@@ -641,7 +641,8 @@ def container_list(request):
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def team_list(request):
-    teams = Team.objects.all().order_by('created')
+    teams = Team.objects.select_related().all().order_by('created')
+
     return render(request, 'teams/team_list.html', {'teams' : teams})
 
 @xframe_options_exempt
