@@ -82,7 +82,7 @@ services:
         - "--entrypoints.websecure.address=:443"
         - "--certificatesresolvers.letsencryptresolver.acme.tlschallenge=true"
         - "--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-        - "--certificatesresolvers.letsencryptresolver.acme.email=jrue3084@gmail.com"
+        - "--certificatesresolvers.letsencryptresolver.acme.email=<insert_email_address_here>"
         - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
       ports:
         # The HTTP(s) ports
