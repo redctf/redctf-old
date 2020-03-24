@@ -169,11 +169,8 @@ def assignContainerToUser(challenge_id, userID):
     finally:
         connection.close()
 
-    try:
-        threading.Thread(scaleChallenge(
-            challenge_id, registeredUsers, active_uid_list))
-    except:
-        raise Exception('unknown issue with scaling nullContainers')
+    threadedScaleAllChallenges()
+
 
     return assigned_cont_obj
 
@@ -385,7 +382,7 @@ def newContainer(challenge_id, userID=None):
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
-                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='https',
+                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='http',
                 username=user.username)
             print("############")
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
@@ -401,7 +398,7 @@ def newContainer(challenge_id, userID=None):
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
-                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='https')
+                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='http')
             print("############")
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
                 new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))
