@@ -24,6 +24,7 @@ services:
       - traefik
     labels:
       - traefik.enable=true
+      #- traefik.http.routers.horizon.rule=Host(`<###################! enter_ip/fqdn_here and uncomment !###################>`)
       - traefik.http.routers.horizon.rule= PathPrefix(`/horizon`)
       - traefik.http.routers.horizon.service=horizon
       - traefik.http.routers.horizon.tls.certresolver=letsencryptresolver
@@ -95,11 +96,10 @@ services:
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
       labels:
-        - traefik.enable=true
-        - traefik.http.routers.api.rule=PathPrefix(`/dashboard`)
-        - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
         # Enable for the web UI
-        #- "traefik.http.routers.api.service=api@internal"
+        #- traefik.enable=true
+        #- traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+        #- traefik.http.routers.api.service=api@internal
       depends_on:
         - nginx
       networks:
@@ -117,10 +117,13 @@ services:
       - media_volume_prod:/home/app/redctf/media
     labels:
       - traefik.enable=true
+      #- traefik.http.routers.nginx.rule=Host(`<###################! enter_ip/fqdn_here and uncomment !###################>`)
+      #- "traefik.http.routers.router5.tls.domains[0].main=${DOMAINNAME}"
       - traefik.http.routers.nginx.rule=PathPrefix(`/`)
       - traefik.http.routers.nginx.service=nginx-backend
       - traefik.http.routers.nginx.tls.certresolver=letsencryptresolver
       - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
+
     depends_on:
       - django
     networks:
