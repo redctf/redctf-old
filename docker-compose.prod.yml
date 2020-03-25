@@ -113,11 +113,6 @@ services:
       - django
     networks:
       - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.nginx.rule=PathPrefix(`/`)
-      - traefik.http.routers.nginx.service=nginx-backend
-      - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
 
   letsencrypt:
     image: linuxserver/letsencrypt:1.3.0-ls104
