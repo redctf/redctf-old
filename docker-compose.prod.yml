@@ -115,12 +115,8 @@ services:
       - traefik
     labels:
       - traefik.enable=true
-      #- traefik.http.routers.nginx.rule=Host(`<###################! enter_ip/fqdn_here and uncomment !###################>`)
-      #- "traefik.http.routers.router5.tls.domains[0].main=${DOMAINNAME}"
-      # - "traefik.http.routers.nginx.tls.domains[0].main=ctf.ruehouse.com"
       - traefik.http.routers.nginx.rule=PathPrefix(`/`)
       - traefik.http.routers.nginx.service=nginx-backend
-      # - traefik.http.routers.nginx.tls.certresolver=letsencryptresolver
       - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
 
   letsencrypt:
