@@ -38,8 +38,7 @@ export default class JeopardyButton extends Component {
 
   onSubmit(e, flag) {
     // flag check
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     axios.defaults.withCredentials = true;
     const mutation = this.postFlag(flag);
     axios.post('/graphql/',

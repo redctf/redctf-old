@@ -8,6 +8,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">User Count</th>
                     <th scope="col">Token</th>
                     <th scope="col">Points</th>
                 </tr>
@@ -17,6 +18,7 @@
                     <tr>
                         <th scope="row"><a href="{% url 'team_detail' pk=team.pk %}">{{ team.pk }}</a></th>
                         <td>{{ team.name }}</td>
+                        <td>{{ team.users.count }}</td>
                         <td>{{ team.token }}</td>
                         <td>{{ team.points }}</td>
                     </tr>

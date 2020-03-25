@@ -60,13 +60,13 @@ def admin_panel(request):
 @user_passes_test(lambda u: u.is_superuser)
 def category_list(request):
     categories = Category.objects.all().order_by('created')
-    return render(request, 'categories/category_list.html', {'categories' : categories})
+    return render(request, 'adminpanel/categories/category_list.html', {'categories' : categories})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def category_detail(request, pk):
     category = get_object_or_404(Category, pk=pk)
-    return render(request, 'categories/category_detail.html', {'category': category})
+    return render(request, 'adminpanel/categories/category_detail.html', {'category': category})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -113,7 +113,7 @@ def category_new (request):
     else:
         form = CategoryForm()
 
-    return render(request, 'categories/category_edit.html', {'form': form})
+    return render(request, 'adminpanel/categories/category_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -153,7 +153,7 @@ def category_edit(request, pk):
     else:
         form = CategoryForm(instance=category)
 
-    return render(request, 'categories/category_edit.html', {'form': form})
+    return render(request, 'adminpanel/categories/category_edit.html', {'form': form})
 
 ############################################
 
@@ -162,13 +162,13 @@ def category_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_list(request):
     challenges = Challenge.objects.all().order_by('created')
-    return render(request, 'challenges/challenge_list.html', {'challenges' : challenges})
+    return render(request, 'adminpanel/challenges/challenge_list.html', {'challenges' : challenges})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-    return render(request, 'challenges/challenge_detail.html', {'challenge': challenge})
+    return render(request, 'adminpanel/challenges/challenge_detail.html', {'challenge': challenge})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -351,7 +351,7 @@ def challenge_new (request):
     else:
         form = ChallengeForm()
 
-    return render(request, 'challenges/challenge_edit.html', {'form': form})
+    return render(request, 'adminpanel/challenges/challenge_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -516,7 +516,7 @@ def challenge_edit(request, pk):
     else:
         form = ChallengeForm(instance=challenge)
 
-    return render(request, 'challenges/challenge_edit.html', {'form': form})
+    return render(request, 'adminpanel/challenges/challenge_edit.html', {'form': form})
 ############################################
 
 ################## ctfs ###################
@@ -524,13 +524,13 @@ def challenge_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def ctf_list(request):
     ctfs = Ctf.objects.all().order_by('created')
-    return render(request, 'ctfs/ctf_list.html', {'ctfs' : ctfs})
+    return render(request, 'adminpanel/ctfs/ctf_list.html', {'ctfs' : ctfs})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def ctf_detail(request, pk):
     ctf = get_object_or_404(Ctf, pk=pk)
-    return render(request, 'ctfs/ctf_detail.html', {'ctf': ctf})
+    return render(request, 'adminpanel/ctfs/ctf_detail.html', {'ctf': ctf})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -577,7 +577,7 @@ def ctf_new (request):
     else:
         form = CtfForm()
 
-    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+    return render(request, 'adminpanel/ctfs/ctf_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -618,7 +618,7 @@ def ctf_edit(request, pk):
     else:
         form = CtfForm(instance=ctf)
 
-    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+    return render(request, 'adminpanel/ctfs/ctf_edit.html', {'form': form})
 
 ############################################
 
@@ -627,7 +627,7 @@ def ctf_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def container_list(request):
     containers = Container.objects.all().order_by('created')
-    return render(request, 'containers/container_list.html', {'containers' : containers})
+    return render(request, 'adminpanel/containers/container_list.html', {'containers' : containers})
 
 # @xframe_options_exempt
 # @user_passes_test(lambda u: u.is_superuser)
@@ -677,21 +677,22 @@ def container_list(request):
     # else:
     #     form = ContainerForm(instance=container)
 
-    # return render(request, 'containers/container_edit.html', {'form': form})
+    # return render(request, 'adminpanel/containers/container_edit.html', {'form': form})
 ############################################
 
 ################## teams ###################
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def team_list(request):
-    teams = Team.objects.all().order_by('created')
-    return render(request, 'teams/team_list.html', {'teams' : teams})
+    teams = Team.objects.select_related().all().order_by('created')
+
+    return render(request, 'adminpanel/teams/team_list.html', {'teams' : teams})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def team_detail(request, pk):
     team = get_object_or_404(Team, pk=pk)
-    return render(request, 'teams/team_detail.html', {'team': team})
+    return render(request, 'adminpanel/teams/team_detail.html', {'team': team})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -749,7 +750,7 @@ def team_new (request):
     else:
         form = TeamForm()
 
-    return render(request, 'teams/team_edit.html', {'form': form})
+    return render(request, 'adminpanel/teams/team_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -789,7 +790,7 @@ def team_edit(request, pk):
     else:
         form = TeamForm(instance=team)
 
-    return render(request, 'teams/team_edit.html', {'form': form})
+    return render(request, 'adminpanel/teams/team_edit.html', {'form': form})
 
 ############################################
 
@@ -798,13 +799,13 @@ def team_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def user_list(request):
     users = User.objects.all().order_by('created')
-    return render(request, 'users/user_list.html', {'users' : users})
+    return render(request, 'adminpanel/users/user_list.html', {'users' : users})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def user_detail(request, pk):
     user = get_object_or_404(User, pk=pk)
-    return render(request, 'users/user_detail.html', {'user': user})
+    return render(request, 'adminpanel/users/user_detail.html', {'user': user})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -828,7 +829,7 @@ def user_new (request):
     else:
         form = UserForm()
 
-    return render(request, 'users/user_edit.html', {'form': form})
+    return render(request, 'adminpanel/users/user_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -848,7 +849,7 @@ def user_edit(request, pk):
     else:
         form = UserForm(instance=user)
 
-    return render(request, 'users/user_edit.html', {'form': form})
+    return render(request, 'adminpanel/users/user_edit.html', {'form': form})
 
 ############################################
 

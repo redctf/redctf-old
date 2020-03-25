@@ -4,7 +4,7 @@ import threading
 import rethinkdb as r
 from dockerAPI.dockerAPI import *
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
-from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB, MINIMUM_CONTAINER_COUNT
+from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB, MINIMUM_CONTAINER_COUNT, DEBUG
 from containers.models import Container
 from challenges.models import Challenge
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
@@ -169,11 +169,8 @@ def assignContainerToUser(challenge_id, userID):
     finally:
         connection.close()
 
-    try:
-        threading.Thread(scaleChallenge(
-            challenge_id, registeredUsers, active_uid_list))
-    except:
-        raise Exception('unknown issue with scaling nullContainers')
+    threadedScaleAllChallenges()
+
 
     return assigned_cont_obj
 
@@ -379,13 +376,18 @@ def calculateBuffer(registeredUsers, activeSessions, minimumContainers, activeCo
 
 def newContainer(challenge_id, userID=None):
 
+    if DEBUG:
+        setContainerType = 'http'
+    else:
+        setContainerType = 'https'
+
     chall_obj = Challenge.objects.get(id=challenge_id)
     if userID is not None:
         user = User.objects.get(id=userID)
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
-                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='http',
+                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType=setContainerType,
                 username=user.username)
             print("############")
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
@@ -401,7 +403,7 @@ def newContainer(challenge_id, userID=None):
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
-                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType='http')
+                port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType=setContainerType)
             print("############")
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
                 new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))

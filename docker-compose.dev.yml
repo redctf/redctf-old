@@ -5,7 +5,7 @@ services:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
     ports:
-      - "28015:28015"
+      #rethinkdb admin interface
       - "8088:8080"
     volumes:
       - rethink_data_dev:/data
@@ -18,12 +18,15 @@ services:
     command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
     volumes:
       - ./client:/usr/app
-    ports:
-      - "8181:8181"
     depends_on:
       - rethinkdb
     networks:
       - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.horizon.rule=PathPrefix(`/horizon`)
+      - traefik.http.routers.horizon.service=horizon
+      - traefik.http.services.horizon.loadbalancer.server.port=8181
 
   django:
     build:
@@ -36,7 +39,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./server:/code
     ports:
-      - "8000:8000"
+      # for ptvsd django debugging
       - "3456:3456"
     environment:
       - RDB_HOST=rethinkdb
@@ -49,8 +52,10 @@ services:
     env_file:
       - ./server/.env.dev
     labels:
-      - traefik.http.routers.errorhandler.service=errorhandler-backend
-      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
+      - traefik.enable=true
+      - traefik.http.routers.django.rule=PathPrefix(`/graphql`) || PathPrefix(`/djangoadmin`) || PathPrefix(`/adminpanel`) || PathPrefix(`/category`) || PathPrefix(`/challenge`) || PathPrefix(`/container`) || PathPrefix(`/ctf`) || PathPrefix(`/team`) || PathPrefix(`/user`) || PathPrefix(`/static`) || PathPrefix(`/media`)
+      - traefik.http.routers.django.service=django-backend
+      - traefik.http.services.django-backend.loadbalancer.server.port=8000
 
   postgres:
     image: postgres:12.2
@@ -77,46 +82,50 @@ services:
     networks:
       - traefik
     labels:
-      - traefik.http.services.react-backend.loadbalancer.server.port=3000
+      - traefik.enable=true
+      - traefik.http.routers.react.rule=PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/teams`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
       - traefik.http.routers.react.service=react-backend
-      - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
-      - traefik.http.routers.react.middlewares=errorhandler@docker
-      # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
-      - traefik.http.routers.default2.rule=PathPrefix(`/`)
-      - traefik.http.routers.default2.middlewares=errorhandler@docker
-
+      - traefik.http.services.react-backend.loadbalancer.server.port=3000
+      - traefik.http.routers.default.rule=PathPrefix(`/`)
+      - traefik.http.routers.default.service=default-backend
+      - traefik.http.services.default-backend.loadbalancer.server.port=3000
 
   reverse-proxy:
       # The official v2.0 Traefik docker image
       image: traefik:v2.0.6
       container_name: reverse-proxy
-      # Enables the web UI and tells Traefik to listen to docker
-      command: --providers.docker --accesslog=true  --api.insecure=true --api.dashboard=true
+      command:
+        # Enable for debug logging
+        #- "--log.level=DEBUG"
+        - "--accesslog=true"
+        # Enable for the web UI
+        - "--api.insecure=true"
+        - "--api.dashboard=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.web.address=:80"
       ports:
         # The HTTP port
         - "80:80"
         # The Web UI (enabled by --api.insecure=true)
         - "8080:8080"
       volumes:
+        - letsencrypt_data_dev:/letsencrypt
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
       labels:
-        # error handling definition:
-        - traefik.http.middlewares.errorhandler.errors.status=404
-        - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
-        - traefik.http.middlewares.errorhandler.errors.query=/graphql/
+        # Enable for the web UI
+        - traefik.enable=true
         - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
-        - "traefik.http.routers.api.service=api@internal"
-        - traefik.http.routers.api.middlewares=errorhandler@docker
-       
+        - traefik.http.routers.api.service=api@internal
       depends_on:
-        - django
+        - react
       networks:
         - traefik
-volumes:
-  rethink_data_dev:
-  postgres_data_dev:
 
 networks:
   traefik:
 
+volumes:
+  rethink_data_dev:
+  postgres_data_dev:

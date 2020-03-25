@@ -34,7 +34,7 @@ export default class Scoreboard extends Component {
 
 
   viewTeam(teamId) {
-    this.props.history.push(`/team?id=${teamId}`);
+    this.props.history.push(`/teams?id=${teamId}`);
   }
 
   getTeamRows(teams, challenges) {

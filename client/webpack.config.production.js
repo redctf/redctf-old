@@ -2,6 +2,7 @@ var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -12,7 +13,18 @@ module.exports = {
     splitChunks: {
       chunks: "all"
     },
-    minimize: true 
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+              //drop_console: true
+              // Drop only console.logs but leave others
+              pure_funcs: ['console.log'],
+          }
+        }
+      })
+    ]
   },
   output: {
     path: path.join(__dirname, "dist"),
