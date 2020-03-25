@@ -62,6 +62,18 @@
         </div>
       </div>
     </div>
+    
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
+        {{ form.fileUpload.errors }}
+        <div class="custom-control custom-switch">
+        <!-- <div class="form-check"> -->
+          {{ form.fileUpload }}
+          <label class="custom-control-label" for="{{ form.fileUpload.id_for_label }}">File Upload</label>
+          <!-- <label class="form-check-label" for="{{ form.hosted.id_for_label }}">Hosted</label> -->
+        </div>
+      </div>
+    </div>
 
     <div class="form-row">
       <div class="fieldWrapper form-group col">

@@ -274,6 +274,7 @@ def challenge_new (request):
 
             #parse dockerfile for list of ports
             if new_challenge.upload:
+                
                 try:
                     ports = list()
                     for line in new_challenge.upload.file:
@@ -297,7 +298,9 @@ def challenge_new (request):
                     #raise Exception('Error parsing uploaded Dockerfile: ', e)
                     print ('Error parsing uploaded Dockerfile: ', e)
                     new_challenge.ports = '****error parsing ports****'
-
+                    
+            elif new_challenge.hostedFile:
+                print('hostedFile')
 
             #set var for pathPrefix and tag
             #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
@@ -318,6 +321,9 @@ def challenge_new (request):
                     new_challenge.imageName = error_msg
 
                 new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
+                
+            if new_challenge.hostedFile:
+                print('hostedFile')
 
             new_challenge.save()
 

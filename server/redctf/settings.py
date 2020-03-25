@@ -149,7 +149,10 @@ USE_TZ = True
 # MEDIA_ROOT for storing model file uploads (user uploads)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Don't need MEDIA_URL unless user needs to access uploaded files
-#MEDIA_URL = "/media/"
+MEDIA_URL = "/media/"
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, "redctf/media/")
+]
 
 
 # Static files (CSS, JavaScript, Images)
