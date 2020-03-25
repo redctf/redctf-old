@@ -211,7 +211,10 @@ class dockerAPI:
             elif containerType == "https":
                 print("https container type")
                 #define certificate resolver and therefore enable tls
-                r_labels["traefik.http.routers.{0}.tls.certresolver".format(r_containerName)] = "letsencryptresolver"
+                #r_labels["traefik.http.routers.{0}.tls.certresolver".format(r_containerName)] = "letsencryptresolver"
+
+                #enable tls
+                #r_labels["traefik.http.routers.{0}.tls".format(r_containerName)] = "true"
 
                 # middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
                 #middleware_chain = "{0}-stripprefix".format(r_containerName)
