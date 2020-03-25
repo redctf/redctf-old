@@ -110,7 +110,6 @@ services:
         # The Web UI (enabled by --api.insecure=true)
         - "8080:8080"
       volumes:
-        - letsencrypt_data_dev:/letsencrypt
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
       labels:
