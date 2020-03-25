@@ -24,10 +24,8 @@ services:
       - traefik
     labels:
       - traefik.enable=true
-      #- traefik.http.routers.horizon.rule=Host(`<###################! enter_ip/fqdn_here and uncomment !###################>`)
       - traefik.http.routers.horizon.rule= PathPrefix(`/horizon`)
       - traefik.http.routers.horizon.service=horizon
-      - traefik.http.routers.horizon.tls.certresolver=letsencryptresolver
       - traefik.http.services.horizon.loadbalancer.server.port=8181
 
   django:
@@ -36,7 +34,7 @@ services:
       dockerfile: dockerfile-prod
     container_name: django
     restart: unless-stopped
-    command: bash -c "gunicorn redctf.wsgi:application --log-file=- --bind 0.0.0.0:8000"
+    command: bash -c "gunicorn redctf.wsgi:application -w 3 --log-file=- --bind 0.0.0.0:8000"
     volumes:
       # So that Django can interact with Docker host
       - /var/run/docker.sock:/var/run/docker.sock
@@ -65,37 +63,28 @@ services:
     env_file:
       - ./server/.env.prod.db
 
-  reverse-proxy:
+  traefik:
       # The official v2.0 Traefik docker image
       image: traefik:v2.0.6
       container_name: reverse-proxy
       restart: unless-stopped
       command:
-        # Enable for debug logging
-        #- "--log.level=DEBUG"
         - "--accesslog=true"
-        # Enable for the web UI
-        #- "--api.insecure=true"
-        #- "--api.dashboard=true"
         - "--providers.docker=true"
         - "--providers.docker.exposedbydefault=false"
         - "--entrypoints.web.address=:80"
-        - "--entrypoints.websecure.address=:443"
-        - "--certificatesresolvers.letsencryptresolver.acme.tlschallenge=true"
-        - "--certificatesresolvers.letsencryptresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-        - "--certificatesresolvers.letsencryptresolver.acme.email=<insert_email_address_here>"
-        - "--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json"
+        # Enable for debug logging
+        #- "--log.level=DEBUG"
+        # Enable for the web UI
+        #- "--api.insecure=true"
+        #- "--api.dashboard=true"
       ports:
         # The HTTP(s) ports
-        - "80:80"
-        - "443:443"
-        # The Web UI (enabled by --api.insecure=true)
-        #- "8080:8080"
+        - "8080:80"
       volumes:
-        - letsencrypt_data_prod:/letsencrypt
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
-      labels:
+      #labels:
         # Enable for the web UI
         #- traefik.enable=true
         #- traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
@@ -117,15 +106,40 @@ services:
       - media_volume_prod:/home/app/redctf/media
     labels:
       - traefik.enable=true
-      #- traefik.http.routers.nginx.rule=Host(`<###################! enter_ip/fqdn_here and uncomment !###################>`)
-      #- "traefik.http.routers.router5.tls.domains[0].main=${DOMAINNAME}"
       - traefik.http.routers.nginx.rule=PathPrefix(`/`)
       - traefik.http.routers.nginx.service=nginx-backend
-      - traefik.http.routers.nginx.tls.certresolver=letsencryptresolver
       - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
-
     depends_on:
       - django
+    networks:
+      - traefik
+
+  letsencrypt:
+    image: linuxserver/letsencrypt:1.3.0-ls104
+    container_name: letsencrypt
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./letsencrypt/config:/config
+    environment:
+      - EMAIL=<email to be registered with letsencrypt>
+      - PUID=1000
+      - PGID=1000
+      - TZ=Central
+      - URL=<registered domain ie. google.com>
+      - SUBDOMAINS=<enter subdomain here> #can be "wildcard" if using dns validation
+      - STAGING=true
+      #THIS CONFIGURATION IS FOR DNS VALIDATION
+      #(requires api access to dns provider)
+      #(requires credentials in /config/dns-conf/cloudflare.ini)
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+      #THIS CONFIGURATION IS FOR HTTP VALIDATION (requires port 80)
+      #- VALIDATION=http
+    depends_on:
+      - traefik
     networks:
       - traefik
 
@@ -137,4 +151,3 @@ volumes:
   postgres_data_prod:
   static_volume_prod:
   media_volume_prod:
-  letsencrypt_data_prod:
