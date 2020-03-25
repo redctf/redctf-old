@@ -113,10 +113,10 @@ services:
         - django
       networks:
         - traefik
+volumes:
+  rethink_data_dev:
+  postgres_data_dev:
 
 networks:
   traefik:
 
-volumes:
-  rethink_data_dev:
-  postgres_data_dev:
