@@ -191,7 +191,7 @@ class dockerAPI:
             # middleware_chain = ""
             
             # rules: path prefix and headers
-            r_labels["traefik.http.routers.{0}.rule".format(r_containerName)] = "PathPrefix(`/{0}`) &&  HeadersRegexp(`Cookie`, `.*redctf={1};?.*`)".format(pathPrefix, header)
+            r_labels["traefik.http.routers.{0}.rule".format(r_containerName)] = "PathPrefix(`/{0}`) &&  HeadersRegexp(`Cookie`, `.*redctf-{1}={1};?.*`)".format(pathPrefix, header)
             
             # docker network
             r_labels["traefik.docker.network"] = ctfNet
