@@ -320,14 +320,13 @@ def challenge_new (request):
                         new_challenge.pathPrefix = error_msg
                         new_challenge.imageName = error_msg
 
-                    new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
+                    new_challenge.upload.save(form.cleaned_data['upload'].name,new_challenge.upload)
                     rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
                                     'fileUpload': new_challenge.fileUpload, 'imageName': new_challenge.imageName, 'ports': new_challenge.ports, 'pathPrefix': new_challenge.pathPrefix, 'created': format(new_challenge.created, 'U')}
                 
                 elif new_challenge.fileUpload:
                     print('fileUpload')
-                    new_challenge.upload.save(
-                        form.cleaned_data['upload'].name, form.cleaned_data['upload'])
+                    new_challenge.upload.save(form.cleaned_data['upload'].name, new_challenge.upload)
                     rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
                                     'fileUpload': new_challenge.fileUpload, 'pathPrefix': new_challenge.pathPrefix, 'downloadPath': new_challenge.upload.url, 'created': format(new_challenge.created, 'U')}
             else:
