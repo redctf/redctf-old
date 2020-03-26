@@ -6,7 +6,7 @@ from django.contrib import admin
 
 def user_directory_path(instance, filename): 
   # file will be uploaded to MEDIA_ROOT/uploads/challenge_<id>/<filename>
-  return 'uploads/challenge_{0}/{1}'.format(instance.id, filename)
+  return 'uploads/chall_{0}/{1}'.format(instance.id, filename)
 
 class OverwriteStorage(FileSystemStorage):
 

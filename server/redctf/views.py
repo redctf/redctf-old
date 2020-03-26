@@ -302,7 +302,7 @@ def challenge_new (request):
                     
             #set var for pathPrefix and tag
             #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-            path_tag = 'challenge_' + str(new_challenge.id)
+            path_tag = 'chall_' + str(new_challenge.id)
             new_challenge.pathPrefix = path_tag
 
             if new_challenge.upload:
@@ -320,14 +320,13 @@ def challenge_new (request):
                         new_challenge.pathPrefix = error_msg
                         new_challenge.imageName = error_msg
 
-                    new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
+                    new_challenge.upload.save(form.cleaned_data['upload'].name,new_challenge.upload)
                     rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
                                     'fileUpload': new_challenge.fileUpload, 'imageName': new_challenge.imageName, 'ports': new_challenge.ports, 'pathPrefix': new_challenge.pathPrefix, 'created': format(new_challenge.created, 'U')}
                 
                 elif new_challenge.fileUpload:
                     print('fileUpload')
-                    new_challenge.upload.save(
-                        form.cleaned_data['upload'].name, form.cleaned_data['upload'])
+                    new_challenge.upload.save(form.cleaned_data['upload'].name, new_challenge.upload)
                     rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
                                     'fileUpload': new_challenge.fileUpload, 'pathPrefix': new_challenge.pathPrefix, 'downloadPath': new_challenge.upload.url, 'created': format(new_challenge.created, 'U')}
             else:
@@ -433,7 +432,7 @@ def challenge_edit(request, pk):
                     if form.cleaned_data['upload']:
                         #set var for pathPrefix and tag
                         #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-                        path_tag = 'challenge_' + str(new_challenge.id)
+                        path_tag = 'chall_' + str(new_challenge.id)
                         new_challenge.pathPrefix = path_tag
                         rethink_updates['pathPrefix'] = path_tag
 
