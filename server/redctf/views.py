@@ -60,13 +60,13 @@ def admin_panel(request):
 @user_passes_test(lambda u: u.is_superuser)
 def category_list(request):
     categories = Category.objects.all().order_by('created')
-    return render(request, 'categories/category_list.html', {'categories' : categories})
+    return render(request, 'adminpanel/categories/category_list.html', {'categories' : categories})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def category_detail(request, pk):
     category = get_object_or_404(Category, pk=pk)
-    return render(request, 'categories/category_detail.html', {'category': category})
+    return render(request, 'adminpanel/categories/category_detail.html', {'category': category})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -113,7 +113,7 @@ def category_new (request):
     else:
         form = CategoryForm()
 
-    return render(request, 'categories/category_edit.html', {'form': form})
+    return render(request, 'adminpanel/categories/category_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -153,7 +153,7 @@ def category_edit(request, pk):
     else:
         form = CategoryForm(instance=category)
 
-    return render(request, 'categories/category_edit.html', {'form': form})
+    return render(request, 'adminpanel/categories/category_edit.html', {'form': form})
 
 ############################################
 
@@ -162,13 +162,13 @@ def category_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_list(request):
     challenges = Challenge.objects.all().order_by('created')
-    return render(request, 'challenges/challenge_list.html', {'challenges' : challenges})
+    return render(request, 'adminpanel/challenges/challenge_list.html', {'challenges' : challenges})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def challenge_detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-    return render(request, 'challenges/challenge_detail.html', {'challenge': challenge})
+    return render(request, 'adminpanel/challenges/challenge_detail.html', {'challenge': challenge})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -274,57 +274,73 @@ def challenge_new (request):
 
             #parse dockerfile for list of ports
             if new_challenge.upload:
-                try:
-                    ports = list()
-                    for line in new_challenge.upload.file:
-                        line = line.decode('utf-8')
-                        start = 'EXPOSE '
+                if new_challenge.hosted:
+                    
+                    try:
+                        ports = list()
+                        for line in new_challenge.upload.file:
+                            line = line.decode('utf-8')
+                            start = 'EXPOSE '
 
-                        if (start in line):
-                            possible_port = (line[line.find(start)+len(start):])
-                            ports.append(possible_port.split())
+                            if (start in line):
+                                possible_port = (line[line.find(start)+len(start):])
+                                ports.append(possible_port.split())
 
-                    # flatten list
-                    flattened_ports = list(set([val for sublist in ports for val in sublist]))
-                    print (flattened_ports)
+                        # flatten list
+                        flattened_ports = list(set([val for sublist in ports for val in sublist]))
+                        print (flattened_ports)
 
-                    if len(flattened_ports):
-                        new_challenge.ports = flattened_ports
-                    else:
-                        new_challenge.ports = '****no exposed ports****'
+                        if len(flattened_ports):
+                            new_challenge.ports = flattened_ports
+                        else:
+                            new_challenge.ports = '****no exposed ports****'
 
-                except Exception as e:
-                    #raise Exception('Error parsing uploaded Dockerfile: ', e)
-                    print ('Error parsing uploaded Dockerfile: ', e)
-                    new_challenge.ports = '****error parsing ports****'
-
-
+                    except Exception as e:
+                        #raise Exception('Error parsing uploaded Dockerfile: ', e)
+                        print ('Error parsing uploaded Dockerfile: ', e)
+                        new_challenge.ports = '****error parsing ports****'
+                    
             #set var for pathPrefix and tag
             #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-            path_tag = 'challenge_' + str(new_challenge.id)
+            path_tag = 'chall_' + str(new_challenge.id)
             new_challenge.pathPrefix = path_tag
 
             if new_challenge.upload:
-                image_name = path_tag + ':latest'
-                new_challenge.imageName = image_name
+                if new_challenge.hosted: 
+                    
+                    image_name = path_tag + ':latest'
+                    new_challenge.imageName = image_name
+                    
+                    #build image
+                    build = d.buildImage(fileobj=form.cleaned_data['upload'].file, tag=path_tag)
+
+                    #if build fails set vars as such
+                    if not build:
+                        error_msg = "****build image failed****"
+                        new_challenge.pathPrefix = error_msg
+                        new_challenge.imageName = error_msg
+
+                    new_challenge.upload.save(form.cleaned_data['upload'].name,new_challenge.upload)
+                    rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
+                                    'fileUpload': new_challenge.fileUpload, 'imageName': new_challenge.imageName, 'ports': new_challenge.ports, 'pathPrefix': new_challenge.pathPrefix, 'created': format(new_challenge.created, 'U')}
                 
-                #build image
-                build = d.buildImage(fileobj=form.cleaned_data['upload'].file, tag=path_tag)
-
-                #if build fails set vars as such
-                if not build:
-                    error_msg = "****build image failed****"
-                    new_challenge.pathPrefix = error_msg
-                    new_challenge.imageName = error_msg
-
-                new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
-
+                elif new_challenge.fileUpload:
+                    print('fileUpload')
+                    new_challenge.upload.save(form.cleaned_data['upload'].name, new_challenge.upload)
+                    rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
+                                    'fileUpload': new_challenge.fileUpload, 'pathPrefix': new_challenge.pathPrefix, 'downloadPath': new_challenge.upload.url, 'created': format(new_challenge.created, 'U')}
+            else:
+                #doesn't have a file uploaded
+                rethink_data = {'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted,
+                                    'fileUpload': new_challenge.fileUpload, 'imageName': new_challenge.imageName, 'ports': new_challenge.ports, 'pathPrefix': new_challenge.pathPrefix, 'created': format(new_challenge.created, 'U')}
+                                    
             new_challenge.save()
 
             # Push the realtime data to rethinkdb
             connection = r.connect(host=RDB_HOST, port=RDB_PORT)
             try:
-                r.db(CTF_DB).table('challenges').insert({ 'sid': new_challenge.id, 'category': new_challenge.category.id, 'title': new_challenge.title, 'points': new_challenge.points, 'description': new_challenge.description, 'hosted': new_challenge.hosted, 'imageName': new_challenge.imageName, 'ports': new_challenge.ports, 'pathPrefix': new_challenge.pathPrefix, 'created': format(new_challenge.created, 'U')}).run(connection)
+                r.db(CTF_DB).table('challenges').insert(
+                    rethink_data).run(connection)
             except RqlRuntimeError as e:
                 #raise Exception('Error adding challenge to realtime database: %s' % (e))
                 print('Error adding challenge to realtime database: %s' % (e))
@@ -338,7 +354,7 @@ def challenge_new (request):
     else:
         form = ChallengeForm()
 
-    return render(request, 'challenges/challenge_edit.html', {'form': form})
+    return render(request, 'adminpanel/challenges/challenge_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -358,27 +374,37 @@ def challenge_edit(request, pk):
                 rethink_updates = {}
 
                 hosted_update_needed = False
+                fileUpload_update_needed = False
                 upload_update_needed = False
                 for i in form.changed_data:
                     if i == 'hosted':
                         print ('hosted change')
-                        hosted_update_needed = True
-                    if i == 'upload':
+                        hosted_update_needed = True                    
+                        
+                    elif i == 'fileUpload':
+                        print ('fileUpload change')
+                        fileUpload_update_needed = True
+                        
+                    elif i == 'upload':
                         print ('uploaded file changed')
                         upload_update_needed = True
-                    if i == 'points':
+                        
+                    elif i == 'points':
                         print('points changed')
                         rethink_updates[i] = form.cleaned_data[i]
                         u = updatePoints(new_challenge, form.initial['points'])
                         print('update points: {0}'.format(u))
+                        
                     else:
                         #but don't update the fields that get auto updated ^
-                        rethink_updates[i] = form.cleaned_data[i]
+                        if i != 'upload':
+                            rethink_updates[i] = form.cleaned_data[i]
 
                 if hosted_update_needed:
-                    if not new_challenge.hosted:
-                        new_challenge.pathPrefix = ''
-                        rethink_updates['pathPrefix'] = ''
+                    rethink_updates['hosted'] = new_challenge.hosted
+                    if not new_challenge.hosted :
+                        # new_challenge.pathPrefix = ''
+                        # rethink_updates['pathPrefix'] = ''
 
                         new_challenge.imageName = ''
                         rethink_updates['imageName'] = ''
@@ -386,69 +412,89 @@ def challenge_edit(request, pk):
                         new_challenge.ports = ''
                         rethink_updates['ports'] = ''
 
-                        new_challenge.upload = None
+                        if not new_challenge.fileUpload:  
+                            new_challenge.upload = None
+                                            
+                    
+                if fileUpload_update_needed:
+                    rethink_updates['fileUpload'] = new_challenge.fileUpload
+                    
+                    if not new_challenge.fileUpload: 
+                        # new_challenge.upload = None
+                        rethink_updates['downloadPath'] = ''
+                        
+                        if not new_challenge.hosted:
+                            new_challenge.upload = None
 
                 if upload_update_needed:
                     print ('executing update')
                     
                     if form.cleaned_data['upload']:
-                    
                         #set var for pathPrefix and tag
                         #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-                        path_tag = 'challenge_' + str(new_challenge.id)
+                        path_tag = 'chall_' + str(new_challenge.id)
                         new_challenge.pathPrefix = path_tag
                         rethink_updates['pathPrefix'] = path_tag
 
-                        image_name = path_tag + ':latest'
-                        new_challenge.imageName = image_name
-                        rethink_updates['imageName'] = image_name
-                
-                        #build image
-                        build = d.buildImage(fileobj=form.cleaned_data['upload'].file, tag=path_tag)
-
-                        #if build fails set vars as such
-                        if not build:
-                            error_msg = "****build image failed****"
-                            new_challenge.pathPrefix = error_msg
-                            rethink_updates['pathPrefix'] = error_msg
-                            new_challenge.imageName = error_msg
-                            rethink_updates['imageName'] = error_msg
-
-                        new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
-
-                        try:
-                            ports = list()
-                            for line in new_challenge.upload.file:
-                                line = line.decode('utf-8')
-                                start = 'EXPOSE '
-
-                                if (start in line):
-                                    possible_port = (line[line.find(start)+len(start):])
-                                    ports.append(possible_port.split())
-
-                            # flatten list
-                            flattened_ports = list(set([val for sublist in ports for val in sublist]))
-                            print (flattened_ports)
-
-                            if len(flattened_ports):
-                                new_challenge.ports = flattened_ports
-                                rethink_updates['ports'] = flattened_ports
-                            else:
-                                new_challenge.ports = '****no exposed ports****'
-                                rethink_updates['ports'] = '****no exposed ports****'
-
-                        except Exception as e:
-                            #raise Exception('Error parsing uploaded Dockerfile: ', e)
-                            print ('Error parsing uploaded Dockerfile: ', e)
-                            new_challenge.ports = '****error parsing ports****'
-                            rethink_updates['ports'] = '****error parsing ports****'
+                        if new_challenge.hosted: 
+                            image_name = path_tag + ':latest'
+                            new_challenge.imageName = image_name
+                            rethink_updates['imageName'] = image_name
                     
-                    else:
-                        #file removed from object
-                        #accept user values for ports and imageName
-                        #set pathPrefix to null
-                        new_challenge.pathPrefix = ''
-                        rethink_updates['pathPrefix'] = ''
+                            #build image
+                            build = d.buildImage(fileobj=form.cleaned_data['upload'].file, tag=path_tag)
+
+                            #if build fails set vars as such
+                            if not build:
+                                error_msg = "****build image failed****"
+                                new_challenge.pathPrefix = error_msg
+                                rethink_updates['pathPrefix'] = error_msg
+                                new_challenge.imageName = error_msg
+                                rethink_updates['imageName'] = error_msg
+                        
+                        # save the uploaded file
+                        new_challenge.upload.save(form.cleaned_data['upload'].name,form.cleaned_data['upload'])
+                            
+                        if new_challenge.hosted:
+                            try:
+                                ports = list()
+                                for line in new_challenge.upload.file:
+                                    line = line.decode('utf-8')
+                                    start = 'EXPOSE '
+
+                                    if (start in line):
+                                        possible_port = (line[line.find(start)+len(start):])
+                                        ports.append(possible_port.split())
+
+                                # flatten list
+                                flattened_ports = list(set([val for sublist in ports for val in sublist]))
+                                print (flattened_ports)
+
+                                if len(flattened_ports):
+                                    new_challenge.ports = flattened_ports
+                                    rethink_updates['ports'] = flattened_ports
+                                else:
+                                    new_challenge.ports = '****no exposed ports****'
+                                    rethink_updates['ports'] = '****no exposed ports****'
+
+                            except Exception as e:
+                                #raise Exception('Error parsing uploaded Dockerfile: ', e)
+                                print ('Error parsing uploaded Dockerfile: ', e)
+                                new_challenge.ports = '****error parsing ports****'
+                                rethink_updates['ports'] = '****error parsing ports****'
+                                
+                        
+                    
+                        if new_challenge.fileUpload: 
+                            
+                            rethink_updates['downloadPath'] = new_challenge.upload.url
+                            
+                    # else:
+                    #     #file removed from object
+                    #     #accept user values for ports and imageName
+                    #     #set pathPrefix to null
+                    #     new_challenge.pathPrefix = ''
+                    #     rethink_updates['pathPrefix'] = ''
 
 
                 print(rethink_updates)
@@ -473,7 +519,7 @@ def challenge_edit(request, pk):
     else:
         form = ChallengeForm(instance=challenge)
 
-    return render(request, 'challenges/challenge_edit.html', {'form': form})
+    return render(request, 'adminpanel/challenges/challenge_edit.html', {'form': form})
 ############################################
 
 ################## ctfs ###################
@@ -481,13 +527,13 @@ def challenge_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def ctf_list(request):
     ctfs = Ctf.objects.all().order_by('created')
-    return render(request, 'ctfs/ctf_list.html', {'ctfs' : ctfs})
+    return render(request, 'adminpanel/ctfs/ctf_list.html', {'ctfs' : ctfs})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def ctf_detail(request, pk):
     ctf = get_object_or_404(Ctf, pk=pk)
-    return render(request, 'ctfs/ctf_detail.html', {'ctf': ctf})
+    return render(request, 'adminpanel/ctfs/ctf_detail.html', {'ctf': ctf})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -534,7 +580,7 @@ def ctf_new (request):
     else:
         form = CtfForm()
 
-    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+    return render(request, 'adminpanel/ctfs/ctf_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -575,7 +621,7 @@ def ctf_edit(request, pk):
     else:
         form = CtfForm(instance=ctf)
 
-    return render(request, 'ctfs/ctf_edit.html', {'form': form})
+    return render(request, 'adminpanel/ctfs/ctf_edit.html', {'form': form})
 
 ############################################
 
@@ -584,7 +630,7 @@ def ctf_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def container_list(request):
     containers = Container.objects.all().order_by('created')
-    return render(request, 'containers/container_list.html', {'containers' : containers})
+    return render(request, 'adminpanel/containers/container_list.html', {'containers' : containers})
 
 # @xframe_options_exempt
 # @user_passes_test(lambda u: u.is_superuser)
@@ -634,21 +680,22 @@ def container_list(request):
     # else:
     #     form = ContainerForm(instance=container)
 
-    # return render(request, 'containers/container_edit.html', {'form': form})
+    # return render(request, 'adminpanel/containers/container_edit.html', {'form': form})
 ############################################
 
 ################## teams ###################
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def team_list(request):
-    teams = Team.objects.all().order_by('created')
-    return render(request, 'teams/team_list.html', {'teams' : teams})
+    teams = Team.objects.select_related().all().order_by('created')
+
+    return render(request, 'adminpanel/teams/team_list.html', {'teams' : teams})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def team_detail(request, pk):
     team = get_object_or_404(Team, pk=pk)
-    return render(request, 'teams/team_detail.html', {'team': team})
+    return render(request, 'adminpanel/teams/team_detail.html', {'team': team})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -706,7 +753,7 @@ def team_new (request):
     else:
         form = TeamForm()
 
-    return render(request, 'teams/team_edit.html', {'form': form})
+    return render(request, 'adminpanel/teams/team_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -746,7 +793,7 @@ def team_edit(request, pk):
     else:
         form = TeamForm(instance=team)
 
-    return render(request, 'teams/team_edit.html', {'form': form})
+    return render(request, 'adminpanel/teams/team_edit.html', {'form': form})
 
 ############################################
 
@@ -755,13 +802,13 @@ def team_edit(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def user_list(request):
     users = User.objects.all().order_by('created')
-    return render(request, 'users/user_list.html', {'users' : users})
+    return render(request, 'adminpanel/users/user_list.html', {'users' : users})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
 def user_detail(request, pk):
     user = get_object_or_404(User, pk=pk)
-    return render(request, 'users/user_detail.html', {'user': user})
+    return render(request, 'adminpanel/users/user_detail.html', {'user': user})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -785,7 +832,7 @@ def user_new (request):
     else:
         form = UserForm()
 
-    return render(request, 'users/user_edit.html', {'form': form})
+    return render(request, 'adminpanel/users/user_edit.html', {'form': form})
 
 @xframe_options_exempt
 @user_passes_test(lambda u: u.is_superuser)
@@ -805,7 +852,7 @@ def user_edit(request, pk):
     else:
         form = UserForm(instance=user)
 
-    return render(request, 'users/user_edit.html', {'form': form})
+    return render(request, 'adminpanel/users/user_edit.html', {'form': form})
 
 ############################################
 

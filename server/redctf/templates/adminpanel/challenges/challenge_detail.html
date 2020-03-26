@@ -24,6 +24,9 @@
             <dt class="col-sm-3">Hosted: </dt>
             <dd class="col-sm-9">{{ challenge.hosted }}</dd>
 
+            <dt class="col-sm-3">File Upload: </dt>
+            <dd class="col-sm-9">{{ challenge.fileUpload }}</dd>
+
             {% if challenge.hosted %}
                 <dt class="col-sm-3">Image Name: </dt>
                 <dd class="col-sm-9">{{ challenge.imageName }}</dd>
@@ -33,6 +36,13 @@
 
                 <dt class="col-sm-3">Path Prefix: </dt>
                 <dd class="col-sm-9">{{ challenge.pathPrefix }}</dd>
+
+                <dt class="col-sm-3">Upload: </dt>
+                <dd class="col-sm-9">{{ challenge.upload }}</dd>
+
+            {% endif %}
+
+            {% if challenge.fileUpload %}
 
                 <dt class="col-sm-3">Upload: </dt>
                 <dd class="col-sm-9">{{ challenge.upload }}</dd>

@@ -133,7 +133,7 @@ export default function Routes () {
         />
         <PrivateRoute
           exact
-          path='/team'
+          path='/teams'
           component={Team}
         />
       </div>

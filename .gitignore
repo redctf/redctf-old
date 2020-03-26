@@ -18,3 +18,4 @@ portainer/config.json
 .env.dev
 .env.prod
 .env.prod.db
+letsencrypt/

@@ -137,6 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+#There are several places relying on UTC.  Change with caution
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -149,7 +150,15 @@ USE_TZ = True
 # MEDIA_ROOT for storing model file uploads (user uploads)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Don't need MEDIA_URL unless user needs to access uploaded files
-#MEDIA_URL = "/media/"
+MEDIA_URL = "/media/"
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, "redctf/media/")
+]
+
+#specifically set temp upload directory to be inside of the app home
+#FILE_UPLOAD_TEMP_DIR = '/code/tmp'
+#FILE_UPLOAD_TEMP_DIR = os.path.join(BASE_DIR, 'tmp/')
+#FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 
 # Static files (CSS, JavaScript, Images)

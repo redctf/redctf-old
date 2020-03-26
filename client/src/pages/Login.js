@@ -17,8 +17,7 @@ export default class Login extends Component {
 	}
 
   getTeamInfo() {
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+	axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     axios.defaults.withCredentials = true;
     const query = this.queryTeam();
     axios.post('/graphql/',
@@ -42,8 +41,7 @@ export default class Login extends Component {
 
 	onSubmit() {
 		if (this.state.username !== '' && this.state.password !== '') {
-			const port = 8000;
-			axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+			axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
 			axios.defaults.withCredentials = true;
 			const mutation = this.postLogin();
 			axios.post('/graphql/',
@@ -130,7 +128,7 @@ export default class Login extends Component {
 								onClick={this.onSubmit.bind(this)}>
 								Login
 							</button>
-        			<a href='/register'
+        			    <a href='/register'
         				className='button'>
 								<button type="button"
 									className='login-button'>

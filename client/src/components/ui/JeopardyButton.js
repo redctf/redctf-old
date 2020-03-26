@@ -38,8 +38,7 @@ export default class JeopardyButton extends Component {
 
   onSubmit(e, flag) {
     // flag check
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     axios.defaults.withCredentials = true;
     const mutation = this.postFlag(flag);
     axios.post('/graphql/',
@@ -57,6 +56,8 @@ export default class JeopardyButton extends Component {
       if (status === "Correct Flag") {
         this.popCorrectFlag('correct-flag');
         this.handleCloseModal();
+      } else if (status === "No currently active CTF") {
+        this.popCorrectFlag('no-ctf');
       } else {
         this.popCorrectFlag('incorrect-flag');
       }
@@ -95,6 +96,9 @@ export default class JeopardyButton extends Component {
               value={this.props.value}
               description={this.props.description}
               path={this.props.path}
+              fileUpload={this.props.fileUpload}
+              hosted={this.props.hosted}
+              downloadPath={this.props.downloadPath}
             />
           </ModalContent>
           <ModalFooter confirmText='Submit'
@@ -103,6 +107,7 @@ export default class JeopardyButton extends Component {
 
         <div id="correct-flag">Correct Flag!</div>
         <div id="incorrect-flag">Incorrect Flag</div>
+        <div id="no-ctf">No currently active CTF</div>
       </div>
     );
   }

@@ -11,13 +11,14 @@ export default class ChallengeModal extends Component {
     this.state = {
       challenge: {
         flag: ''
-      }
+      },
+      showSpinner: false,
+      launchWording: 'Launch Challenge'
     };
   }
 
   onSubmit(e) {
-    const port = 8000;
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
     const mutation = ''
     axios.post('/graphql/',
       {
@@ -31,6 +32,9 @@ export default class ChallengeModal extends Component {
     .then((response) => {
       console.log(response);
     })
+  }
+  handleDownloadClick = (e) => {
+    window.open(`${location.protocol}//${location.hostname}${this.props.downloadPath}`,  '_blank');
   }
 
   handleContainerClick = (e) => {
@@ -49,12 +53,15 @@ export default class ChallengeModal extends Component {
       document.cookie = newCookie;
 
       // redirect to path
-      window.location = 'http://'+window.location.hostname+':80/'+this.props.path;
-      // window.location = this.props.path;
+      window.open(`${location.protocol}//${location.hostname}/${this.props.path}`,  '_blank');
+
     } else {
       // container does not exist, must create using graphQL call
-      const port = 8000;
-      axios.defaults.baseURL = `${location.protocol}//${location.hostname}:${port}`;
+      this.setState({
+        showSpinner: true,
+        launchWording: 'Launching . . .'
+      });
+      axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       const mutation = `mutation { getUserContainer ( challengeId: ${this.props.sid}) {status, containerName, nextHop } }`;
     
       axios.post('/graphql/',
@@ -74,9 +81,12 @@ export default class ChallengeModal extends Component {
         const newCookie = `redctf=${result.containerName.split('_')[1]}`;
         document.cookie = newCookie;
 
+        this.setState({
+          showSpinner: false
+        });
+
         // redirect to path
-        window.location = 'http://'+window.location.hostname+':80/'+result.nextHop;
-        // window.location = result.nextHop;
+        window.open(`${location.protocol}//${location.hostname}/${result.nextHop}`,  '_blank');
         console.log(result.status);
       })
     }
@@ -91,6 +101,7 @@ export default class ChallengeModal extends Component {
   render() {
     const solveString = this.props.solves ? this.props.solves : 0;
     const solves = solveString === 1 ? `${solveString} Solve` : `${solveString} Solves`;
+    const host = document.location.origin.split(':')[0];
 
     // TODO - Render hosted information
     return (
@@ -103,12 +114,23 @@ export default class ChallengeModal extends Component {
         <div className='challenge-modal-content'>
           <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
     
-          {this.props.path && 
+          
+          {this.props.hosted &&
             <a className='container-link'
               onClick={this.handleContainerClick}
-              target="_blank">Click Here For Container
+              target="_blank">{this.state.launchWording}
             </a>
           }
+          
+          
+          {this.props.fileUpload && 
+            <a className='container-link'
+              onClick={this.handleDownloadClick}
+              target="_blank">Download File
+            </a>
+          }
+
+          {this.state.showSpinner && <div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>}
 
           <div className='footer-bar'>
             <p>{solves}</p>

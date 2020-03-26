@@ -6,7 +6,7 @@ from django.contrib import admin
 
 def user_directory_path(instance, filename): 
   # file will be uploaded to MEDIA_ROOT/uploads/challenge_<id>/<filename>
-  return 'uploads/challenge_{0}/{1}'.format(instance.id, filename)
+  return 'uploads/chall_{0}/{1}'.format(instance.id, filename)
 
 class OverwriteStorage(FileSystemStorage):
 
@@ -25,13 +25,14 @@ class Challenge(models.Model):
   points = models.IntegerField(default=0)
   flag = models.CharField(max_length=100)
   hosted = models.BooleanField(default=False)
+  fileUpload = models.BooleanField(default=False)
   imageName = models.CharField(max_length=100, default=None, null=True, blank=True)
   ports = models.CharField(max_length=100, default=None, null=True, blank=True)
   pathPrefix = models.CharField(max_length=100, default=None, null=True, blank=True)
   #upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
   upload = models.FileField(storage=OverwriteStorage(), upload_to=user_directory_path, default=None, null=True, blank=True)
   created = models.DateTimeField(auto_now_add=True)
-
+  
   def solved_count(self):
     return self.solvedchallenge_set.count()
 

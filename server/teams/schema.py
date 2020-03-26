@@ -8,8 +8,10 @@ from graphene_django.filter import DjangoFilterConnectionField
 from users.schema import *
 from users.models import User
 from teams.models import Team
+from ctfs.models import Ctf
 from users.validators import validate_username, validate_password, validate_email, validate_username_unique, validate_email_unique, validate_user_is_admin, validate_user_is_authenticated
 from teams.validators import validate_teamname, validate_token, validate_teamname_unique
+from django.utils import timezone
 
 class TeamType(DjangoObjectType):
     class Meta:
@@ -28,42 +30,52 @@ class CreateTeam(graphene.Mutation):
         hidden = graphene.Boolean(required=True)
 
     def mutate(self, info, teamname, username, email, password, hidden):
-        # Validate teamname
-        validate_teamname(teamname)
-        validate_teamname_unique(teamname)
+            
+        # Validate active Ctf
+        if Ctf.objects.filter(start__lt=timezone.now(), end__gt=timezone.now()):
 
-        # Validate username, password, and email
-        validate_username(username)
-        validate_username_unique(username)
-        validate_email(email)
-        validate_email_unique(email)
-        # validate_password(password)
+            # Validate teamname
+            validate_teamname(teamname)
+            validate_teamname_unique(teamname)
 
-        # Create unique team token
-        token = str(uuid.uuid4())
-        while Team.objects.filter(token__iexact=token).exists():
+            # Validate username, password, and email
+            validate_username(username)
+            validate_username_unique(username)
+            validate_email(email)
+            validate_email_unique(email)
+            # validate_password(password)
+
+
+            # Create unique team token
             token = str(uuid.uuid4())
+            while Team.objects.filter(token__iexact=token).exists():
+                token = str(uuid.uuid4())
 
-        # Create and Save Team
-        team = Team(name=teamname, token=token, hidden=hidden)
-        team.save()
+            # Create and Save Team
+            team = Team(name=teamname, token=token, hidden=hidden)
+            team.save()
 
-        # Push team to rethinkdb database
+            # Push team to rethinkdb database
 
-        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-        try:
-            r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'name': team.name, 'token': team.token, 'points': team.points, 'hidden': team.hidden, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': [], 'created': format(team.created, 'U')}).run(connection)
+            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+            try:
+                r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'name': team.name, 'token': team.token, 'points': team.points, 'hidden': team.hidden, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': [], 'created': format(team.created, 'U')}).run(connection)
 
-        except RqlRuntimeError as e:
-            raise Exception('Error adding team to realtime database: %s' % (e))
-        finally:
-            connection.close()
+            except RqlRuntimeError as e:
+                raise Exception('Error adding team to realtime database: %s' % (e))
+            finally:
+                connection.close()
 
-        # Return Success
-        return CreateTeam(status=('Created Team Successfully'), token=token)
+            # Return Success
+            return CreateTeam(status=('Created Team Successfully'), token=token)
+
+        else:
+            #no active ctf
+            raise Exception('No currently active CTF')
 
 
 class JoinTeam(graphene.Mutation):
+    ####NOT CURRENTLY USED####
     status = graphene.String()
 
     class Arguments:

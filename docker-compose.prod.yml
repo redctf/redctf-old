@@ -5,11 +5,7 @@ services:
     image: rethinkdb:2.3.6
     container_name: rethinkdb
     restart: unless-stopped
-    #ports:
-    #  - "28015:28015"
-    #  - "8088:8080"
     volumes:
-      #remove bind mount?
       - rethink_data_prod:/data
     networks:
       - traefik
@@ -22,12 +18,15 @@ services:
     volumes:
       #need to get rid of this.  use dockerfile?
       - ./client:/usr/app
-    ports:
-      - "8181:8181"
     depends_on:
       - rethinkdb
     networks:
       - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.horizon.rule= PathPrefix(`/horizon`)
+      - traefik.http.routers.horizon.service=horizon
+      - traefik.http.services.horizon.loadbalancer.server.port=8181
 
   django:
     build:
@@ -35,19 +34,13 @@ services:
       dockerfile: dockerfile-prod
     container_name: django
     restart: unless-stopped
-    command: bash -c "gunicorn redctf.wsgi:application --log-file=- --bind 0.0.0.0:8000"
-    #command: bash -c "python3 manage.py runserver 0.0.0.0:8000"
+    command: bash -c "gunicorn redctf.wsgi:application -w 3 --log-file=- --bind 0.0.0.0:8000"
     volumes:
       # So that Django can interact with Docker host
       - /var/run/docker.sock:/var/run/docker.sock
-      #remove bind mount?
-      #- ./server:/code
       # for serving django admin css, etc.
       - static_volume_prod:/home/app/redctf/static
       - media_volume_prod:/home/app/redctf/media
-    ports:
-      - "8000:8000"
-      #- "3456:3456"
     environment:
       - RDB_HOST=rethinkdb
       - RDB_PORT=28015
@@ -58,9 +51,6 @@ services:
       - traefik
     env_file:
       - ./server/.env.prod
-    labels:
-      - traefik.http.routers.errorhandler.service=errorhandler-backend
-      - traefik.http.services.errorhandler-backend.loadbalancer.server.port=8000
 
   postgres:
     image: postgres:12.2
@@ -73,57 +63,34 @@ services:
     env_file:
       - ./server/.env.prod.db
 
-#   react:
-#     build: ./client/
-#     container_name: react
-#     restart: unless-stopped
-#     command: bash -c "cd /code && yarn install && yarn start"
-# #    volumes:
-# #      - ./client:/code
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - django
-#     networks:
-#       - traefik
-#     labels:
-#       - traefik.http.services.react-backend.loadbalancer.server.port=3000
-#       - traefik.http.routers.react.service=react-backend
-#       - traefik.http.routers.react.rule= PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/team`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
-#       - traefik.http.routers.react.middlewares=errorhandler@docker
-#       # this seperate rule for the default route is necessary for dashboard to work - this is due to the fact that traefik evaluates longest rule first. 
-#       - traefik.http.routers.default2.rule=PathPrefix(`/`)
-#       - traefik.http.routers.default2.middlewares=errorhandler@docker
-
-
-  reverse-proxy:
+  traefik:
       # The official v2.0 Traefik docker image
       image: traefik:v2.0.6
       container_name: reverse-proxy
       restart: unless-stopped
-      # Enables the web UI and tells Traefik to listen to docker
-      #command: --providers.docker --accesslog=true  --api.insecure=true --api.dashboard=true
-      command: --providers.docker --accesslog=true  --api.insecure=true
+      command:
+        - "--accesslog=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.web.address=:80"
+        # Enable for debug logging
+        #- "--log.level=DEBUG"
+        # Enable for the web UI
+        #- "--api.insecure=true"
+        #- "--api.dashboard=true"
       ports:
-        # The HTTP port
-        - "80:80"
-        # The Web UI (enabled by --api.insecure=true)
-        #- "8080:8080"
+        # The HTTP(s) ports
+        - "8080:80"
       volumes:
         # So that Traefik can listen to the Docker events
         - /var/run/docker.sock:/var/run/docker.sock
-        
-      labels:
-        # error handling definition:
-        - traefik.http.middlewares.errorhandler.errors.status=404
-        - traefik.http.middlewares.errorhandler.errors.service=errorhandler-backend
-        - traefik.http.middlewares.errorhandler.errors.query=/graphql/
-        - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
-        - "traefik.http.routers.api.service=api@internal"
-        - traefik.http.routers.api.middlewares=errorhandler@docker
-       
+      #labels:
+        # Enable for the web UI
+        #- traefik.enable=true
+        #- traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+        #- traefik.http.routers.api.service=api@internal
       depends_on:
-        - django
+        - nginx
       networks:
         - traefik
 
@@ -133,20 +100,52 @@ services:
       dockerfile: ./server/nginx/dockerfile-nginx
     container_name: nginx
     restart: unless-stopped  
-    ports:
-      - 3000:8080
     volumes:
       # for serving client (react) files
       - static_volume_prod:/home/app/redctf/static
       - media_volume_prod:/home/app/redctf/media
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nginx.rule=PathPrefix(`/`)
+      - traefik.http.routers.nginx.service=nginx-backend
+      - traefik.http.services.nginx-backend.loadbalancer.server.port=8080
     depends_on:
       - django
     networks:
       - traefik
 
+  letsencrypt:
+    image: linuxserver/letsencrypt:1.3.0-ls104
+    container_name: letsencrypt
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./letsencrypt/config:/config
+    environment:
+      - EMAIL=<email to be registered with letsencrypt>
+      - PUID=1000
+      - PGID=1000
+      - TZ=Central
+      - URL=<registered domain ie. google.com>
+      - SUBDOMAINS=<enter subdomain here> #can be "wildcard" if using dns validation
+      - STAGING=true
+      #THIS CONFIGURATION IS FOR DNS VALIDATION
+      #(requires api access to dns provider)
+      #(requires credentials in /config/dns-conf/cloudflare.ini)
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+      #THIS CONFIGURATION IS FOR HTTP VALIDATION (requires port 80)
+      #- VALIDATION=http
+    depends_on:
+      - traefik
+    networks:
+      - traefik
+
 networks:
   traefik:
-        
+
 volumes:
   rethink_data_prod:
   postgres_data_prod:
