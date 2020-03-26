@@ -21,7 +21,7 @@ export default class Instructions extends Component {
           <p>When participating in a CTF, pay close attention to clues that may help tip you off to the aim of the 
           challenge creator.  It is typical for challenge creators to hide clues in plain sight (e.g. the challenge 
           title or description).  For example, the challenge may talk about a user and their financial PATH.  
-          This would seem to indicate a Path Traversal vulnerability and it would be the first thing I would explore.</p>
+          This would seem to indicate a Path Traversal vulnerability and it would be the first thing to explore.</p>
           <br/>
 
           <p>Another common strategy is to solve easier challenges first and work to get points on the board as soon as 
