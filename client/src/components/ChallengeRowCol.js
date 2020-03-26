@@ -42,6 +42,7 @@ export default class ChallengeRowCol extends Component {
         }
       });
 
+      // Need to just send challenge, lol
 
       return (
         <JeopardyButton key={challenge.sid}
@@ -53,6 +54,9 @@ export default class ChallengeRowCol extends Component {
           solves={challenge.solved_count}
           solved={challengeSolved}
           path={challenge.pathPrefix}
+          fileUpload={challenge.fileUpload}
+          hosted={challenge.hosted}
+          downloadPath={challenge.downloadPath}
         />
       )
     });

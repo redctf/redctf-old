@@ -11,7 +11,9 @@ export default class ChallengeModal extends Component {
     this.state = {
       challenge: {
         flag: ''
-      }
+      },
+      showSpinner: false,
+      launchWording: 'Launch Challenge'
     };
   }
 
@@ -52,6 +54,10 @@ export default class ChallengeModal extends Component {
 
     } else {
       // container does not exist, must create using graphQL call
+      this.setState({
+        showSpinner: true,
+        launchWording: 'Launching . . .'
+      });
       axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
       const mutation = `mutation { getUserContainer ( challengeId: ${this.props.sid}) {status, containerName, nextHop } }`;
     
@@ -71,6 +77,10 @@ export default class ChallengeModal extends Component {
         // create cookie
         const newCookie = `redctf=${result.containerName.split('_')[1]}`;
         document.cookie = newCookie;
+
+        this.setState({
+          showSpinner: false
+        });
 
         // redirect to path
         window.open(`${location.protocol}//${location.hostname}/${result.nextHop}`,  '_blank');
@@ -100,12 +110,23 @@ export default class ChallengeModal extends Component {
         <div className='challenge-modal-content'>
           <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
     
-          {this.props.path && 
+          
+          {this.props.hosted &&
             <a className='container-link'
               onClick={this.handleContainerClick}
-              target="_blank">Click Here For Container
+              target="_blank">{this.state.launchWording}
             </a>
           }
+          
+          
+          {this.props.fileUpload && 
+            <a className='container-link'
+              href={this.props.downloadPath}
+              target="_blank">Download File
+            </a>
+          }
+
+          {this.state.showSpinner && <div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>}
 
           <div className='footer-bar'>
             <p>{solves}</p>

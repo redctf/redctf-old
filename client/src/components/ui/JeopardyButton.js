@@ -96,6 +96,9 @@ export default class JeopardyButton extends Component {
               value={this.props.value}
               description={this.props.description}
               path={this.props.path}
+              fileUpload={this.props.fileUpload}
+              hosted={this.props.hosted}
+              downloadPath={this.props.downloadPath}
             />
           </ModalContent>
           <ModalFooter confirmText='Submit'
