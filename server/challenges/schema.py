@@ -7,13 +7,16 @@ from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from django.utils.dateformat import format
+from django.utils import timezone
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from challenges.validators import validate_flag, validate_flag_unique, validate_points, validate_title, validate_description, validate_imageName, validate_ports, validate_pathPrefix, validate_pathPrefix_unique
 from categories.validators import validate_category_exists
 from categories.models import Category
 from challenges.models import Challenge
+from ctfs.models import Ctf
 from teams.models import SolvedChallenge, Team
 from teams.validators import validate_team_id
+
 
 d = dockerAPI()
 
@@ -239,46 +242,52 @@ class CheckFlag(graphene.Mutation):
         # Sanitize flag input
         validate_flag(flag)
 
-        correct = False
-        if Challenge.objects.filter(flag__iexact=flag).exists():
-            chal = Challenge.objects.get(flag__iexact=flag)
-            if chal.id not in user.team.solved.all().values_list('challenge_id', flat=True):
-                user.team.points += chal.points
-                user.team.correct_flags += 1
-                sc = SolvedChallenge(challenge=chal)
-                sc.save()
-                user.team.solved.add(sc)
-                user.team.save()
-            correct = True
-        else:
-            user.team.wrong_flags += 1
-            user.team.save()
+        # Validate active Ctf
+        if Ctf.objects.filter(start__lt=timezone.now(), end__gt=timezone.now()):
+            
             correct = False
+            if Challenge.objects.filter(flag__iexact=flag).exists():
+                chal = Challenge.objects.get(flag__iexact=flag)
+                if chal.id not in user.team.solved.all().values_list('challenge_id', flat=True):
+                    user.team.points += chal.points
+                    user.team.correct_flags += 1
+                    sc = SolvedChallenge(challenge=chal)
+                    sc.save()
+                    user.team.solved.add(sc)
+                    user.team.save()
+                correct = True
+            else:
+                user.team.wrong_flags += 1
+                user.team.save()
+                correct = False
 
-        # Create list of solved challenges
-        solved = []
-        for sc in user.team.solved.all().order_by('timestamp'):
-            solved.append({'id': sc.challenge.id, 'points': sc.challenge.points,
-                           'timestamp': format(sc.timestamp, 'U')})
+            # Create list of solved challenges
+            solved = []
+            for sc in user.team.solved.all().order_by('timestamp'):
+                solved.append({'id': sc.challenge.id, 'points': sc.challenge.points,
+                                'timestamp': format(sc.timestamp, 'U')})
 
-        # Push the realtime data to rethinkdb
-        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-        try:
-            r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update(
-                {'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
+            # Push the realtime data to rethinkdb
+            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+            try:
+                r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update(
+                    {'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
+                if correct:
+                    r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update(
+                        {'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
+            except RqlRuntimeError as e:
+                raise Exception(
+                    'Error adding category to realtime database: %s' % (e))
+            finally:
+                connection.close()
+
             if correct:
-                r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update(
-                    {'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
-        except RqlRuntimeError as e:
-            raise Exception(
-                'Error adding category to realtime database: %s' % (e))
-        finally:
-            connection.close()
-
-        if correct:
-            return CheckFlag(status='Correct Flag')
+                return CheckFlag(status='Correct Flag')
+            else:
+                return CheckFlag(status='Wrong Flag')
         else:
-            return CheckFlag(status='Wrong Flag')
+            #no active ctf
+            return CheckFlag(status='No currently active CTF')
 
 
 class DeleteChallenge(graphene.Mutation):

@@ -125,7 +125,7 @@ export default class Login extends Component {
 								onClick={this.onSubmit.bind(this)}>
 								Login
 							</button>
-        			<a href='/register'
+        			    <a href='/register'
         				className='button'>
 								<button type="button"
 									className='login-button'>
