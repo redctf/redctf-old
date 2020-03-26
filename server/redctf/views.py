@@ -302,7 +302,7 @@ def challenge_new (request):
                     
             #set var for pathPrefix and tag
             #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-            path_tag = 'challenge_' + str(new_challenge.id)
+            path_tag = 'chall_' + str(new_challenge.id)
             new_challenge.pathPrefix = path_tag
 
             if new_challenge.upload:
@@ -433,7 +433,7 @@ def challenge_edit(request, pk):
                     if form.cleaned_data['upload']:
                         #set var for pathPrefix and tag
                         #path_tag = str(new_challenge.id) + '_' + re.sub('[^A-Za-z0-9]+', '', new_challenge.category.name.lower()) + str(new_challenge.points)
-                        path_tag = 'challenge_' + str(new_challenge.id)
+                        path_tag = 'chall_' + str(new_challenge.id)
                         new_challenge.pathPrefix = path_tag
                         rethink_updates['pathPrefix'] = path_tag
 
