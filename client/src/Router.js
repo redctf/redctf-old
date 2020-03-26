@@ -15,6 +15,8 @@ import Challenges from './pages/Challenges';
 import Instructions from './pages/Instructions';
 import Scoreboard from './pages/Scoreboard';
 import Team from './pages/Team';
+import TurtleSoup from './pages/TurtleSoup';
+import SpecialThanks from './pages/SpecialThanks';
 
 
 const fakeAuth = {
@@ -118,6 +120,16 @@ export default function Routes () {
           exact
           path='/scoreboard' 
           component={Scoreboard}
+        />
+        <Route
+          exact
+          path='/turtlesoup' 
+          component={TurtleSoup}
+        />
+        <Route
+          exact
+          path='/special-thanks' 
+          component={SpecialThanks}
         />
         <PrivateRoute
           exact

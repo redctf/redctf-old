@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import Hero from './Hero';
 
 @inject('store')
 @observer
@@ -13,77 +12,39 @@ export default class Home extends Component {
 	render() {
 		const store = this.store;
 		return (
-			<div className='page home'>
-				<Hero />
-				<main>
-					<div className="section-header">
-						<h3>A CTF Framework made with ReactJS, Mobx, RethinkDB, and Django.</h3>
-						<hr />
-					</div>
-					<div className="section-item">
-						<div className="section-logo react" />
-						<div className="section-item-content">
-							<a
-								href="https://facebook.github.io/react/"
-								target="_blank"
-							>
-								<h4>React</h4>
-							</a>
-							<small>UI Library</small>
-							<p>
-								React makes it painless to create
-								{" "}
-								<br />
-								interactive UIs.
-							</p>
-						</div>
-					</div>
-					<div className="section-item">
-						<div className="section-logo mobx" />
-						<div className="section-item-content">
-							<a
-								href="http://mobxjs.github.io/mobx/"
-								target="_blank"
-							>
-								<h4>MobX</h4>
-							</a>
-							<small>Reactive State Management</small>
-							<p>
-								MobX is a battle tested library that makes state management simple and scalable.
-							</p>
-						</div>
-					</div>
-					<div className="section-item">
-						<div className="section-logo rethinkdb" />
-						<div className="section-item-content">
-							<a
-								href="https://www.rethinkdb.com/"
-								target="_blank"
-							>
-								<h4>RethinkDB</h4>
-							</a>
-							<small>Realtime Database</small>
-							<p>
-								RethinkDB is the open-source, scalable database that makes building realtime apps dramatically easier.
-							</p>
-						</div>
-					</div>
-					<div className="section-item">
-						<div className="section-logo django" />
-						<div className="section-item-content">
-							<a
-								href="https://www.djangoproject.com/"
-								target="_blank"
-							>
-								<h4>Django</h4>
-							</a>
-							<small>High-level Python Web Framework</small>
-							<p>
-								Django is a Python Web framework that encourages rapid development and clean, pragmatic design. 
-							</p>
-						</div>
-					</div>
-				</main>
+			<div className='page login'>
+				<div className="kernelcon-ctf" />
+				<div className='kernelcon-text'>A Virtual Experience for a Virtual Conference</div>
+
+
+			  <div className={`page posts`}>
+			    <div className='instructions'>
+		        <div className='instruction-heading'>Basic Rules - check Instructions for more details.</div>
+		        <ul>
+		        	<li><b className='captain-morgan'>Maximum Four Team Members</b>
+		        		<ul>
+		        			<li className='johnny-walker'>
+		        				Since this is an online only CTF, we can't monitor this technically.  However, we only have (4) Eternal Kernel Badges to award.
+		        			</li>
+		        		</ul>
+		        	</li>
+		        	<li><b className='captain-morgan'>Do Not Share Flags</b>
+		        		<ul>
+		        			<li className='johnny-walker'>
+		        				Cheating is bad. We've isolated some challenges per user, with individuals flags. Consequences for getting caught results in disqualification.
+		        			</li>
+		        		</ul>
+		        	</li>
+		        	<li><b className='captain-morgan'>Report Issues or Bugs to Operations</b>
+		        		<ul>
+		        			<li className='johnny-walker'>
+		        				We encourage fair play within reason. If you run into an issue, a bug, or a problem reach out to operations through discord <code>#kerneltron-ctf</code> channel or use the walk-up zoom meeting: <code>https://kernelcon.org/virtual/ctf</code>
+		        			</li>
+		        		</ul>
+		        	</li>
+		        </ul>
+		      </div>
+		    </div>
 			</div>
 		);
 	}

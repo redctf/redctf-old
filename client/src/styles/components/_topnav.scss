@@ -3,13 +3,13 @@
     flex: 1;
     a {
         margin-right: 24px;
-        color: rgba(#000, .5);
+        color: rgba(#fff, .5);
         font-weight: 500;
         &:hover {
-        	color: rgba(#000, 1);
+        	color: rgba(#fff, 1);
         }
     }
     a.active {
-        color: rgba(#000, 1);
+        color: rgba(#fff, 1);
     }
 }

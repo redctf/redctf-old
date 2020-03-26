@@ -5,26 +5,27 @@
   h2 {
     font-weight: 900;
     font-size: 2.3em;
-    color: #222;
+    color: #fff;
     text-align:center;
   }
 
   code {
     font-family: monospace, Courier-New;
-    background-color: #eee;
-    color: rgb(255, 25, 25);
+    background-color: $swamp;
+    color: $confetti;
     padding: 2px 5px;
   }
 
   a {
-    color: rgb(255, 25, 25);
+    color: $faded-jade;
+    font-size: 14px;
   }
 
   .instruction-heading {
-    padding: 10px 0px 0px;
+    padding: 20px 0px 0px;
     font-weight: 600;
     font-size: 1.5em;
-    color: $mine-shaft;
+    color: $white;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
   }
@@ -32,6 +33,11 @@
   .instruction-sub-heading {
     font-size: 1.25em;
     font-weight: 600;
-    padding: 10px 0px 3px;
+    padding: 20px 0px 3px;
+    color: white;
+  }
+
+  p {
+    font-size: 14px;
   }
 }

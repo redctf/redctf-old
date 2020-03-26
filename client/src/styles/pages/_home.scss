@@ -41,7 +41,7 @@
                 margin-top: 48px;
                 h4 {
                     font-weight: 700;
-                    color: #000;
+                    color: #fff;
                 }
                 ul {
                     display: flex;
@@ -114,13 +114,13 @@
             }
             h4 {
                 font-weight: 500;
-                color: #000;
+                color: #fff;
             }
             small {
                 text-transform: uppercase;
                 font-weight: 500;
                 letter-spacing: 1px;
-                color: #999;
+                color: $link-water;
             }
             p {
                 margin-top: 12px;
@@ -139,6 +139,7 @@
     }
 }
 
+
 .github-buttons {
     display: flex;
     flex: 0 1 auto;
@@ -153,8 +154,8 @@
     align-items: center;
     padding: 18px 24px;
     border-radius: 2px;
-    border: 1px solid #000;
-    color: #000;
+    border: 1px solid #fff;
+    color: #fff;
     font-weight: 600;
     font-size: 18px;
     &:before {
@@ -167,12 +168,88 @@
         background-size: contain;
     }
     &:hover {
-        background: #000;
-        color: #fff;
+        background: #fff;
+        color: #ccc;
         &:before {
             background: url(GitHub-Mark-Light-32px.png);
             background-repeat: no-repeat;
             background-size: contain;
         }
     }
+}
+
+.main-section {
+    display: flex;
+    flex-flow: row wrap;
+    min-width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 36px 0 0 0;
+    z-index: 2;
+
+    .section-item {
+        display: flex;
+        flex: 0 1 auto;
+        flex-flow: row nowrap;
+        width: calc(50% - 48px);
+        margin: 0px 24px 48px 24px;
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+
+        &:hover {
+            cursor:  pointer;
+        }
+        .section-logo {
+            display: flex;
+            width: 100%;
+            height: 80px;
+            background: url(securesky.png);
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+            &.splunk {
+                background: url(splunk-dark.png);
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center;
+            }
+        }
+    }
+}
+
+.nari {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background: url(NARI-white.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 200px;
+}
+
+.individuals {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    p {
+        font-size: 24px;
+        letter-spacing: 2px;
+        font-weight: 100;
+        color: rgba(213, 239, 245, 0.5);
+        margin: 10px 0px;
+    }
+
+}
+
+.captain-morgan {
+    color: white;
+    font-weight: 700;
+}
+
+.johnny-walker {
+    margin-bottom: 15px;
 }

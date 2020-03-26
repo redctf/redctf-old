@@ -241,6 +241,25 @@ export default class App extends Component {
             )
           )}
         />
+        <Route
+          exact
+          path='/special-thanks'
+          render={props => (
+            authenticated ? (
+              <LazyRoute {...props} component={import('./pages/SpecialThanks')}/>
+            ) : (
+              <Redirect to="/login"/>
+            )
+          )}
+        />
+
+        <Route
+          exact
+          path='/turtlesoup'
+          render={props => (
+            <LazyRoute {...props} component={import('./pages/TurtleSoup')} />
+          )}
+        />
 
         <footer className='footer'>
           {testval}

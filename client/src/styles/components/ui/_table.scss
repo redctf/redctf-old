@@ -173,7 +173,7 @@
 
 .table-hover tbody tr:hover > td,
 .table-hover tbody tr:hover > th {
-  background-color: #f5f5f5;
+  background-color: $biscay;
   cursor: pointer;
 }
 
@@ -300,4 +300,8 @@ table th[class*="span"],
 
 .table-hover tbody tr.info:hover > td {
   background-color: #c4e3f3;
+}
+
+tspan {
+  fill: $monte-carlo !important;
 }

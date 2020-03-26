@@ -69,7 +69,7 @@ export default class JeopardyButton extends Component {
 
   render () {
     const buttonStyle = {
-      backgroundColor: (this.props.solved) ? '#14af12' : '#2638ED'
+      backgroundColor: (this.props.solved) ? '#4a7a7c' : '#17435f'
     };
 
     return (

@@ -88,7 +88,7 @@ export default class Scoreboard extends Component {
           <VictoryLine
             style={{
               data: { stroke: preferredColors[i] },
-              parent: { border: "1px solid #ccc"}
+              parent: { border: "1px solid #fff"}
             }}
           />
           <VictoryScatter

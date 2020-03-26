@@ -34,6 +34,7 @@
   flex: 1 1 auto;
   width: 1%;
   margin-bottom: 0;
+  background-color: #333;
 }
 .form-control {
   display: block;
@@ -41,8 +42,8 @@
   padding: .5rem .75rem;
   font-size: 1rem;
   line-height: 1.25;
-  color: #464a4c;
-  background-color: #fff;
+  color: $monte-carlo;
+  background-color: $ebony;
   background-image: none;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
@@ -77,6 +78,8 @@
   -webkit-flex: 1 1 0%;
   -ms-flex: 1 1 0%;
   flex: 1 1 0%;
+  background-color: $biscay;
+  color: $monte-carlo;
 }
 .btn {
   display: inline-block;
@@ -98,7 +101,7 @@
   transition: all .2s ease-in-out;
   color: #292b2c;
   background-color: #fff;
-  border-color: #ccc;
+  border-color: #333;
 }
 [type=reset], [type=submit], button, html [type=button] {
   -webkit-appearance: button;

@@ -9,7 +9,7 @@
 
   &:hover {
     cursor: pointer;
-    background-color: darken(blue, 20%) !important;
+    background-color: lighten($swamp, 20%) !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transition: opacity 0.3s ease-in-out;
   }

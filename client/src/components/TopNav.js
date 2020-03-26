@@ -20,6 +20,7 @@ export default class TopNav extends Component {
 			<nav>
 				<ActiveLink activeOnlyWhenExact={true} to="/">Home</ActiveLink>
 				<ActiveLink to="/instructions">Instructions</ActiveLink>
+				<ActiveLink to="/special-thanks">Special Thanks</ActiveLink>
 				<ActiveLink to="/challenges">Challenges</ActiveLink>
 				<ActiveLink to="/scoreboard">Scoreboard</ActiveLink>
 			</nav>

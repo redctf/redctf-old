@@ -9,7 +9,7 @@ html {
 }
 
 body {
-	color: #666;
+	color: $link-water;
 	line-height: 1.333;
 }
 
@@ -31,11 +31,11 @@ small, .font_small {font-size: 0.707em;}
 a {
 	text-decoration: none;
 	cursor: pointer;
-	color: rgba(#000, .9);
+	color: rgba($link-water, .9);
 	&:hover {
-		color: rgba(#000, 1);
+		color: rgba($link-water, 1);
 	}
 	&.active {
-		color: rgba(#000, 1);
+		color: rgba($link-water, 1);
 	}
 }
