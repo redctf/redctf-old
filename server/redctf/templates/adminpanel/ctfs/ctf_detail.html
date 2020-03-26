@@ -6,10 +6,10 @@
         <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'ctf_edit' pk=ctf.pk %}" role="button">Edit</a>
         <a class="btn btn-outline-primary mb-3 mt-3" href="{% url 'ctf_delete' pk=ctf.pk %}" role="button">Delete</a>
         <dl class="row">
-            <dt class="col-sm-3">Start: </dt>
+            <dt class="col-sm-3">Start (UTC): </dt>
             <dd class="col-sm-9">{{ ctf.start }}</dd>
           
-            <dt class="col-sm-3">End: </dt>
+            <dt class="col-sm-3">End (UTC): </dt>
             <dd class="col-sm-9">{{ ctf.end }}</dd>           
 
         </dl>
