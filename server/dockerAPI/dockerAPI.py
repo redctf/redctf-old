@@ -182,10 +182,13 @@ class dockerAPI:
 
             #enable
             r_labels["traefik.enable"] = "true"
+            
+            # service
+            r_labels["traefik.http.routers.{0}.service".format(r_containerName)] = "{0}-backend".format(r_containerName)
 
             # default middlewares inserted here as comma delimited string of
             #middleware_chain = "errorhandler"
-            #middleware_chain = ""
+            # middleware_chain = ""
             
             # rules: path prefix and headers
             r_labels["traefik.http.routers.{0}.rule".format(r_containerName)] = "PathPrefix(`/{0}`) &&  HeadersRegexp(`Cookie`, `.*redctf={1};?.*`)".format(pathPrefix, header)
@@ -194,17 +197,21 @@ class dockerAPI:
             r_labels["traefik.docker.network"] = ctfNet
             
             # LB server port
-            r_labels["traefik.http.services.{0}.loadbalancer.server.port".format(r_containerName)] = port
+            r_labels["traefik.http.services.{0}-backend.loadbalancer.server.port".format(r_containerName)] = port
             
             # define middleware chain
-            #r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-chain".format(r_containerName)
+            # r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-chain".format(r_containerName)
+            
+            # define middleware
+            r_labels["traefik.http.routers.{0}.middlewares".format(r_containerName)] = "{0}-stripprefix".format(r_containerName)
             
             
             #http containers only - will strip path using middleware
             if containerType == "http":
                 # middleware_chain = middleware_chain + ", {0}-stripprefix".format(r_containerName)
-                #middleware_chain = "{0}-stripprefix".format(r_containerName)
+                # middleware_chain = "{0}-stripprefix".format(r_containerName)
                 r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.forceslash".format(r_containerName)] = "false"
+                # r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "{0}".format(pathPrefix)
                 r_labels["traefik.http.middlewares.{0}-stripprefix.stripprefix.prefixes".format(r_containerName)] = "/{0}".format(pathPrefix)
             
             # placeholder https logic
@@ -212,7 +219,7 @@ class dockerAPI:
                 print("https container type")
                 #define certificate resolver and therefore enable tls
                 #r_labels["traefik.http.routers.{0}.tls.certresolver".format(r_containerName)] = "letsencryptresolver"
-
+                
                 #enable tls
                 #r_labels["traefik.http.routers.{0}.tls".format(r_containerName)] = "true"
 
