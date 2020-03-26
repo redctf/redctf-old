@@ -33,6 +33,9 @@ export default class ChallengeModal extends Component {
       console.log(response);
     })
   }
+  handleDownloadClick = (e) => {
+    window.open(`${location.protocol}//${location.hostname}${this.props.downloadPath}`,  '_blank');
+  }
 
   handleContainerClick = (e) => {
     // Determine if container for click already exists
@@ -98,6 +101,7 @@ export default class ChallengeModal extends Component {
   render() {
     const solveString = this.props.solves ? this.props.solves : 0;
     const solves = solveString === 1 ? `${solveString} Solve` : `${solveString} Solves`;
+    const host = document.location.origin.split(':')[0];
 
     // TODO - Render hosted information
     return (
@@ -121,7 +125,7 @@ export default class ChallengeModal extends Component {
           
           {this.props.fileUpload && 
             <a className='container-link'
-              href={this.props.downloadPath}
+              onClick={this.handleDownloadClick}
               target="_blank">Download File
             </a>
           }
