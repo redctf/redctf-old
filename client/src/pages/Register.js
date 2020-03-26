@@ -76,6 +76,12 @@ export default class Register extends Component {
               this.setState({
                 isRegistrationError: true,
                 errorMessage: res.errors[0].message
+              }, () => {
+                setTimeout(() => {
+                  this.setState({
+                    isRegistrationError: false
+                  });
+                }, 5000);
               });
             }
           })
@@ -83,6 +89,12 @@ export default class Register extends Component {
           this.setState({
             isRegistrationError: true,
             errorMessage: res.errors[0].message
+          }, () => {
+            setTimeout(() => {
+              this.setState({
+                isRegistrationError: false
+              });
+            }, 5000);
           });
         }
       })
@@ -118,6 +130,12 @@ export default class Register extends Component {
           this.setState({
             isRegistrationError: true,
             errorMessage: res.errors[0].message
+          }, () => {
+            setTimeout(() => {
+              this.setState({
+                isRegistrationError: false
+              });
+            }, 5000);
           });
         }
       })
