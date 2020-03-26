@@ -50,8 +50,6 @@ export default class ChallengeModal extends Component {
 
       // create cookie
       const hash = container.name.split('_').slice(-1)[0];
-      //const newCookie = `redctf=${container.name.split('_')[1]}`;
-      //const newCookie = `redctf=${container.name.split('_').slice(-1)[0]}`;
       const newCookie = `redctf-${hash}=${hash}`;
       document.cookie = newCookie;
 
@@ -82,8 +80,6 @@ export default class ChallengeModal extends Component {
 
         // create cookie
         const hash = result.containerName.split('_').slice(-1)[0];
-        //const newCookie = `redctf=${result.containerName.split('_')[1]}`;
-        //const newCookie = `redctf=${result.containerName.split('_').slice(-1)[0]}`;
         const newCookie = `redctf-${hash}=${hash}`;
         document.cookie = newCookie;
 
