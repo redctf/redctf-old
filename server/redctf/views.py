@@ -654,7 +654,6 @@ def container_delete(request, pk):
         else:
 
             #try rethink delete, then django delete
-            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
             try:
                 r.db(CTF_DB).table('containers').filter({'sid':container.id}).delete().run(connection)
                 container.delete()
@@ -684,7 +683,6 @@ def container_delete_all(request):
         else:
 
             #try rethink delete, then django delete
-            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
             try:
                 r.db(CTF_DB).table('containers').filter({'sid':container.id}).delete().run(connection)
                 container.delete()
