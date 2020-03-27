@@ -240,7 +240,7 @@ class GetFlag(graphene.Mutation):
             raise Exception('Error: way too authenticated...')
 
         #no active ctf
-        return GetFlag(status='ctf{}')
+        return GetFlag(status='kernel{800d877f44d2a5fc6e982bd92e64dcd7}')
 
 
 class CheckFlag(graphene.Mutation):
