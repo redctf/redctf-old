@@ -51,9 +51,10 @@ urlpatterns = [
     ################ containers ################
     path('adminpanel/container/', views.container_list, name='container_list'),
     # path('adminpanel/container/new/', views.container_new, name='container_new'),
-    # path('adminpanel/container/<int:pk>/', views.container_detail, name='container_detail'),
+    path('adminpanel/container/<int:pk>/', views.container_detail, name='container_detail'),
     # path('adminpanel/container/<int:pk>/edit/', views.container_edit, name='container_edit'),
-    # path('adminpanel/container/<int:pk>/delete/', views.container_delete, name='container_delete'),
+    path('adminpanel/container/<int:pk>/delete/', views.container_delete, name='container_delete'),
+    path('adminpanel/container/delete/', views.container_delete_all, name='container_delete_all'),
     ############################################
 
     ################ ctfs ################

@@ -17,8 +17,8 @@ from ctfs.models import Ctf
 from teams.models import SolvedChallenge, Team
 from teams.validators import validate_team_id
 
-
 d = dockerAPI()
+
 
 def getDjangoTeamsWithSolvedChallengesByID(self, info, chal_id):
     status = graphene.String()
@@ -34,7 +34,6 @@ def getDjangoTeamsWithSolvedChallengesByID(self, info, chal_id):
     else:
         return False
 
-    
     
 def updatePoints(self, info, chal_id, points):
     status = graphene.String()
@@ -123,7 +122,7 @@ def updatePoints(self, info, chal_id, points):
     
     return True
         
-    
+
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -226,6 +225,22 @@ class AddChallenge(graphene.Mutation):
             connection.close()
 
         return AddChallenge(status='Challenge Created')
+
+
+class GetFlag(graphene.Mutation):
+    status = graphene.String()
+
+    class Arguments:
+        challenge = graphene.String(required=False)
+
+    def mutate(self, info):
+        user = info.context.user
+
+        if not user.is_anonymous:
+            raise Exception('Error: way too authenticated...')
+
+        #no active ctf
+        return GetFlag(status='ctf{}')
 
 
 class CheckFlag(graphene.Mutation):
@@ -518,8 +533,10 @@ class UpdateChallenge(graphene.Mutation):
 
         return UpdateChallenge(status='Challenge Updated: %s' % (id))
 
+
 class Mutation(graphene.ObjectType):
     add_challenge = AddChallenge.Field()
     check_flag = CheckFlag.Field()
+    get_flag = GetFlag.Field()
     delete_challenge = DeleteChallenge.Field()
     update_challenge = UpdateChallenge.Field()

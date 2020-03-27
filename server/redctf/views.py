@@ -632,18 +632,67 @@ def container_list(request):
     containers = Container.objects.all().order_by('created')
     return render(request, 'adminpanel/containers/container_list.html', {'containers' : containers})
 
-# @xframe_options_exempt
-# @user_passes_test(lambda u: u.is_superuser)
-# def container_detail(request, pk):
-#     container = get_object_or_404(Container, pk=pk)
-#     return render(request, 'containers/container_detail.html', {'container': container})
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_detail(request, pk):
+    container = get_object_or_404(Container, pk=pk)
+    return render(request, 'adminpanel/containers/container_detail.html', {'container': container})
 
-# @xframe_options_exempt
-# @user_passes_test(lambda u: u.is_superuser)
-# def container_delete(request, pk):
-#     container = get_object_or_404(Container, pk=pk)
-#     container.delete()
-#     return redirect(container_list)
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_delete(request, pk):
+    container = get_object_or_404(Container, pk=pk)
+
+    print('deleting container')
+
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+
+    try:
+        delete = d.removeContainer(container.name)
+        if delete is not None:
+            raise Exception(' error deleting container in docker')
+        else:
+
+            #try rethink delete, then django delete
+            try:
+                r.db(CTF_DB).table('containers').filter({'sid':container.id}).delete().run(connection)
+                container.delete()
+            except Exception as e:
+                #raise Exception('Error deleting container from realtime database: %s' % (e))
+                print('Error deleting container: %s' % (e))
+            
+    finally:
+        connection.close()
+
+
+    return redirect(container_list)
+
+@xframe_options_exempt
+@user_passes_test(lambda u: u.is_superuser)
+def container_delete_all(request):
+    containers = Container.objects.all().order_by('created')
+
+    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+
+    for container in containers:
+        print('deleting container: ', container.name)
+      
+        delete = d.removeContainer(container.name)
+        if delete is not None:
+            raise Exception(' error deleting container in docker: ', container.name)
+        else:
+
+            #try rethink delete, then django delete
+            try:
+                r.db(CTF_DB).table('containers').filter({'sid':container.id}).delete().run(connection)
+                container.delete()
+            except Exception as e:
+                #raise Exception('Error deleting container from realtime database: %s' % (e))
+                print('Error deleting container: %s' % (e))
+          
+    connection.close()
+
+    return redirect(container_list)
 
 # @xframe_options_exempt
 # @user_passes_test(lambda u: u.is_superuser)
@@ -660,7 +709,7 @@ def container_list(request):
 #     else:
 #         form = ContainerForm()
 
-#     return render(request, 'containers/container_edit.html', {'form': form})
+#     return render(request, 'adminpanel/containers/container_edit.html', {'form': form})
 
 # @xframe_options_exempt
 # @user_passes_test(lambda u: u.is_superuser)
