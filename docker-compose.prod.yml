@@ -118,6 +118,8 @@ services:
     image: linuxserver/letsencrypt:1.3.0-ls104
     container_name: letsencrypt
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
     ports:
       - 80:80
       - 443:443
@@ -128,7 +130,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Central
-      - URL=<registered domain ie. google.com>
+      - URL=<highest level registered domain that you have control of ie. google.com or ctf.thissite.com>
       - SUBDOMAINS=<enter subdomain here> #can be "wildcard" if using dns validation
       - STAGING=true
       #THIS CONFIGURATION IS FOR DNS VALIDATION
