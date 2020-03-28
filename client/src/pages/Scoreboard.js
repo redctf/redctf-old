@@ -62,11 +62,11 @@ export default class Scoreboard extends Component {
 
   getGraphData() {
     const graphData = [{
-      x: new Date(this.store.appState.ctfs[0].created * 1000),    // TODO horizon.ctf.start_time
+      x: new Date(this.store.appState.ctfs[0].start * 1000),
       y: 0
     }];
-    // Only show top ten teams
-    const teamsFiltered = this.store.appState.teams.filter(t => !t.hidden);
+    // Only show top ten teams with points
+    const teamsFiltered = this.store.appState.teams.filter(t => !t.hidden).filter(r => r.points > 0);
     // const teams = teamsFiltered.sort((a,b) => {
     //   return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
     // }).slice(0,10);
