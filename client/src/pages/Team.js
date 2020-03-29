@@ -53,7 +53,7 @@ export default class Team extends Component {
 
   getGraphData(data) {
     const graphData = [{
-      x: new Date(this.store.appState.ctfs[0].created * 1000),    // TODO horizon.ctf.start_time
+      x: new Date(this.store.appState.ctfs[0].start * 1000),
       y: 0
     }];
     let points = 0;
