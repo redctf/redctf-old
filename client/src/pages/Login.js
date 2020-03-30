@@ -36,7 +36,7 @@ export default class Login extends Component {
   }
 
   queryTeam() {
-    return `query { team {id name points users {id username}}}`;
+    return `query { team {id name token points users {id username}}}`;
   }
 
 	onSubmit() {
