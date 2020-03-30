@@ -68,7 +68,7 @@ export default class Team extends Component {
   }
 
   getToken(team, myTeam){
-    if (team.sid == myTeam.id) {
+    if (team.sid.toString() === myTeam.id) {
       //  rendered my own team, what's my token
       return <h3>Token:{myTeam.token}</h3>;
     }
