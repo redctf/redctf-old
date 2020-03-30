@@ -67,20 +67,30 @@ export default class Team extends Component {
     return graphData;
   }
 
+  getToken(team, myTeam){
+    if (team.sid.toString() === myTeam.id) {
+      //  rendered my own team, what's my token
+      return <h3>Token:{myTeam.token}</h3>;
+    }
+  }
+
   render() {
     const teamId = new URLSearchParams(location.search).get('id');
     const { challenges } = this.store.appState;
 
     const team = this.store.appState.filterSingleTeam(teamId)[0];
+    const myTeam = this.store.appState.team;
+
     const data = this.getTeamData(team, challenges);
     const graphData = this.getGraphData(data);
     const challengeRows=this.getTeamRows(data);
+    const displayToken=this.getToken(team, myTeam);
 
     return (
       <div className='page posts'>
         <div className='graph-container'>
           <h2>{team.name}</h2>
-          <h3>Token:{team.token}</h3>
+          {displayToken}
 
           <VictoryChart
             animate={{
