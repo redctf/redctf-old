@@ -789,7 +789,7 @@ def team_new (request):
             # Push team to rethinkdb database
             connection = r.connect(host=RDB_HOST, port=RDB_PORT)
             try:
-                r.db(CTF_DB).table('teams').insert({ 'sid': new_team.id, 'name': new_team.name, 'token': token, 'points': new_team.points, 'hidden': new_team.hidden, 'correct_flags': new_team.correct_flags, 'wrong_flags': new_team.wrong_flags, 'solved': [], 'created': format(new_team.created, 'U')}).run(connection)
+                r.db(CTF_DB).table('teams').insert({ 'sid': new_team.id, 'name': new_team.name, 'points': new_team.points, 'hidden': new_team.hidden, 'correct_flags': new_team.correct_flags, 'wrong_flags': new_team.wrong_flags, 'solved': [], 'created': format(new_team.created, 'U')}).run(connection)
             except Exception as e:
                 raise Exception('Error adding team: %s' % (e))
             finally:
