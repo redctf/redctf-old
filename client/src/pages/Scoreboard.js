@@ -66,10 +66,7 @@ export default class Scoreboard extends Component {
       y: 0
     }];
     // Only show top ten teams with points
-    const teamsFiltered = this.store.appState.teams.filter(t => !t.hidden).filter(r => r.points > 0);
-    // const teams = teamsFiltered.sort((a,b) => {
-    //   return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
-    // }).slice(0,10);
+    const teamsFiltered = this.store.appState.teams.filter(t => !t.hidden).filter(r => r.points > 0).slice(0,10);
     const series = teamsFiltered.map((team, i) => {
       let points = 0;
       const preferredColors = ['red', 'blue', 'green', 'orange', 'purple', 'deeppink', 'lightseagreen', 'navy', 'tomato', 'sienna'];  //TODO - more colors!
