@@ -2,6 +2,9 @@
 
 The most customizeable CTF Framework built with modern technologies.
 
+
+[![Documentation Status](https://readthedocs.org/projects/redctf/badge/?version=latest)](https://docs.redctf.org/en/latest/?badge=latest)
+
 ## Development
 Everything is dockerized and easy to start development.
 
