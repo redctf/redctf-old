@@ -1,7 +1,8 @@
-RedCTF Documentation!
+RedCTF Documentation
 ==================================
 
 RedCTF is a Capture-the-Flag framework and this is the wonderful test description.
+RedCTF is written in Python. Inside source
 
 
 .. toctree::
@@ -15,7 +16,6 @@ RedCTF is a Capture-the-Flag framework and this is the wonderful test descriptio
    themes
    plugins
    contributing
-
 
 Indices and tables
 ==================
