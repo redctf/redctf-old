@@ -1,4 +1,4 @@
-name: Passing production build
+name: Prod Build
 
 on:
   push:
