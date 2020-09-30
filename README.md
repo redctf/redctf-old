@@ -1,6 +1,8 @@
 # redctf 
 ![Prod Build](https://github.com/redctf/redctf/workflows/Prod%20Build/badge.svg)
 
+![Dev Build](https://github.com/redctf/redctf/workflows/Dev%20Build/badge.svg)
+
 
 The most customizeable CTF Framework built with modern technologies.
 
