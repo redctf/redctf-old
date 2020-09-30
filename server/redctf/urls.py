@@ -32,6 +32,10 @@ urlpatterns = [
     #ctf admin
     path('adminpanel/', views.admin_panel, name='admin_panel'),
 
+    ################ dashboard #################
+    path('adminpanel/dashboard/', views.dashboard, name='dashboard'),
+    ############################################
+
     ################ categories ################
     path('adminpanel/category/', views.category_list, name='category_list'),
     path('adminpanel/category/new/', views.category_new, name='category_new'),
