@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <h3>Dashboard</h3>
+        </div>
+        <dl class="row">
+            <dt class="col-sm-4">CTF First Blood: </dt>
+            <dd class="col-sm-8">{{ first_blood }}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Total Users (not hidden): </dt>
+            <dd class="col-sm-8">{{ user_count }}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Total Teams (not hidden): </dt>
+            <dd class="col-sm-8">{{ team_count }}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Total Challenge Solves: </dt>
+            <dd class="col-sm-8">{{ solve_count }}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Total Unique Challenges Solved: </dt>
+            <dd class="col-sm-8">{{ chal_with_solves_count }} of YY</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Number of Teams with at least 1 Solve: </dt>
+            <dd class="col-sm-8">XX</dd>
+        </dl>
+        
+    </div>
+{% endblock %}
