@@ -1,0 +1,28 @@
+name: Passing production build
+
+on:
+  push:
+    branches: 
+      - master
+    
+  pull_request:
+    branches: 
+      - '**' 
+    
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Rename target compose file
+      run: mv docker-compose.prod.yml docker-compose.yml
+    
+    - name: Rename development .env file
+      run: mv ./server/.env.prod-sample ./server/.env.prod
+    
+    - name: Build the Docker-compose file
+      run: docker-compose -f "docker-compose.yml" up -d --build
