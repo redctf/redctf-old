@@ -3,7 +3,7 @@ $(document).ready(function() {
       stateSave: true
     } );
 
-    $( ".card" ).hover(
+    $( ".adminpanel-card" ).hover(
         function() {
           $(this).addClass('shadow').css('cursor', 'pointer'); 
         }, function() {
