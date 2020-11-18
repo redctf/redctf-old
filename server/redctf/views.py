@@ -72,17 +72,39 @@ def dashboard(request):
     user_count = User.objects.exclude(team__hidden=True).count()
     team_count = Team.objects.exclude(hidden=True).count()
 
+    # total number of teams with at least 1 solve
+    teams_with_solves = Team.objects.filter(correct_flags__gt=0).exclude(hidden=True).count()
+
     # returns all challenges with a solve count > 0
     chal_with_solves_count = Challenge.objects.annotate(solve_count=Count('solvedchallenge')).filter(solve_count__gt=0).count()
+
+    # total number of challenges
+    chal_count = Challenge.objects.all().count()
+
+
+
+
+
+    #categories = Category.objects.all().order_by('created')
+    categories = Category.objects.annotate(num_chals=Count('categories')).order_by('created')
+
+
+
+    challenges = Challenge.objects.all().order_by('created')
+
 
 
 
     return render(request, 'adminpanel/dashboard/dashboard.html', {
         'first_blood' : first_blood, 
         'user_count' : user_count, 
-        'team_count' : team_count, 
+        'team_count' : team_count,
+        'teams_with_solves' : teams_with_solves, 
         'solve_count' : solve_count, 
-        'chal_with_solves_count' : chal_with_solves_count
+        'categories' : categories,
+        'challenges' : challenges,
+        'chal_with_solves_count' : chal_with_solves_count,
+        'chal_count' : chal_count
     })
 #################################################
 

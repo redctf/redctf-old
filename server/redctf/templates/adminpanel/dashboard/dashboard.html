@@ -2,33 +2,170 @@
 
 {% block content %}
     <div class="container-fluid">
+
         <div class="row">
-            <h3>Dashboard</h3>
-        </div>
-        <dl class="row">
-            <dt class="col-sm-4">CTF First Blood: </dt>
-            <dd class="col-sm-8">{{ first_blood }}</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-4">Total Users (not hidden): </dt>
-            <dd class="col-sm-8">{{ user_count }}</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-4">Total Teams (not hidden): </dt>
-            <dd class="col-sm-8">{{ team_count }}</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-4">Total Challenge Solves: </dt>
-            <dd class="col-sm-8">{{ solve_count }}</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-4">Total Unique Challenges Solved: </dt>
-            <dd class="col-sm-8">{{ chal_with_solves_count }} of YY</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-4">Number of Teams with at least 1 Solve: </dt>
-            <dd class="col-sm-8">XX</dd>
-        </dl>
         
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users (not hidden)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user_count }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Teams (not hidden)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ team_count }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Challenge Solves</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ solve_count }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Unique Challenges Solved</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ chal_with_solves_count }} of {{ chal_count }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">CTF First Blood</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ first_blood }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Number of Teams with at least 1 Solve</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ teams_with_solves }}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- Need to query django in views.py and pass to dashboard.html
+            <div class="col-sm-12 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        
+                        <div class="row">
+                            <div class="col-sm-12 text-xs font-weight-bold text-primary text-uppercase mb-1">Table with X of Y Solves per Category</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Solves</th>
+                                            <th scope="col">Total Challenges</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for category in categories %}
+                                            <tr>
+                                                <td>{{ category.name }}</td>
+                                                <td>{{ category.name }}</td>
+                                                <td>{{ category.num_chals }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>  -->
+
+
+<!-- TODO: Need to query django in views.py and pass to dashboard.html
+
+            <div class="col-sm-12 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        
+                        <div class="row">
+                            <div class="col-sm-12 text-xs font-weight-bold text-primary text-uppercase mb-1">Table with Total spawned containers per challenge</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Challenge</th>
+                                            <th scope="col">User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for chal in chals %}
+                                            <tr>
+                                                <th scope="row"><a href="% url 'container_detail' pk=container.pk %"> container.pk </a></th>
+                                                <td> container.name </td>
+                                                <td> container.challenge </td>
+                                                <td> container.user </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                
+
+                    </div>
+                </div>
+            </div>
+
+        </div> -->
+
+
+
     </div>
 {% endblock %}
