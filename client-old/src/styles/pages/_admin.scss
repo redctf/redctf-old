@@ -1,0 +1,352 @@
+.challenge-row {
+  height: 44px;
+  background-color: $wild-sand;
+  margin: 5px 0px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+
+  -webkit-box-shadow: 0 2px 1px -1px $silver;
+     -moz-box-shadow: 0 2px 1px -1px $silver;
+          box-shadow: 0 2px 1px -1px $silver;
+
+  .challenge-row-problem {
+    width: 200px;
+  }
+
+  .challenge-row-heading {
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .challenge-row-title {
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .challenge-row-score {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .challenge-row-span {
+    display: inline-block;
+  }
+
+  .challenge-row-points {
+    margin-right: 8px;
+    padding-right: 6px;
+    border-right: 1px solid $alto;
+  }
+
+  button {
+    margin: 0px 10px;
+    padding: 8px 16px;
+    border: none;
+    background: $button-dark;
+    color: $concrete;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    border-radius: 2px;
+    font-size: 11px;
+  }
+}
+
+.Icon {
+  fill: currentColor;
+}
+
+.admin-section {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+
+  .admin-title-row {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #f3f3f3;
+    justify-content: space-between;
+    align-items: center;
+  
+    .admin-title {
+      font-size: 24px;
+    }
+
+    .icon-area {
+      display: flex;
+      flex-direction: row;
+
+      .admin-home-icon {
+        padding-left: 20px;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .admin-box-section {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+
+
+    .admin-box {
+      margin: 20px;
+      background-color: #f3f3f3;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      width: 180px;
+      height: 180px;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      font-weight: 100;
+      flex-direction: column;
+
+      .box-text {
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+      }
+
+      &:hover {
+        cursor: pointer;
+        -webkit-box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.75);
+        box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.75);
+      }
+
+      .Icon {
+        margin-bottom: 20px;   
+        transform: scale(1.5);
+      }
+    }
+  }
+
+  .admin-sub-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 20px;
+
+    .admin-sub {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .admin-sub-title {
+      font-size: 24px;
+      margin-left: 15px;
+    }
+  }
+
+}
+
+.challenge-status-icon {
+  fill: #999;
+  transform: scale(0.5);
+}
+
+.create-new-challenge-btn {
+  fill: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #545dca;
+  color: #fff;
+  font-size: 20px;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+
+.create-challenge-modal {
+  margin: 0 auto;
+  padding: 36px 24px;
+
+  .form-control {
+    margin-bottom: 15px;
+  }
+
+  .challenge-modal-double-line {
+    display: flex;
+    flex-direction: row;
+
+    .challenge-modal-flag {
+      display: flex;
+      flex: 1;
+    }
+
+    .challenge-modal-points {
+      display: flex;
+      max-width: 100px;
+
+      input {
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .hosted-radio-section {
+    margin-bottom: 15px;
+
+    .hosted-radio-title {
+      line-height: 24px;
+      padding-bottom: 5px;
+    }
+
+    .hosted-radios {
+      display: flex;
+      flex-direction: row;
+
+      .hosted-radio-button {
+        display: flex;
+      }
+      &:hover {
+        cursor: pointer;
+      }
+
+      .hosted-radio-button {
+        display: flex;
+
+        .radio-label {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    label {
+      margin: 0px 25px 0px 8px;
+      font-size: 14px;
+    }
+  }
+
+  .hosted-type-section {
+    padding-top: 10px;
+
+    .hosted-type-desc {
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 24px;
+
+      b {
+        font-weight: 600;
+      }
+    }
+
+    .challenge-modal-double-line {
+      display: flex;
+      flex-direction: row;
+
+      .challenge-modal-image-name {
+        display: flex;
+        flex: 1;
+      }
+
+      .challenge-modal-ports {
+        display: flex;
+        max-width: 180px;
+
+        input {
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+}
+
+
+.admin-iframe {
+  height: calc(100vw - 100px);
+  min-width: 960px;
+  max-width: 960px;
+  padding: 48px 24px;
+  margin: 0 auto;
+
+  @media screen and (max-width: 960px) {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 48px 24px;
+  }
+}
+
+
+
+
+
+
+
+/*
+.rwt__tabpanel {
+  width: 100%;
+}
+.rwt__tabs[data-rwt-vertical="true"] {
+  display: flex;
+  margin-top:40px;
+}
+
+.rwt__tablist:not([aria-orientation="vertical"]) {
+  border-bottom: 1px solid #ddd;
+}
+
+.rwt__tablist[aria-orientation="vertical"] {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border-right: 1px solid #ddd;
+  margin-right: 1rem;
+  width: 140px;
+}
+
+.rwt__tab {
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 1rem 1rem;
+  transition: background 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  text-align: right;
+}
+
+.rwt__tab[aria-selected="false"]:hover,
+.rwt__tab:focus {
+  outline: 0;
+  background-color: #f4f4f4;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.rwt__tab[aria-selected="true"] {
+  position: relative;
+}
+
+.rwt__tab[aria-selected="true"]:after {
+  content: '';
+  position: absolute;
+}
+
+.rwt__tablist:not([aria-orientation="vertical"]) .rwt__tab[aria-selected="true"]:after {
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  border-bottom: 3px solid #00d8ff;
+}
+
+.rwt__tablist[aria-orientation="vertical"] .rwt__tab[aria-selected="true"]:after {
+  right: -1px;
+  top: 0;
+  height: 100%;
+  border-right: 3px solid #00d8ff;
+}*/

@@ -1,0 +1,130 @@
+version: '3'
+
+services:
+  rethinkdb:
+    image: rethinkdb:2.3.6
+    container_name: rethinkdb
+    ports:
+      #rethinkdb admin interface
+      - "8088:8080"
+    volumes:
+      - rethink_data_dev:/data
+    networks:
+      - traefik
+
+  horizon:
+    image: rethinkdb/horizon
+    container_name: horizon
+    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
+    volumes:
+      - ./client:/usr/app
+    depends_on:
+      - rethinkdb
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.horizon.rule=PathPrefix(`/horizon`)
+      - traefik.http.routers.horizon.service=horizon
+      - traefik.http.services.horizon.loadbalancer.server.port=8181
+
+  django:
+    build:
+      context: ./server/
+      dockerfile: dockerfile-dev
+    container_name: django
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+    volumes:
+      # So that Django can interact with Docker host
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./server:/code
+    ports:
+      # for ptvsd django debugging
+      - "3456:3456"
+    environment:
+      - RDB_HOST=rethinkdb
+      - RDB_PORT=28015
+    depends_on:
+      - horizon
+      - postgres
+    networks:
+      - traefik
+    env_file:
+      - ./server/.env.dev
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.django.rule=PathPrefix(`/graphql`) || PathPrefix(`/djangoadmin`) || PathPrefix(`/adminpanel`) || PathPrefix(`/category`) || PathPrefix(`/challenge`) || PathPrefix(`/container`) || PathPrefix(`/ctf`) || PathPrefix(`/team`) || PathPrefix(`/user`) || PathPrefix(`/static`) || PathPrefix(`/media`)
+      - traefik.http.routers.django.service=django-backend
+      - traefik.http.services.django-backend.loadbalancer.server.port=8000
+
+  postgres:
+    image: postgres:12.2
+    container_name: postgres
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    networks:
+      - traefik
+    environment:
+      - POSTGRES_USER=redctf
+      - POSTGRES_PASSWORD=redctf
+      - POSTGRES_DB=redctf_dev
+    
+  react:
+    build: ./client/
+    container_name: react
+    command: bash -c "cd /code && yarn install && yarn start"
+    volumes:
+      - ./client:/code
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.react.rule=PathPrefix(`/scoreboard`) || PathPrefix(`/challenges`) || PathPrefix(`/admin`) || PathPrefix(`/teams`) || PathPrefix(`/register`) || PathPrefix(`/posts`) || PathPrefix(`/instructions`) ||PathPrefix(`/login`)
+      - traefik.http.routers.react.service=react-backend
+      - traefik.http.services.react-backend.loadbalancer.server.port=3000
+      - traefik.http.routers.default.rule=PathPrefix(`/`)
+      - traefik.http.routers.default.service=default-backend
+      - traefik.http.services.default-backend.loadbalancer.server.port=3000
+
+  reverse-proxy:
+      # The official v2.0 Traefik docker image
+      image: traefik:v2.0.6
+      container_name: reverse-proxy
+      command:
+        # Enable for debug logging
+        #- "--log.level=DEBUG"
+        - "--accesslog=true"
+        # Enable for the web UI
+        - "--api.insecure=true"
+        - "--api.dashboard=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.web.address=:80"
+      ports:
+        # The HTTP port
+        - "80:80"
+        # The Web UI (enabled by --api.insecure=true)
+        - "8080:8080"
+      volumes:
+        # So that Traefik can listen to the Docker events
+        - /var/run/docker.sock:/var/run/docker.sock
+      labels:
+        # Enable for the web UI
+        - traefik.enable=true
+        - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+        - traefik.http.routers.api.service=api@internal
+      depends_on:
+        - react
+      networks:
+        - traefik
+
+networks:
+  traefik:
+
+volumes:
+  rethink_data_dev:
+  postgres_data_dev:

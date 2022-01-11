@@ -1,32 +1,17 @@
-import('./styles/main.scss');
 import React from 'react';
-import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'mobx-react';
-import { AppContainer } from 'react-hot-loader';
-import { rehydrate, hotRehydrate } from 'rfx-core';
-
-import { isProduction } from './utils/constants';
+import ReactDOM from 'react-dom';
+import './index.scss';
 import App from './App';
-import stores from './stores/stores';
+import reportWebVitals from './reportWebVitals';
 
-const store = rehydrate();
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
 
-const renderApp = Component => {
-	render(
-		<AppContainer>
-			<Router>
-				<Provider store={isProduction ? store : hotRehydrate()}>
-					<App />
-				</Provider>
-			</Router>
-		</AppContainer>,
-		document.getElementById('root')
-	);
-};
-
-renderApp(App);
-
-if (module.hot) {
-	module.hot.accept(() => renderApp(App));
-}
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

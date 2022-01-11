@@ -1,33 +1,6 @@
 version: '3'
 
 services:
-  rethinkdb:
-    image: rethinkdb:2.3.6
-    container_name: rethinkdb
-    ports:
-      #rethinkdb admin interface
-      - "8088:8080"
-    volumes:
-      - rethink_data_dev:/data
-    networks:
-      - traefik
-
-  horizon:
-    image: rethinkdb/horizon
-    container_name: horizon
-    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
-    volumes:
-      - ./client:/usr/app
-    depends_on:
-      - rethinkdb
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.horizon.rule=PathPrefix(`/horizon`)
-      - traefik.http.routers.horizon.service=horizon
-      - traefik.http.services.horizon.loadbalancer.server.port=8181
-
   django:
     build:
       context: ./server/
@@ -45,7 +18,6 @@ services:
       - RDB_HOST=rethinkdb
       - RDB_PORT=28015
     depends_on:
-      - horizon
       - postgres
     networks:
       - traefik
