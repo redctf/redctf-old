@@ -2,8 +2,8 @@ import graphene
 import rethinkdb as r
 import threading
 from dockerAPI.dockerAPI import *
-from rethinkdb.errors import RqlRuntimeError, RqlDriverError
-from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
+# from rethinkdb.errors import RqlRuntimeError, RqlDriverError
+from redctf.settings import CTF_DB
 from graphene_django import DjangoObjectType
 from django.utils.dateformat import format
 from django.utils import timezone
@@ -213,6 +213,8 @@ class LogIn(graphene.Mutation):
         # validate_password(password)
 
         user = authenticate(username=username, password=password)
+
+        print (user.username)
 
         if not user:
             raise Exception('Invalid username or password')
