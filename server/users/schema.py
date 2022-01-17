@@ -201,6 +201,7 @@ class ChangePassword(graphene.Mutation):
 
 class LogIn(graphene.Mutation):
     id = graphene.Int()
+    token = graphene.String()
     isSuperuser = graphene.Int()
 
     class Arguments:
@@ -214,14 +215,13 @@ class LogIn(graphene.Mutation):
 
         user = authenticate(username=username, password=password)
 
-        print (user.username)
-
         if not user:
             raise Exception('Invalid username or password')
 
         login(info.context, user)
 
-        return LogIn(id=user.id, isSuperuser=user.is_superuser)
+        token=str("test")
+        return LogIn(id=user.id, token=token, isSuperuser=user.is_superuser)
 
 
 class LogOut(graphene.Mutation):

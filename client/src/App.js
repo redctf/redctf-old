@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+/* Import Hooks */
+import useToken from './hooks/useToken';
 
 /* Import Pages */
 import Home from './pages/Home/Home';
@@ -8,9 +11,8 @@ import Login from './pages/Login/Login';
 /* Import Styles */
 import './App.scss';
 
-
 function App() {
-  const [token, setToken] = useState();
+  const { token, setToken } = useToken();
 
   if (!token) {
     return (
@@ -25,8 +27,7 @@ function App() {
       <h1>Application</h1>
       <BrowserRouter>
         <Routes>
-          <Route path='/home' element={<Home/>}/>
-          <Route path='/login' element={<Login/>}/>
+          <Route path='/' element={<Home/>}/>
         </Routes>
       </BrowserRouter>
     </div>

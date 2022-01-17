@@ -7,12 +7,12 @@ async function loginUser(credentials) {
   const mut = `mutation {
     login(username: "${credentials.username}", password: "${credentials.password}") {
       id
+      token
       isSuperuser
     }
   }`;
 
   axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
-  console.log('axios.defaults.baseURL:', axios.defaults.baseURL);
   axios.defaults.withCredentials = true;
   const res = await axios.post('/graphql/',
     {
@@ -23,7 +23,6 @@ async function loginUser(credentials) {
       },
     }
   );
-  console.log(res);
   return res.data.data.login;
 }
 
@@ -33,11 +32,11 @@ export default function Login({ setToken }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const token = await loginUser({
+    const user = await loginUser({
       username,
       password
     });
-    setToken(token);
+    setToken(user);
   }
 
   return (
