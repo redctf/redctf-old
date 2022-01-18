@@ -1,35 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 /* Import Hooks */
 import useToken from './hooks/useToken';
 
+/* Import Components */
+import NavBar from './components/NavBar/NavBar';
+
 /* Import Pages */
+import Challenges from './pages/Challenges/Challenges';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
+import RedCTF from './pages/RedCTF/RedCTF';
 
 /* Import Styles */
-import './App.scss';
+import './styles/App.scss';
 
 function App() {
-  const { token, setToken } = useToken();
+  const { user, setUser } = useToken();
 
-  if (!token) {
+  useEffect(() => {
+    document.documentElement.style.color = '#1a9e32';
+  });
+
+  if (!user) {
     return (
-      <Login setToken={setToken} />
+      <Login setUser={setUser} />
     );
   }
 
-  // const [user, setUser] = useState();
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
-    <div className='wrapper'>
-      <h1>Application</h1>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-        </Routes>
-      </BrowserRouter>
+    <div className='app'>
+      <NavBar user={user} />
+      <div className='app-container'>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Home/>}/>
+            <Route path='/challenges' element={<Challenges/>}/>
+            <Route path='/redctf' element={<RedCTF/>}/>
+          </Routes>
+        </BrowserRouter>
+      </div>
     </div>
   );
 }

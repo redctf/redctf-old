@@ -1,0 +1,16 @@
+/*  
+  @name:  _variables.scss
+  @purpose: this file is for declaring variables to be 
+            used throughout the application. 
+  @format:
+    $var-name:                    var-value;
+*/
+
+
+/**
+ * Colors Section
+ *
+ * @def:    Importing colors and any additional modifications.
+ */
+
+@import './colors';

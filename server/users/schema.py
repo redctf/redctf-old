@@ -202,6 +202,7 @@ class ChangePassword(graphene.Mutation):
 class LogIn(graphene.Mutation):
     id = graphene.Int()
     token = graphene.String()
+    username = graphene.String()
     isSuperuser = graphene.Int()
 
     class Arguments:
@@ -221,7 +222,8 @@ class LogIn(graphene.Mutation):
         login(info.context, user)
 
         token=str("test")
-        return LogIn(id=user.id, token=token, isSuperuser=user.is_superuser)
+        username=str("test_username")
+        return LogIn(id=user.id, token=token, username=username, isSuperuser=user.is_superuser)
 
 
 class LogOut(graphene.Mutation):

@@ -8,6 +8,7 @@ async function loginUser(credentials) {
     login(username: "${credentials.username}", password: "${credentials.password}") {
       id
       token
+      username
       isSuperuser
     }
   }`;
@@ -23,10 +24,11 @@ async function loginUser(credentials) {
       },
     }
   );
+  console.log('user from loginUser: ', res.data.data.login);
   return res.data.data.login;
 }
 
-export default function Login({ setToken }) {
+export default function Login({ setUser }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
@@ -36,7 +38,7 @@ export default function Login({ setToken }) {
       username,
       password
     });
-    setToken(user);
+    setUser(user);
   }
 
   return (
@@ -60,5 +62,5 @@ export default function Login({ setToken }) {
 }
 
 Login.propTypes = {
-  setToken: PropTypes.func.isRequired
+  setUser: PropTypes.func.isRequired
 };
