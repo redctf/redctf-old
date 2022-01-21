@@ -17,6 +17,9 @@ from django.contrib.auth import authenticate, login, logout
 from containers.schema import *
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 
+#from graphql_auth.schema import UserQuery, MeQuery
+from graphql_auth import mutations
+
 
 d = dockerAPI()
 
@@ -327,3 +330,7 @@ class Mutation(object):
     logout = LogOut.Field()
     update_user = UpdateUser.Field()
     delete_user = DeleteUser.Field()
+
+    #graphql_auth mutations
+    register = mutations.Register.Field()
+    token_auth = mutations.ObtainJSONWebToken.Field()
