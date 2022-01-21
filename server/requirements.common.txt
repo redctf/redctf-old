@@ -1,9 +1,11 @@
 Django==2.2.10
 django-cors-headers==2.4.0
-django-filter==2.0.0
+django-filter==2.2.0
 dockerfile-parse==0.0.15
-graphene==2.1.3
-graphene-django==2.2.0
+graphene==2.1.8
+graphene-django==2.15.0
+django-graphql-jwt==0.3.0
+django-graphql-auth==0.3.16
 graphene-file-upload==1.2.2
 rethinkdb==2.3.0.post6
 docker==4.1.0
