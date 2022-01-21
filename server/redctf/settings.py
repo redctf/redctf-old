@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
+    'graphql_auth',
+    'django_filters',
     'challenges',
     'users',
     'teams',
@@ -173,6 +175,26 @@ STATICFILES_DIRS = [
 
 GRAPHENE = {
     'SCHEMA': 'redctf.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    "graphql_auth.backends.GraphQLAuthBackend",
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+    ],
+}
+
+GRAPHQL_AUTH = {  
+    #disable email verification on register
+    "SEND_ACTIVATION_EMAIL": False,
 }
 
 AUTH_USER_MODEL = 'users.User'
