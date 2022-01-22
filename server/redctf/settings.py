@@ -110,11 +110,6 @@ DATABASES = {
     }
 }
 
-# Rethinkdb settings
-RDB_HOST =  os.environ.get('RDB_HOST') or 'localhost'
-RDB_PORT = os.environ.get('RDB_PORT') or 28015
-CTF_DB = 'redctf'
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 

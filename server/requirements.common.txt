@@ -7,6 +7,5 @@ graphene-django==2.15.0
 django-graphql-jwt==0.3.0
 django-graphql-auth==0.3.16
 graphene-file-upload==1.2.2
-rethinkdb==2.3.0.post6
 docker==4.1.0
 psycopg2==2.8.4

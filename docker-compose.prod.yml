@@ -1,33 +1,6 @@
 version: '3'
 
 services:
-  rethinkdb:
-    image: rethinkdb:2.3.6
-    container_name: rethinkdb
-    restart: unless-stopped
-    volumes:
-      - rethink_data_prod:/data
-    networks:
-      - traefik
-
-  horizon:
-    image: rethinkdb/horizon
-    container_name: horizon
-    restart: unless-stopped
-    command: su -s /bin/sh horizon -c "hz serve --dev --connect rethinkdb://rethinkdb:28015 --bind all /usr/app"
-    volumes:
-      #need to get rid of this.  use dockerfile?
-      - ./client:/usr/app
-    depends_on:
-      - rethinkdb
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.horizon.rule= PathPrefix(`/horizon`)
-      - traefik.http.routers.horizon.service=horizon
-      - traefik.http.services.horizon.loadbalancer.server.port=8181
-
   django:
     build:
       context: ./server/
@@ -41,11 +14,7 @@ services:
       # for serving django admin css, etc.
       - static_volume_prod:/home/app/redctf/static
       - media_volume_prod:/home/app/redctf/media
-    environment:
-      - RDB_HOST=rethinkdb
-      - RDB_PORT=28015
     depends_on:
-      - horizon
       - postgres
     networks:
       - traefik
@@ -149,7 +118,6 @@ networks:
   traefik:
 
 volumes:
-  rethink_data_prod:
   postgres_data_prod:
   static_volume_prod:
   media_volume_prod:

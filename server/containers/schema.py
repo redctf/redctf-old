@@ -20,7 +20,7 @@ class GetUserContainer(graphene.Mutation):
     nextHop = graphene.String()
 
     class Arguments:
-        challenge_id = graphene.Int(required=True)  # sid from rethinkdb
+        challenge_id = graphene.Int(required=True)
 
     def mutate(self, info, challenge_id):
 
@@ -354,7 +354,6 @@ def newContainer(challenge_id, userID=None):
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(
                 new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))
             print("############")
-            rethinkUsername = user.id
 
         except Exception as ex:
             raise Exception(
@@ -370,7 +369,6 @@ def newContainer(challenge_id, userID=None):
                 new_cont_obj.name, new_cont_obj.image, new_cont_obj.labels, new_cont_obj.short_id, new_cont_obj.status))
             print("############")
             user = None
-            rethinkUsername = None
 
         except Exception as ex:
             raise Exception(
