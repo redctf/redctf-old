@@ -6,12 +6,10 @@ django.setup()
 # Imports
 import argparse, contextlib, uuid
 import json
-# import rethinkdb as r
-# from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from django.utils.dateformat import format
 from django.utils import timezone
 from datetime import timedelta
-from redctf.settings import CTF_DB, DATABASES
+from redctf.settings import DATABASES
 from users.models import User
 from teams.models import Team
 from categories.models import Category
@@ -19,26 +17,6 @@ from challenges.models import Challenge
 from ctfs.models import Ctf
 from containers.models import Container
 from users.validators import validate_username, validate_password, validate_email
-
-# def resetRethinkDB():
-#     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-#     try:
-#         r.db_drop(CTF_DB).run(connection)
-#     except RqlRuntimeError:
-#         pass
-
-#     try:
-#         r.db_create(CTF_DB).run(connection)
-#         r.db(CTF_DB).table_create('challenges').run(connection)
-#         r.db(CTF_DB).table_create('categories').run(connection)
-#         r.db(CTF_DB).table_create('teams').run(connection)
-#         r.db(CTF_DB).table_create('ctfs').run(connection)
-#         r.db(CTF_DB).table_create('containers').run(connection)
-#         print('Realtime database setup complete')
-#     except RqlRuntimeError as e:
-#         print('Error during database setup: %s' % (e))
-#     finally:
-#         connection.close()
 
 
 def resetDjangoDB():
@@ -76,14 +54,6 @@ def makeAdminUser(admin_name, admin_email, admin_password, hidden):
     admin.team = admin_team
     admin.save()
 
-    # Push admin team to rethinkdb database
-    # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    # try:
-    #     r.db(CTF_DB).table('teams').insert({ 'sid': admin.team.id, 'name': admin.team.name, 'points': admin.team.points, 'hidden': hidden, 'correct_flags': admin.team.correct_flags, 'wrong_flags': admin.team.wrong_flags, 'solved': [], 'created': format(admin.team.created, 'U')}).run(connection)
-    # except RqlRuntimeError as e:
-    #     raise Exception('Error adding admin team to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
 
 def makeUser(user_name, user_email, user_password, hidden):
     # Validate admin user command line arguments
@@ -108,28 +78,11 @@ def makeUser(user_name, user_email, user_password, hidden):
     user.set_password(user_password)
     user.save()
 
-    # Push admin team to rethinkdb database
-    # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    # try:
-    #     r.db(CTF_DB).table('teams').insert({ 'sid': user.team.id, 'name': user.team.name, 'points': user.team.points, 'hidden': hidden, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': [], 'created': format(user.team.created, 'U')}).run(connection)
-    # except RqlRuntimeError as e:
-    #     raise Exception('Error adding user team to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
 
 def insertCtfs(start, end):
     # Save the challenge flag to the database
     ctf = Ctf(start=start, end=end)
     ctf.save()
-
-    # Push the realtime data to rethinkdb
-    # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    # try:
-    #     r.db(CTF_DB).table('ctfs').insert({ 'sid': ctf.id, 'start': format(ctf.start, 'U'), 'end': format(ctf.end, 'U'), 'created': format(ctf.created, 'U')}).run(connection)
-    # except RqlRuntimeError as e:
-    #     raise Exception('Error adding ctf to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
 
 
 def insertCategories():
@@ -149,20 +102,6 @@ def insertCategories():
     bonus = Category(name="_Bonus")
     bonus.save()
 
-    # Push test categories to rethinkdb database
-    # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    # try:
-    #     r.db(CTF_DB).table('categories').insert({'sid': web.id, 'name': web.name, 'created': format(web.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': rookie.id, 'name': rookie.name, 'created': format(rookie.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': programming.id, 'name': programming.name, 'created': format(programming.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': crypto.id, 'name': crypto.name, 'created': format(crypto.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': advanced.id, 'name': advanced.name, 'created': format(advanced.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': data.id, 'name': data.name, 'created': format(data.created, 'U')}).run(connection)
-    #     r.db(CTF_DB).table('categories').insert({'sid': bonus.id, 'name': bonus.name, 'created': format(bonus.created, 'U')}).run(connection)
-    # except RqlRuntimeError as e:
-    #     raise Exception('Error adding categories to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
 
 def insertRealTeams():
     try:
@@ -175,7 +114,6 @@ def insertRealTeams():
 
 
 def insertRealChallenges():
-    # connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     try:
         with open('challenges.json') as f:
             data = json.load(f)
@@ -187,21 +125,13 @@ def insertRealChallenges():
                     challenge = Challenge(category=category[0], flag=c['flag'], points=c['points'], title=c['title'], description=c['description'], hosted=c['hosted'], fileUpload=c['fileUpload'])
                 challenge.save()
                 
-                # if c['hosted']:
-                #     r.db(CTF_DB).table('challenges').insert({'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'hosted': c['hosted'], 'fileUpload': c['fileUpload'], 'imageName': c['imageName'], 'ports': c['ports'], 'pathPrefix': c['pathPrefix'], 'created': format(challenge.created, 'U')}).run(connection)
-                # else:
-                #     r.db(CTF_DB).table('challenges').insert({ 'sid': challenge.id, 'category': challenge.category.id, 'title': c['title'], 'points': challenge.points, 'description': c['description'], 'solved_count': 0, 'hosted': c['hosted'], 'fileUpload': c['fileUpload'], 'created': format(challenge.created, 'U')}).run(connection)
-
     except Exception as e:
-        raise Exception('Error adding challenges to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
+        raise Exception('Error adding challenges to database: %s' % (e))
 
 
 def insertChallengeBoard():
     i = 1
-    # Push test challenges to rethinkdb database
-    #connection = r.connect(host=RDB_HOST, port=RDB_PORT)
+    # Push test challenges to database
     try:
         for category in Category.objects.all():
             # Save the challenge flag to the database
@@ -234,18 +164,8 @@ def insertChallengeBoard():
             challenge_500.save()
             i+=1
 
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_50.id, 'category': challenge_50.category.id, 'title': 'Test Title', 'points': challenge_50.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': True, 'fileUpload': False, 'imageName': 'tutum/hello-world:latest', 'ports': '80', 'pathPrefix': challenge_50.pathPrefix,'created': format(challenge_50.created, 'U')}).run(connection)
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_100.id, 'category': challenge_100.category.id, 'title': 'Test Title', 'points': challenge_100.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': True,'fileUpload': False,  'imageName': 'tutum/hello-world:latest', 'ports': '80', 'pathPrefix': challenge_100.pathPrefix,'created': format(challenge_100.created, 'U')}).run(connection)
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_200.id, 'category': challenge_200.category.id, 'title': 'Test Title', 'points': challenge_200.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': True,'fileUpload': False,  'imageName': 'tutum/hello-world:latest', 'ports': '80', 'pathPrefix': challenge_200.pathPrefix,'created': format(challenge_200.created, 'U')}).run(connection)
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_300.id, 'category': challenge_300.category.id, 'title': 'Test Title', 'points': challenge_300.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': False,'fileUpload': True, 'created': format(challenge_300.created, 'U')}).run(connection)
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_400.id, 'category': challenge_400.category.id, 'title': 'Test Title', 'points': challenge_400.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': False,'fileUpload': False,  'created': format(challenge_400.created, 'U')}).run(connection)
-            # r.db(CTF_DB).table('challenges').insert({ 'sid': challenge_500.id, 'category': challenge_500.category.id, 'title': 'Test Title', 'points': challenge_500.points, 'description': 'Test Description', 'solved_count': 0, 'hosted': False, 'fileUpload': False, 'created': format(challenge_500.created, 'U')}).run(connection)
-
-
     except Exception as e:
-        raise Exception('Error adding challenges to realtime database: %s' % (e))
-    # finally:
-    #     connection.close()
+        raise Exception('Error adding challenges to database: %s' % (e))
     
 
 if __name__ == "__main__":
@@ -260,7 +180,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # resetRethinkDB()
     resetDjangoDB()
     makeAdminUser(args.admin_name, args.admin_email, args.admin_password, True)
     insertCtfs(start=timezone.now(), end=timezone.now() + timedelta(days=30))
