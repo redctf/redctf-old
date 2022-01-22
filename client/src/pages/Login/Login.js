@@ -5,11 +5,13 @@ import './Login.scss';
 
 async function loginUser(credentials) {
   const mut = `mutation {
-    login(username: "${credentials.username}", password: "${credentials.password}") {
-      id
+    tokenAuth(username: "${credentials.username}", password: "${credentials.password}") {
+      success
+      errors
       token
-      username
-      isSuperuser
+      user {
+        username
+      }
     }
   }`;
 
@@ -24,8 +26,8 @@ async function loginUser(credentials) {
       },
     }
   );
-  console.log('user from loginUser: ', res.data.data.login);
-  return res.data.data.login;
+  console.log('user from loginUser: ', res.data.data.tokenAuth);
+  return res.data.data.tokenAuth;
 }
 
 export default function Login({ setUser }) {
