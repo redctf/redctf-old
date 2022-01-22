@@ -525,18 +525,17 @@ def container_delete(request, pk):
     container = get_object_or_404(Container, pk=pk)
 
     print('deleting container')
-    try:
-        delete = d.removeContainer(container.name)
-        if delete is not None:
-            raise Exception(' error deleting container in docker')
-        else:
+    delete = d.removeContainer(container.name)
+    if delete is not None:
+        raise Exception(' error deleting container in docker')
+    else:
 
-            #try django delete
-            try:
-                container.delete()
-            except Exception as e:
-                #raise Exception('Error deleting container from database: %s' % (e))
-                print('Error deleting container: %s' % (e))
+        #try django delete
+        try:
+            container.delete()
+        except Exception as e:
+            #raise Exception('Error deleting container from database: %s' % (e))
+            print('Error deleting container: %s' % (e))
 
     return redirect(container_list)
 
