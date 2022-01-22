@@ -323,7 +323,7 @@ class DeleteUser(graphene.Mutation):
 class Mutation(object):
     create_user = CreateUser.Field()
     change_password = ChangePassword.Field()
-    login = LogIn.Field()
+    #login = LogIn.Field()
     logout = LogOut.Field()
     update_user = UpdateUser.Field()
     delete_user = DeleteUser.Field()
