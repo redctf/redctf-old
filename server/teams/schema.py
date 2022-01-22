@@ -1,7 +1,4 @@
 import graphene
-import rethinkdb as r
-from rethinkdb.errors import RqlRuntimeError, RqlDriverError
-from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB
 import uuid
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -54,17 +51,6 @@ class CreateTeam(graphene.Mutation):
             # Create and Save Team
             team = Team(name=teamname, token=token, hidden=hidden)
             team.save()
-
-            # Push team to rethinkdb database
-
-            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-            try:
-                r.db(CTF_DB).table('teams').insert({ 'sid': team.id, 'name': team.name, 'points': team.points, 'hidden': team.hidden, 'correct_flags': team.correct_flags, 'wrong_flags': team.wrong_flags, 'solved': [], 'created': format(team.created, 'U')}).run(connection)
-
-            except RqlRuntimeError as e:
-                raise Exception('Error adding team to realtime database: %s' % (e))
-            finally:
-                connection.close()
 
             # Return Success
             return CreateTeam(status=('Created Team Successfully'), token=token)

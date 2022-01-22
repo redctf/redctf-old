@@ -1,9 +1,6 @@
 import graphene
-import rethinkdb as r
 import threading
 from dockerAPI.dockerAPI import *
-# from rethinkdb.errors import RqlRuntimeError, RqlDriverError
-from redctf.settings import CTF_DB
 from graphene_django import DjangoObjectType
 from django.utils.dateformat import format
 from django.utils import timezone
@@ -202,31 +199,31 @@ class ChangePassword(graphene.Mutation):
         return ChangePassword(status='User password changed')
 
 
-class LogIn(graphene.Mutation):
-    id = graphene.Int()
-    token = graphene.String()
-    username = graphene.String()
-    isSuperuser = graphene.Int()
+# class LogIn(graphene.Mutation):
+#     id = graphene.Int()
+#     token = graphene.String()
+#     username = graphene.String()
+#     isSuperuser = graphene.Int()
 
-    class Arguments:
-        username = graphene.String(required=True)
-        password = graphene.String(required=True)
+#     class Arguments:
+#         username = graphene.String(required=True)
+#         password = graphene.String(required=True)
 
-    def mutate(self, info, username, password):
-        # Validate username and password
-        validate_username(username)
-        # validate_password(password)
+#     def mutate(self, info, username, password):
+#         # Validate username and password
+#         validate_username(username)
+#         # validate_password(password)
 
-        user = authenticate(username=username, password=password)
+#         user = authenticate(username=username, password=password)
 
-        if not user:
-            raise Exception('Invalid username or password')
+#         if not user:
+#             raise Exception('Invalid username or password')
 
-        login(info.context, user)
+#         login(info.context, user)
 
-        token=str("test")
-        username=str("test_username")
-        return LogIn(id=user.id, token=token, username=username, isSuperuser=user.is_superuser)
+#         token=str("test")
+#         username=str("test_username")
+#         return LogIn(id=user.id, token=token, username=username, isSuperuser=user.is_superuser)
 
 
 class LogOut(graphene.Mutation):

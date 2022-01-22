@@ -1,10 +1,8 @@
 import graphene
 import math
 import threading
-import rethinkdb as r
 from dockerAPI.dockerAPI import *
-from rethinkdb.errors import RqlRuntimeError, RqlDriverError
-from redctf.settings import RDB_HOST, RDB_PORT, CTF_DB, MINIMUM_CONTAINER_COUNT, DEBUG
+from redctf.settings import MINIMUM_CONTAINER_COUNT, DEBUG
 from containers.models import Container
 from challenges.models import Challenge
 from users.validators import validate_user_is_admin, validate_user_is_authenticated
@@ -131,7 +129,6 @@ def assignContainerToUser(challenge_id, userID):
     registeredUsers = getRegisteredUserCount()
     active_uid_list = getActiveSessions()
     # scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
-    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
 
     if len(nullContainers) == 0:
         try:
@@ -146,28 +143,10 @@ def assignContainerToUser(challenge_id, userID):
         assigned_cont_obj = Container.objects.get(id=nullContainers[0].id)
         assigned_cont_obj.user = user
         assigned_cont_obj.save()
-        try:
-
-            rethinkContainers = r.db(CTF_DB).table('containers').filter(
-                {'sid': assigned_cont_obj.id}).run(connection)
-            # use for loop to access the object(s) values and assign to team id variable
-            for rethink_container in rethinkContainers:
-                    # print(rethink_team['id'])
-                rethink_container_id = rethink_container['id']
-            # update rethinkdb entry
-            update = r.db(CTF_DB).table('containers').get(
-                rethink_container_id).update({'user': userID}).run(connection)
-
-        except RqlRuntimeError as e:
-            raise Exception(
-                'Error deleting container from realtime database: %s' % (e))
 
     except:
         print('error assigning user an existing container - creating new container to be assigned.')
         assigned_cont_obj = newContainer(challenge_id, userID)
-
-    finally:
-        connection.close()
 
     threadedScaleAllChallenges()
 
@@ -300,36 +279,18 @@ def removeAllContainers():
 def removeContainer(containerObject):
     print('deleting container')
 
-    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
     containerName = containerObject.name
     challenge_id = containerObject.challenge_id
     nullContainers = getNullContainers(challenge_id)
     registeredUsers = getRegisteredUserCount()
     active_uid_list = getActiveSessions()
 
-    try:
-        delete = d.removeContainer(containerName)
-        if delete is not None:
-            raise Exception(' error deleting container in docker')
-        else:
-            try:
-                # delete rethinkdb entry
-                rethinkContainers = r.db(CTF_DB).table('containers').filter(
-                    {'sid': containerObject.id}).run(connection)
-                # use for loop to access the object(s) values and assign to team id variable
-                for rethink_container in rethinkContainers:
-                    # print(rethink_team['id'])
-                    rethink_container_id = rethink_container['id']
+    delete = d.removeContainer(containerName)
+    if delete is not None:
+        raise Exception(' error deleting container in docker')
+    else:
+        containerObject.delete()
 
-                rethinkDelete = r.db('redctf').table(
-                    'containers').get(rethink_container_id).delete().run(connection)
-            except RqlRuntimeError as e:
-                raise Exception(
-                    'Error deleting container from realtime database: %s' % (e))
-            containerObject.delete()
-
-    finally:
-        connection.close()
     # try:
     #     scaleChallenge(self, challenge_id, registeredUsers, active_uid_list)
     # except:
@@ -423,17 +384,6 @@ def newContainer(challenge_id, userID=None):
     except Exception as ex:
         raise Exception(
             'Unable to save container. Exception info: ' + str(ex))
-
-    # Push the realtime data to rethinkdb
-    connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-    try:
-        r.db(CTF_DB).table('containers').insert(
-            {'sid': container.id, 'name': container.name, 'challenge': container.challenge.id, 'user': rethinkUsername, 'created': format(container.created, 'U')}).run(connection)
-    except RqlRuntimeError as e:
-        raise Exception(
-            'Error adding container to realtime database: %s' % (e))
-    finally:
-        connection.close()
 
     return new_cont_obj
 
