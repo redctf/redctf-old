@@ -213,17 +213,6 @@ class AddChallenge(graphene.Mutation):
 
         challenge.save()
 
-        # Push the realtime data to rethinkdb
-        connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-        try:
-            r.db(CTF_DB).table('challenges').insert({'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description,
-                                                     'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix': path_tag, 'created': format(challenge.created, 'U')}).run(connection)
-        except RqlRuntimeError as e:
-            raise Exception(
-                'Error adding challenge to realtime database: %s' % (e))
-        finally:
-            connection.close()
-
         return AddChallenge(status='Challenge Created')
 
 
@@ -281,20 +270,6 @@ class CheckFlag(graphene.Mutation):
             for sc in user.team.solved.all().order_by('timestamp'):
                 solved.append({'id': sc.challenge.id, 'points': sc.challenge.points,
                                 'timestamp': format(sc.timestamp, 'U')})
-
-            # Push the realtime data to rethinkdb
-            connection = r.connect(host=RDB_HOST, port=RDB_PORT)
-            try:
-                r.db(CTF_DB).table('teams').filter({"sid": user.team.id}).update(
-                    {'points': user.team.points, 'correct_flags': user.team.correct_flags, 'wrong_flags': user.team.wrong_flags, 'solved': solved}).run(connection)
-                if correct:
-                    r.db(CTF_DB).table('challenges').filter({"sid": chal.id}).update(
-                        {'solved_count': SolvedChallenge.objects.filter(challenge=chal).count()}).run(connection)
-            except RqlRuntimeError as e:
-                raise Exception(
-                    'Error adding category to realtime database: %s' % (e))
-            finally:
-                connection.close()
 
             if correct:
                 return CheckFlag(status='Correct Flag')
