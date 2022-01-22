@@ -187,6 +187,7 @@ AUTHENTICATION_BACKENDS = [
 
 GRAPHQL_JWT = {
     "JWT_ALLOW_ANY_CLASSES": [
+        #allows un-authenticated users to utilize
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.ObtainJSONWebToken",
     ],
