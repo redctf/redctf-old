@@ -123,6 +123,11 @@ def updatePoints(self, info, chal_id, points):
     return True
         
 
+class ChallengeType(DjangoObjectType):
+    class Meta:
+        model = Challenge
+
+
 class AddChallenge(graphene.Mutation):
     status = graphene.String()
 
@@ -507,6 +512,19 @@ class UpdateChallenge(graphene.Mutation):
         #         connection.close()
 
         return UpdateChallenge(status='Challenge Updated: %s' % (id))
+
+
+class Query(graphene.ObjectType):
+    challenges = graphene.List(ChallengeType)
+    challenge_by_id = graphene.Field(ChallengeType, id=graphene.String())
+
+    def resolve_challenges(root, info, **kwargs):
+        # Querying a list
+        return Challenge.objects.all()
+
+    def resolve_challenge_by_id(root, info, id):
+        # Querying a single object
+        return Challenge.objects.get(pk=id)
 
 
 class Mutation(graphene.ObjectType):
