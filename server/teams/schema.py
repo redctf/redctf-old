@@ -88,9 +88,11 @@ class JoinTeam(graphene.Mutation):
 
 
 class Query(object):
-    team = graphene.Field(TeamType)
+    my_team = graphene.Field(TeamType)
+    teams = graphene.List(TeamType)
+    team_by_id = graphene.Field(TeamType, id=graphene.String())
 
-    def resolve_team(self, info):
+    def resolve_my_team(self, info):
         user = info.context.user
         validate_user_is_authenticated(user)
 
@@ -98,6 +100,14 @@ class Query(object):
             raise Exception('User has not joined a team')
 
         return user.team
+
+    def resolve_teams(root, info, **kwargs):
+        # Querying a list
+        return Team.objects.all()
+
+    def resolve_team_by_id(root, info, id):
+        # Querying a single object
+        return Team.objects.get(pk=id)
 
 
 class Mutation(object):
