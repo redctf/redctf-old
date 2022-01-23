@@ -5,6 +5,11 @@ from users.validators import validate_user_is_admin
 from categories.validators import validate_name, validate_name_unique
 from categories.models import Category
 
+class CategoryType(DjangoObjectType):
+    class Meta:
+        model = Category
+
+
 class AddCategory(graphene.Mutation):
     status = graphene.String()
 
@@ -27,6 +32,18 @@ class AddCategory(graphene.Mutation):
 
         return AddCategory(status='Category Created')
 
+
+class Query(graphene.ObjectType):
+    categories = graphene.List(CategoryType)
+    category_by_id = graphene.Field(CategoryType, id=graphene.String())
+
+    def resolve_categories(root, info, **kwargs):
+        # Querying a list
+        return Category.objects.all()
+
+    def resolve_category_by_id(root, info, id):
+        # Querying a single object
+        return Category.objects.get(pk=id)
 
 
 class Mutation(graphene.ObjectType):
