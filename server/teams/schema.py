@@ -102,10 +102,16 @@ class Query(object):
         return user.team
 
     def resolve_teams(root, info, **kwargs):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+
         # Querying a list
         return Team.objects.all()
 
     def resolve_team_by_id(root, info, id):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+        
         # Querying a single object
         return Team.objects.get(pk=id)
 

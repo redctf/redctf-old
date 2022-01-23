@@ -519,10 +519,16 @@ class Query(graphene.ObjectType):
     challenge_by_id = graphene.Field(ChallengeType, id=graphene.String())
 
     def resolve_challenges(root, info, **kwargs):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+
         # Querying a list
         return Challenge.objects.all()
 
     def resolve_challenge_by_id(root, info, id):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+        
         # Querying a single object
         return Challenge.objects.get(pk=id)
 

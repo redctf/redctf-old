@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from django.utils.dateformat import format
-from users.validators import validate_user_is_admin
+from users.validators import validate_user_is_admin, validate_user_is_authenticated
 from categories.validators import validate_name, validate_name_unique
 from categories.models import Category
 
@@ -38,10 +38,16 @@ class Query(graphene.ObjectType):
     category_by_id = graphene.Field(CategoryType, id=graphene.String())
 
     def resolve_categories(root, info, **kwargs):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+
         # Querying a list
         return Category.objects.all()
 
     def resolve_category_by_id(root, info, id):
+        user = info.context.user
+        validate_user_is_authenticated(user)
+
         # Querying a single object
         return Category.objects.get(pk=id)
 
