@@ -2,7 +2,7 @@
 # BUILDER #
 ###########
 
-FROM python:3 as builder
+FROM python:3.9.0 as builder
 
 # set work directory
 WORKDIR /code
@@ -26,7 +26,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /code/wheels -r requirements.
 #########
 
 # pull official base image
-FROM python:3
+FROM python:3.9.0
 
 # create directory for the app user
 RUN mkdir -p /home/app
