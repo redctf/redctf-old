@@ -1,4 +1,5 @@
 import { observable, action, configure } from 'mobx';
+import axiosInstance from '../axiosApi';
 import axios from 'axios';
 configure({ enforceActions: "observed" });
 
@@ -24,19 +25,35 @@ async function getChallenges() {
 
   const jwt = sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')).token : '';
 
-  axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
-  axios.defaults.withCredentials = true;
-  const res = await axios.post('/graphql/', {
-    query: mut,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': `JWT ${jwt}`
-    },
-  });
+  // axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
+  // axios.defaults.withCredentials = true;
+  // const res = await axios.post('/graphql/', {
+  //   query: mut,
+  //   headers: {
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //     'Authorization': `JWT ${jwt}`
+  //   },
+  // });
 
-  console.log('get challenges: ', res.data);
-  return res.data;
+
+  try {
+    const response = await axiosInstance.post('/graphql/', {
+      query: mut
+    });
+    axiosInstance.defaults.headers.common['Authorization'] = `JWT ${jwt}`;
+
+    console.log('get challenges', response.data);
+    return response.data;
+  } catch (error) {
+    throw `Error in AppState.js: ${error}`;
+  }
+
+
+
+
+  // console.log('get challenges: ', res.data);
+  // return res.data;
 
   // const x = ['1','2','3','4','5','6','7','8','9','10'];
   // return x;

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import axiosInstance from '../../axiosApi';
+//import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import './Login.scss';
 
 async function loginUser(credentials) {
@@ -16,18 +17,32 @@ async function loginUser(credentials) {
     }
   }`;
 
-  axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
-  axios.defaults.withCredentials = true;
-  const res = await axios.post('/graphql/', {
-    query: mut,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const response = await axiosInstance.post('/graphql/', {
+      query: mut
+    });
+    axiosInstance.defaults.headers.common['Authorization'] = `JWT ${response.data.data.tokenAuth.token}`;
+    sessionStorage.setItem('user', JSON.stringify(response.data.data.tokenAuth));
 
-  console.log('user from loginUser: ', res.data.data.tokenAuth);
-  return res.data.data.tokenAuth;
+    return response.data.data.tokenAuth;
+  } catch (error) {
+    throw `Error in Login.js: ${error}`;
+  }
+
+
+
+  // axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
+  // axios.defaults.withCredentials = true;
+  // const res = await axios.post('/graphql/', {
+  //   query: mut,
+  //   headers: {
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  // });
+
+  // console.log('user from loginUser: ', res.data.data.tokenAuth);
+  // return res.data.data.tokenAuth;
 }
 
 function ErrorStatus(props) {

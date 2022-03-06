@@ -7,10 +7,9 @@ configure({ enforceActions: "observed" });
 
 // base class
 class APIStore {
-  api: AxiosInstance;
   constructor(
-    axiosConf: AxiosRequestConfig = {
-      baseURL: "https://jsonplaceholder.typicode.com",
+    axiosConf = {
+      baseURL: `${window.location.protocol}//${window.location.hostname}`,
       auth: undefined,
     }
   ) {
@@ -24,10 +23,10 @@ class APIStore {
     onBecomeObserved(this, "users", this.getUsers);
   }
 
-  users: User[] = [];
+  users = [];
   // async / await
   getUsers = action(async () => {
-    const { data } = await this.api.get<User[]>("/users");
+    const { data } = await this.api.get("/users");
     this.users = data;
     // return data;
   });
