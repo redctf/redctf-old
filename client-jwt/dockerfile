@@ -1,0 +1,3 @@
+FROM node:17.2.0
+COPY . /code
+WORKDIR /code

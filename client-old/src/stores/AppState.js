@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action, onBecomeObserved } from "mobx";
 import axios from "axios";
 
 export default class AppState {
@@ -24,6 +24,15 @@ export default class AppState {
 
     // footer value
     this.testval = "Cobbled together by ";
+
+
+
+    // onBecomeObserved (this, 'team', apiCallToSetTeam);  //async populating
+    // onBecomeObserved (this, 'categories', apiCallToSetCategories);
+
+
+
+    
 
     // if you want vertical orientation on your challenge board, set this to true.
     this.verticalChallengeOrientation = true;

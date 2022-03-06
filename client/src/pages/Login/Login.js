@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import './Login.scss';
@@ -17,22 +18,31 @@ async function loginUser(credentials) {
 
   axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
   axios.defaults.withCredentials = true;
-  const res = await axios.post('/graphql/',
-    {
-      query: mut,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+  const res = await axios.post('/graphql/', {
+    query: mut,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  });
+
   console.log('user from loginUser: ', res.data.data.tokenAuth);
   return res.data.data.tokenAuth;
 }
 
-export default function Login({ setUser }) {
+function ErrorStatus(props) {
+  return loginUser(props.credentials).then(user => {
+    if (user == null) {
+      return true;
+    }
+    return false;
+  });
+}
+
+export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [error, setError] = useState();
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -40,7 +50,7 @@ export default function Login({ setUser }) {
       username,
       password
     });
-    setUser(user);
+    setToken(user);
   }
 
   return (
@@ -64,5 +74,5 @@ export default function Login({ setUser }) {
 }
 
 Login.propTypes = {
-  setUser: PropTypes.func.isRequired
+  setToken: PropTypes.func.isRequired
 };

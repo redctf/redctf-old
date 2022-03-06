@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './NavBar.scss';
 
-export default function NavBar({ user }) {
+export default function NavBar() {
   return (
     <div className='nav-bar'>
       <div className='nav-bar-container'>
@@ -13,7 +13,7 @@ export default function NavBar({ user }) {
           <a className='nav-bar-right-item' href='/'>Home</a>
           <a className='nav-bar-right-item' href='/challenges'>Challenges</a>
           <a className='nav-bar-right-item' href='/redctf'>RedCTF</a>
-          <span>{user.username}</span>
+          {/* <span>{user.user.username}</span> */}
         </div>
       </div>
     </div>
