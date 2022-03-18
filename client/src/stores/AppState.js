@@ -41,7 +41,7 @@ async function getChallenges() {
     const response = await axiosInstance.post('/graphql/', {
       query: mut
     });
-    axiosInstance.defaults.headers.common['Authorization'] = `JWT ${jwt}`;
+    // axiosInstance.defaults.headers.common['Authorization'] = `JWT ${jwt}`;
 
     console.log('get challenges', response.data);
     return response.data;

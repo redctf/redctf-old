@@ -1,48 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ChallengeRowCol from '../../components/ChallengeRowCol/ChallengeRowCol';
+import axiosInstance from '../../axiosApi';
 import './Challenges.scss';
 import myAxios from '../../utils/api';
 
-
-// onbecomeobserver(async () => {
-//   const { data } = await axios.get('/api/challenges');
-//   console.log('data', data);
-//   setChallenges(data);
-// });
-
-// react.context.api - share globals and objects between components
-
-// socket.io channel, group subscriptions (teams)
-
-async function retrieveFromGraphQL(mut){
-  // myAxios.post('/graphql/', { query: mut }).then(res => {')
-  axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
-  axios.defaults.withCredentials = true;
-  const res = await axios.post('/graphql/', {
-    query: mut,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
-
-  console.log(`retrieved from graphql (${Object.keys(res.data.data)[0]} ): `, res.data.data[`${Object.keys(res.data.data)[0]}`]);
-  return await res.data.data[`${Object.keys(res.data.data)[0]}`];
-}
-
-export default function Challenges() {
-  const [categories, setCategories] = useState([]);
-  const [challenges, setChallenges] = useState([]);
-  const categoryOrientationClass = 'horizontal';
-  const mutCategories = `query {
+async function getAllCategories() {
+  const mut = `query {
     categories {
       id
       name
     }
   }`;
 
-  const mutChallenges = `query challenges {
+  try {
+    const response = await axiosInstance.post('/graphql/', {
+      query: mut
+    });
+    return response.data.data.categories;
+  } catch (error) {
+    throw `Error in Login.js: ${error}`;
+  }
+}
+
+async function getAllChallenges() {
+  const mut = `query challenges {
     challenges {
       id
       title
@@ -59,23 +41,40 @@ export default function Challenges() {
       upload
       created
     }
-}`;
+  }`;
 
-  useEffect(async () => {
+
+  try {
+    const response = await axiosInstance.post('/graphql/', {
+      query: mut
+    });
+    return response.data.data.challenges;
+  } catch (error) {
+    throw `Error in Login.js: ${error}`;
+  } 
+}
+
+
+export default function Challenges() {
+  const [categories, setCategories] = useState([]);
+  const [challenges, setChallenges] = useState([]);
+  const categoryOrientationClass = 'horizontal';
+
+  useEffect(() => {
     const getCategories = async () => {
-      const categories = await retrieveFromGraphQL(mutCategories);
+      const categories = await getAllCategories();
       setCategories(categories);
     };
     getCategories();
 
     const getChallenges = async () => {
-      const challenges = await retrieveFromGraphQL(mutChallenges);
+      const challenges = await getAllChallenges();
       setChallenges(challenges);
     };
     getChallenges();
   }, []);
 
-  const categoryMap = categories.map(category => {
+  const categoryMap = categories ? categories.map(category => {
     return (
       <div key={category.id}
         className={`category-${categoryOrientationClass}`}>
@@ -86,7 +85,7 @@ export default function Challenges() {
         />
       </div>
     );
-  });
+  }) : '';
 
   return (
     <div>

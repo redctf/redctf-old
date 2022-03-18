@@ -14,9 +14,10 @@ import Challenges from './pages/Challenges/Challenges';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import RedCTF from './pages/RedCTF/RedCTF';
+import Register from './pages/Register/Register';
 
 /* Import Styles */
-import './styles/App.scss';
+import './styles/main.scss';
 
 /* Import Stores */
 import { AppState } from './stores/AppState';
@@ -49,6 +50,7 @@ function App() {
             <Route path='/' element={<Home/>}/>
             <Route path='/challenges' element={<Challenges/>}/>
             <Route path='/redctf' element={<RedCTF/>}/>
+            <Route path='/register' element={<Register/>}/>
           </Routes>
         </BrowserRouter>
       </div>

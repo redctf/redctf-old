@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import Modal from 'react-modal';
 import axios from "axios";
 
-import ChallengeModal from '../ChallengeModal';
-import ModalHeader from './Modal/ModalHeader';
-import ModalContent from './Modal/ModalContent';
-import ModalFooter from './Modal/ModalFooter';
+import ChallengeModal from '../../ChallengeModal/ChallengeModal';
+import ModalHeader from '../Modal/ModalHeader';
+import ModalContent from '../Modal/ModalContent';
+import ModalFooter from '../Modal/ModalFooter';
 
 export default class JeopardyButton extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ export default class JeopardyButton extends Component {
 
   onSubmit(e, flag) {
     // flag check
-    axios.defaults.baseURL = `${location.protocol}//${location.hostname}`;
+    axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
     axios.defaults.withCredentials = true;
     const mutation = this.postFlag(flag);
     axios.post('/graphql/',

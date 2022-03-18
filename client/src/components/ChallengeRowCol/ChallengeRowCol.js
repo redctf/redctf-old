@@ -1,45 +1,56 @@
-import React, { useEffect, Component } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-// import JeopardyButton from '../ui/JeopardyButton';
+import axiosInstance from '../../axiosApi';
+import JeopardyButton from '../ui/JeopardyButton/JeopardyButton';
+import { AppState } from '../../stores/AppState';
+const AppContext = createContext(new AppState());
 
-import useUser from '../../hooks/useUser';
 
-async function retrieveFromGraphQL(mut){
-  axios.defaults.baseURL = `${window.location.protocol}//${window.location.hostname}`;
-  axios.defaults.withCredentials = true;
-  const res = await axios.post('/graphql/', {
-    query: mut,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
+async function getAllTeamSolves() {
+  const query = `query me {
+    me {
+      id,
+      team {
+        id
+        correctFlags
+      }
+    }
+  }`;
 
-  console.log(`retrieved from graphql (${Object.keys(res.data.data)[0]} ): `, res.data.data[`${Object.keys(res.data.data)[0]}`]);
-  return await res.data.data[`${Object.keys(res.data.data)[0]}`];
+  try {
+    const response = await axiosInstance.post('/graphql/', {
+      query: query
+    });
+    return response.data.data.me.team.correctFlags;
+  } catch (error) {
+    throw `Error in Login.js: ${error}`;
+  } 
 }
 
-export default class ChallengeRowCol extends Component {
-  constructor(props) {
-    super(props);
-    this.store = this.props.store;
-  }
 
-  render() {
-    const { challenges, categories, category, categoryId, vertical } = this.props;
+export default function ChallengeRowCol() {
+    const store = useContext(AppContext);
+    // const [teamSolves, setTeamSolves] = useState([]);
 
-    const teamSolves = async () => {return await retrieveFromGraphQL(`query {
-      myTeam {
-        solved {
-          challenge {
-            id
-          }
-        }
-      }
-    }`)};
+    const challenges = async() => {await Promise.resolve(store.getChallenges())};
 
-    console.log('teamSolves', teamSolves)
+
+    console.log('test', challenges);
+
+    // const { challenges, categories, category, categoryId, vertical } = this.props;
+
+    // const teamSolves = await getAllTeamSolves();
+
+
+
+    const allTeamSolves = getAllTeamSolves().then(res => {
+      return res;
+    });
+    
+  
+    const test = this.store;
+    console.log('test', test)
 
 
 
@@ -61,6 +72,8 @@ export default class ChallengeRowCol extends Component {
     // Map over JSON challenge data
     const challengeRowCol = challengeData.map((challenge) => {
       let challengeSolved = false;
+
+      console.log('challenge', challenge);
       // solved.forEach((solve) => {
       //   if (solve.id == challenge.sid) {
       //     challengeSolved = true;
@@ -70,22 +83,23 @@ export default class ChallengeRowCol extends Component {
       // Need to just send challenge, lol
 
       return (
-        <div>{challenge.title}</div>
-        // <JeopardyButton key={challenge.sid}
-        //   sid={challenge.sid}
-        //   value={challenge.points}
-        //   name={challenge.title}
-        //   category={category}
-        //   description={challenge.description}
-        //   solves={challenge.solved_count}
-        //   solved={challengeSolved}
-        //   path={challenge.pathPrefix}
-        //   fileUpload={challenge.fileUpload}
-        //   hosted={challenge.hosted}
-        //   downloadPath={challenge.downloadPath}
-        // />
+        <JeopardyButton key={challenge.sid}
+          sid={challenge.sid}
+          value={challenge.points}
+          name={challenge.title}
+          category={category}
+          description={challenge.description}
+          solves={challenge.solved_count}
+          solved={challengeSolved}
+          path={challenge.pathPrefix}
+          fileUpload={challenge.fileUpload}
+          hosted={challenge.hosted}
+          downloadPath={challenge.downloadPath}
+        />
       )
     });
+
+    console.log('challengeRowCol', challengeRowCol);
 
     const cat = (
       <span className='challengeCategory'>{category}</span>
@@ -98,8 +112,8 @@ export default class ChallengeRowCol extends Component {
         </div>
       </div>
     );
+  
   }
-}
 
 
 ChallengeRowCol.propTypes = {
