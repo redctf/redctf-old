@@ -1,16 +1,48 @@
+@font-face {
+  font-family: 'turtFont';
+  src: url('fonts/turts.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'turtOutlineFont';
+  src: url('fonts/turts-outline.ttf') format("truetype");
+}
+
+// @font-face {
+//   font-family: 'turtModern';
+//   src: url('fonts/halfshell.otf') format("opentype");
+// }
+// $font-modern-turts: 'turtModern';
+$font-turts: 'turtFont',
+sans-serif;
+$font-turts-outline: 'turtOutlineFont',
+sans-serif;
+.turts {
+  font-family: $font-turts;
+  color: rgb(156, 203, 64);
+  text-shadow: -6px -6px 0 #000, 6px -6px 0 #000, -6px 6px 0 #000, 6px 6px 0 #000;
+}
+
+.turts-outline {
+  font-family: $font-turts-outline;
+}
+
+// .turts-modern {
+//   font-family: $font-modern-turts;
+// }
 html {
-	font-family: 'Roboto', Helvetica, sans-serif;
-	font-size: 100%;
-	font-style: normal;
-	font-weight: normal;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	line-height: 1.5;
+  font-family: 'Roboto', Helvetica, sans-serif;
+  font-size: 100%;
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 
 body {
-	color: #666;
-	line-height: 1.333;
+  color: #666;
+  line-height: 1.333;
 }
 
 h1 {
@@ -18,24 +50,35 @@ h1 {
   font-size: 3.998em;
 }
 
-h1 {font-size: 2.827em;}
+h1 {
+  font-size: 2.827em;
+}
 
-h2 {font-size: 1.999em;}
+h2 {
+  font-size: 1.999em;
+}
 
-h3 {font-size: 1.7em;}
+h3 {
+  font-size: 1.7em;
+}
 
-h4 {font-size: 1.414em;}
+h4 {
+  font-size: 1.414em;
+}
 
-small, .font_small {font-size: 0.707em;}
+small,
+.font_small {
+  font-size: 0.707em;
+}
 
 a {
-	text-decoration: none;
-	cursor: pointer;
-	color: rgba(#000, .9);
-	&:hover {
-		color: rgba(#000, 1);
-	}
-	&.active {
-		color: rgba(#000, 1);
-	}
+  text-decoration: none;
+  cursor: pointer;
+  color: rgba(#000, .9);
+  &:hover {
+    color: rgba(#000, 1);
+  }
+  &.active {
+    color: rgba(#000, 1);
+  }
 }

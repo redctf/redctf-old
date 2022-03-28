@@ -221,6 +221,17 @@ export default class App extends Component {
         />
         <Route
           exact
+          path='/special-thanks'
+          render={props => (
+            authenticated ? (
+              <LazyRoute {...props} component={import('./pages/SpecialThanks')} />
+            ) : (
+              <Redirect to="/login"/>
+            )
+          )}
+        />
+        <Route
+          exact
           path='/scoreboard'
           render={props => (
             authenticated ? (
@@ -244,7 +255,7 @@ export default class App extends Component {
 
         <footer className='footer'>
           {testval}
-          <a href='https://twitter.com/redctf' target='_blank'>
+          <a href='https://twitter.com/red_ctf' target='_blank'>
             @red_ctf
           </a>
           {' '}

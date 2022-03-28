@@ -5,12 +5,10 @@
 .login-inputs {
   display: flex;
   align-items: baseline;
-
   input {
     width: 368px;
     margin-bottom: 15px;
   }
-  
   .input-req {
     width: 351px;
   }
@@ -28,9 +26,8 @@
   background-color: #52a6fa;
   border-color: #0285fc;
   color: #fff;
-
   &:hover {
-      background-color: #0285fc;
+    background-color: #0285fc;
   }
 }
 
@@ -46,7 +43,6 @@
   background-color: #dc3545;
   border-color: #be2c3a;
   color: #fff;
-
   &:hover {
     background-color: #be2c3a;
   }
@@ -58,7 +54,6 @@
   display: flex;
   padding: 15px;
   flex-direction: column;
-
   .choose-button {
     padding: 20px;
     border-radius: 2px;
@@ -106,6 +101,7 @@
   margin: 0px 0px 0px 10px;
   color: #be2c3a;
 }
+
 .req-text {
   color: #be2c3a;
   display: flex;
@@ -143,10 +139,14 @@
 .disabled {
   background-color: #aaa;
   border-color: grey;
-
   &:hover {
     background-color: #aaa;
     border-color: grey;
     cursor: not-allowed;
   }
+}
+
+.login-heading {
+  text-align: center;
+  font-size: 120px;
 }

@@ -1,25 +1,21 @@
 .instructions {
   padding: 20px;
   line-height: 28px;
-
   h2 {
     font-weight: 900;
     font-size: 2.3em;
     color: #222;
-    text-align:center;
+    text-align: center;
   }
-
   code {
     font-family: monospace, Courier-New;
     background-color: #eee;
     color: rgb(255, 25, 25);
     padding: 2px 5px;
   }
-
   a {
     color: rgb(255, 25, 25);
   }
-
   .instruction-heading {
     padding: 10px 0px 0px;
     font-weight: 600;
@@ -28,10 +24,39 @@
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
   }
-
   .instruction-sub-heading {
     font-size: 1.25em;
     font-weight: 600;
     padding: 10px 0px 3px;
   }
+}
+
+.protiviti {
+  background-image: url(protiviti.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.checkpoint {
+  background-image: url(checkpoint-dark-logo.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+a.section-logo {
+  height: 200px;
+  display: flex;
+}
+
+.main-section {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.section-item {
+  min-width: 400px;
 }

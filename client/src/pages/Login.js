@@ -102,6 +102,8 @@ export default class Login extends Component {
 		const loginDisabled = (this.state.username !== '' && this.state.password !== '') ? '' : 'disabled';
 		return (
 			<div className="page login">
+      <h2 className='turts login-heading'>Kernelcon CTF</h2>
+
 				<form onKeyPress={this.handleKeyPress}>
 					<div className='login-window'>
 						<div className='login-inputs'>
@@ -135,6 +137,7 @@ export default class Login extends Component {
 						</div>
 					</div>
 				</form>
+
 			</div>
 		);
 	}

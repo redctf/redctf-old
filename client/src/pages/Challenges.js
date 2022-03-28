@@ -50,6 +50,7 @@ export default class Challenges extends Component {
           <span className='solved-key'/> Solved
           <span className='unsolved-key'/> Unsolved
         </div>
+        <br />
       </div>
     );
   }
