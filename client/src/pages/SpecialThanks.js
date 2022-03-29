@@ -13,7 +13,7 @@ export default class SpecialThanks extends Component {
 
           <div className='instruction-heading'>Sponsors</div>
           <p>Capture the Flag events take time and resources to build. The 2022 Kernelcon CTF would not have been possible 
-          without our kernelcon sponsors who supported us.</p>
+          without our Kernelcon sponsors who supported us.</p>
 
           <div className="main-section">
             <div className="section-item">
@@ -34,7 +34,7 @@ export default class SpecialThanks extends Component {
           <br />
           <div className='individuals'>
             <p>Matt Austin (@mattaustin)</p> {/**/}
-            <p>Jacob Mohrbutter (Qu3b411)</p> {/**/}
+            <p>Jacob Mohrbutter (@Qu3b411)</p> {/**/}
             <p>Tyler Rosonke (@ZonkSec)</p> {/**/}
             <p>Adam Schaal (@clevernyyyy)</p> {/**/}
             <p>Douglas Swartz</p> {/**/}
