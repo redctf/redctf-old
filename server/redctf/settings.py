@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'categories',
     'ctfs',
     'containers',
+    'mariokarts',
     'corsheaders'
 ]
 

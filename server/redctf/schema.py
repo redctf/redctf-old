@@ -5,11 +5,12 @@ import teams.schema
 import categories.schema
 import ctfs.schema
 import containers.schema
+import mariokarts.schema
 
 class Query(users.schema.Query, teams.schema.Query, graphene.ObjectType):
     pass
 
-class Mutation(users.schema.Mutation, teams.schema.Mutation, challenges.schema.Mutation, categories.schema.Mutation, ctfs.schema.Mutation, containers.schema.Mutation, graphene.ObjectType):
+class Mutation(users.schema.Mutation, teams.schema.Mutation, challenges.schema.Mutation, categories.schema.Mutation, ctfs.schema.Mutation, containers.schema.Mutation, mariokarts.schema.Mutation, graphene.ObjectType):
     pass
 
 
