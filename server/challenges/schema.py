@@ -17,6 +17,13 @@ from ctfs.models import Ctf
 from teams.models import SolvedChallenge, Team
 from teams.validators import validate_team_id
 
+import json
+import requests
+
+# hackKART
+webhook_url = 'https://httpbin.org/post'
+webhook_data = {'challenge': "Steve solved the best challenge"}
+
 d = dockerAPI()
 
 
@@ -297,6 +304,20 @@ class CheckFlag(graphene.Mutation):
                 connection.close()
 
             if correct:
+
+                # Send solve to hackKART
+                response = requests.post(
+                    webhook_url, data=json.dumps(webhook_data),
+                    headers={'Content-Type': 'application/json'}
+                )
+                if response.status_code != 200:
+                    raise ValueError(
+                        'Request to hackKART returned an error %s, the response is:\n%s'
+                        % (response.status_code, response.text)
+                    )
+                print(response.text)
+
+
                 return CheckFlag(status='Correct Flag')
             else:
                 return CheckFlag(status='Wrong Flag')
