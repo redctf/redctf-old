@@ -1,3 +1,14 @@
+.mario-bkg {
+  display: flex;
+  background: url(mario-wallpaper.jpg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-top: 60px;
+  background-position: center;
+  width: calc(90vw);
+  margin-left: 5vw;
+
+}
 .category {
   &-horizontal {
     border-bottom: 1px solid #ccc;

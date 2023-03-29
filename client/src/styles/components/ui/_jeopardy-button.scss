@@ -20,6 +20,63 @@
 }
 
 /*
+.question-block.svg:hover > #rivets,
+.question-block.svg:hover > #question {
+  fill:#FFC07C;
+}
+.question-block.svg:hover > #borderlefttop {
+  stroke:#FFC07C;
+}
+.question-block.svg:hover > #rivets,
+.question-block.svg:hover > #borderlefttop {
+  fill:#000;stroke:#000;
+}
+.question-block.svg:hover > #background,
+.question-block.svg:hover > #question,
+.question-block.svg:hover > #questionshadow {
+  fill:#DE5917;
+}
+.question-block:hover {
+    animation: jump .2s;
+}
+@keyframes jump {
+    50%{transform:translatey(-10px);}
+    to 
+    {transform:translatey(0);}
+}*/
+
+svg:hover > #rivets,
+svg:hover > #question {
+  fill: #ffc07c;
+}
+svg:hover > #borderlefttop {
+  stroke: #ffc07c;
+}
+svg:active > #rivets,
+svg:active > #borderlefttop {
+  fill: #000;
+  stroke: #000;
+}
+svg:hover > #background,
+svg:active > #question,
+svg:active > #questionshadow {
+  fill: #de5917 !important;
+}
+svg:hover {
+  animation: jump 0.2s;
+}
+@keyframes jump {
+  50% {
+    transform: translatey(-10px);
+  }
+  to {
+    transform: translatey(0);
+  }
+}
+
+
+
+/*
  *
  *  this, below is all temporary.  TODO - make legit toasts
  *
