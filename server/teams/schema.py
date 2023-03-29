@@ -13,6 +13,14 @@ from users.validators import validate_username, validate_password, validate_emai
 from teams.validators import validate_teamname, validate_token, validate_teamname_unique
 from django.utils import timezone
 
+import os
+import json
+import requests
+
+# hackKART
+webhook_url = 'https://' + os.environ.get("HACKART_DOMAIN") + '/platform/' + os.environ.get("HACKART_ID") 
+
+
 class TeamType(DjangoObjectType):
     class Meta:
         model = Team
@@ -65,6 +73,22 @@ class CreateTeam(graphene.Mutation):
                 raise Exception('Error adding team to realtime database: %s' % (e))
             finally:
                 connection.close()
+
+
+            # Send team create to hackKART
+            
+            print("Sending team create to HacKART")
+            print("webhook_url: " + webhook_url)
+            webhook_data = { "team": { "type": "create", "id": team.id, "name": team.name } }
+            print("webhook_data: " + json.dumps(webhook_data) )
+
+            response = requests.post(
+                webhook_url, data=json.dumps(webhook_data),
+                headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
+            )
+            print("HacKart Response: " + response.text)
+
+
 
             # Return Success
             return CreateTeam(status=('Created Team Successfully'), token=token)

@@ -34,6 +34,14 @@ import uuid
 from django.utils.dateformat import format
 
 
+import os
+import json
+import requests
+
+# hackKART
+webhook_url = 'https://' + os.environ.get("HACKART_DOMAIN") + '/platform/' + os.environ.get("HACKART_ID") 
+
+
 d = dockerAPI()
 
 #     #  TODO  - update traefik to route accordingly
@@ -803,6 +811,7 @@ def team_detail(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def team_delete(request, pk):
     team = get_object_or_404(Team, pk=pk)
+    team_to_delete_id = team.id
 
     #try rethink delete, then django delete
     connection = r.connect(host=RDB_HOST, port=RDB_PORT)
@@ -814,6 +823,18 @@ def team_delete(request, pk):
         print('Error deleting team: %s' % (e))
     finally:
         connection.close()
+
+    # Send team delete to hackKART
+    print("Sending team delete to HacKART")
+    print("webhook_url: " + webhook_url)
+    webhook_data = { "team": { "type": "delete", "id": team_to_delete_id, "name": team.name } }
+    print("webhook_data: " + json.dumps(webhook_data) )
+
+    response = requests.post(
+        webhook_url, data=json.dumps(webhook_data),
+        headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
+    )
+    print("HacKart Response: " + response.text)
 
     return redirect(team_list)
 
@@ -847,6 +868,19 @@ def team_new (request):
                 raise Exception('Error adding team: %s' % (e))
             finally:
                 connection.close()
+
+
+            # Send team create to hackKART
+            print("Sending team create to HacKART")
+            print("webhook_url: " + webhook_url)
+            webhook_data = { "team": { "type": "create", "id": new_team.id, "name": new_team.name } }
+            print("webhook_data: " + json.dumps(webhook_data) )
+
+            response = requests.post(
+                webhook_url, data=json.dumps(webhook_data),
+                headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
+            )
+            print("HacKart Response: " + response.text)
 
 
             return redirect('team_detail', pk=new_team.pk)
@@ -887,6 +921,19 @@ def team_edit(request, pk):
                         print('Error updating team from realtime database: %s' % (e))
                     finally:
                         connection.close()
+
+            # Send team update to hackKART
+            print("Sending team update to HacKART")
+            print("webhook_url: " + webhook_url)
+            webhook_data = { "team": { "type": "update", "id": new_team.id, "name": new_team.name } }
+            print("webhook_data: " + json.dumps(webhook_data) )
+
+            response = requests.post(
+                webhook_url, data=json.dumps(webhook_data),
+                headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
+            )
+            print("HacKart Response: " + response.text)
+
         
             # redirect to team detail page
             return redirect('team_detail', pk=new_team.pk)
