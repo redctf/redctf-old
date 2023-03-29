@@ -1,3 +1,14 @@
+.kernelcon-logo {
+    display: flex;
+    background: url(kernelcon_logo.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-top: 60px;
+    background-position: center;
+    width: calc(90vw);
+    margin-left: 5vw;
+}
+
 .home {
     .hero-unit {
         display: flex;
@@ -174,5 +185,24 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
+    }
+}
+
+.footer-bricked {
+    background: url(mario-brick.png);
+    background-repeat: repeat-x;
+    background-size: contain;
+
+    .bricked {
+        color: white !important;
+        background-color: #e25614; /*#fbd3d9;*/
+
+    }
+
+    a {
+        background-color: #e25614; /*#fbd3d9;*/
+        color: white;
+        font-family: monospace !important;
+        padding: 0px 5px 0px;
     }
 }

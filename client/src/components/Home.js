@@ -13,13 +13,9 @@ export default class Home extends Component {
 	render() {
 		const store = this.store;
 		return (
-			<div className='page home'>
-				<Hero />
-				<main>
-					<div className="section-header">
-						<h3>A CTF Framework made with ReactJS, Mobx, RethinkDB, and Django.</h3>
-						<hr />
-					</div>
+			<div className='page home kernelcon-logo'>
+				{/*<Hero />*/}
+				{/*<main className=''>
 					<div className="section-item">
 						<div className="section-logo react" />
 						<div className="section-item-content">
@@ -83,7 +79,7 @@ export default class Home extends Component {
 							</p>
 						</div>
 					</div>
-				</main>
+				</main>*/}
 			</div>
 		);
 	}
