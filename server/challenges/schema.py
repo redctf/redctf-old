@@ -144,8 +144,9 @@ class AddChallenge(graphene.Mutation):
         ports = graphene.String(required=False)
         # path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
+        hackart = graphene.Boolean(required=True)
 
-    def mutate(self, info, category, title, points, description, flag, hosted, ports, image_name=None, upload=None):
+    def mutate(self, info, category, title, points, description, flag, hosted, ports, hackart, image_name=None, upload=None ):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -189,7 +190,7 @@ class AddChallenge(graphene.Mutation):
 
         # Save the challenge flag to the database
         challenge = Challenge(category=challenge_category, title=title, description=description,
-                              flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports)
+                              flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports, hackart=hackart)
         challenge.save()
 
         # set var for pathPrefix and tag
@@ -268,8 +269,10 @@ class CheckFlag(graphene.Mutation):
         if Ctf.objects.filter(start__lt=timezone.now(), end__gt=timezone.now()):
             
             correct = False
+            hackart = False
             if Challenge.objects.filter(flag__iexact=flag).exists():
                 chal = Challenge.objects.get(flag__iexact=flag)
+                hackart = chal.hackart
                 if chal.id not in user.team.solved.all().values_list('challenge_id', flat=True):
                     user.team.points += chal.points
                     user.team.correct_flags += 1
@@ -305,21 +308,22 @@ class CheckFlag(graphene.Mutation):
 
             if correct:
 
-                # Send solve to hackKART
-                if Challenge.objects.filter(flag__iexact=flag).exists():
-                    chal = Challenge.objects.get(flag__iexact=flag)
-                
-                print("Sending solve to HacKART")
-                print("webhook_url: " + webhook_url)
-                webhook_data = {"solve": { "team": user.team.id, "challenge": chal.id } }
-                print("webhook_data: " + json.dumps(webhook_data) )
+                if hackart:
 
-                response = requests.post(
-                    webhook_url, data=json.dumps(webhook_data),
-                    headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
-                )
-                print("HacKart Response: " + response.text)
+                    # Send solve to hackKART
+                    if Challenge.objects.filter(flag__iexact=flag).exists():
+                        chal = Challenge.objects.get(flag__iexact=flag)
+                    
+                    print("Sending solve to HacKART")
+                    print("webhook_url: " + webhook_url)
+                    webhook_data = {"solve": { "team": user.team.id, "challenge": chal.id } }
+                    print("webhook_data: " + json.dumps(webhook_data) )
 
+                    response = requests.post(
+                        webhook_url, data=json.dumps(webhook_data),
+                        headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
+                    )
+                    print("HacKart Response: " + response.text)
 
                 return CheckFlag(status='Correct Flag')
             else:

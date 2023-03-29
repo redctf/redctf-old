@@ -77,6 +77,18 @@
 
     <div class="form-row">
       <div class="fieldWrapper form-group col">
+        {{ form.hackart.errors }}
+        <div class="custom-control custom-switch">
+        <!-- <div class="form-check"> -->
+          {{ form.hackart }}
+          <label class="custom-control-label" for="{{ form.hackart.id_for_label }}">HacKART</label>
+          <!-- <label class="form-check-label" for="{{ form.hosted.id_for_label }}">Hosted</label> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="fieldWrapper form-group col">
         {{ form.imageName.errors }}
         <label for="{{ form.imageName.id_for_label }}">Image Name: </label>
         {{ form.imageName }}

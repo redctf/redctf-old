@@ -27,7 +27,7 @@ class ChallengeForm(ModelForm):
     class Meta:
         model = Challenge
         #fields = '__all__'
-        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'fileUpload', 'imageName', 'ports', 'upload']
+        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'fileUpload', 'hackart', 'imageName', 'ports', 'upload']
         widgets = {
             'title': forms.TextInput(
 				attrs={
@@ -66,6 +66,13 @@ class ChallengeForm(ModelForm):
 					}
 				),
             'fileUpload': forms.CheckboxInput(
+				attrs={
+					# 'class': 'form-check-input',
+                    'class': 'custom-control-input',
+                    'type': 'checkbox'
+					}
+				),
+            'hackart': forms.CheckboxInput(
 				attrs={
 					# 'class': 'form-check-input',
                     'class': 'custom-control-input',

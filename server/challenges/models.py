@@ -32,6 +32,7 @@ class Challenge(models.Model):
   #upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)
   upload = models.FileField(storage=OverwriteStorage(), upload_to=user_directory_path, default=None, null=True, blank=True)
   created = models.DateTimeField(auto_now_add=True)
+  hackart = models.BooleanField(default=False)
   
   def solved_count(self):
     return self.solvedchallenge_set.count()
