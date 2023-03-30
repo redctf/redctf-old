@@ -135,6 +135,9 @@ export default class JeopardyButton extends Component {
           <ModalFooter confirmText='Submit'
             confirm={this.onSubmit}/>
         </Modal>
+        <div id="correct-flag">Correct Flag!</div>
+        <div id="incorrect-flag">Incorrect Flag</div>
+        <div id="no-ctf">No currently active CTF</div>
       </div>
 
       // <div className='jeopardy-button'
