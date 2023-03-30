@@ -244,13 +244,13 @@ export default class App extends Component {
 
         <footer className='footer footer-bricked'>
           <span className='bricked'>{testval}</span>
-          <a href='https://twitter.com/redctf' target='_blank'>
+          <a href='https://twitter.com/M4r10br0Power' target='_blank'>
             @red_ctf
           </a>
           {' '}
           <span className='bricked'>| github:</span>
           {' '}
-          <a href='https://github.com/redctf/redctf' target='_blank'>
+          <a href='https://github.com/woodnsec/SuperCTFMaker2' target='_blank'>
             redctf
           </a>
         </footer>
