@@ -16,6 +16,10 @@ from django.utils import timezone
 import os
 import json
 import requests
+import logging
+
+# set up logging
+logger = logging.getLogger(__name__)
 
 # hackKART
 webhook_url = 'https://' + os.environ.get("HACKART_DOMAIN") + '/platform/' + os.environ.get("HACKART_ID") 
@@ -77,16 +81,16 @@ class CreateTeam(graphene.Mutation):
 
             # Send team create to hackKART
             
-            print("Sending team create to HacKART")
-            print("webhook_url: " + webhook_url)
+            logger.info("Sending team create to HacKART")
+            logger.info("webhook_url: " + webhook_url)
             webhook_data = { "team": { "type": "create", "id": team.id, "name": team.name } }
-            print("webhook_data: " + json.dumps(webhook_data) )
+            logger.info("webhook_data: " + json.dumps(webhook_data) )
 
             response = requests.post(
                 webhook_url, data=json.dumps(webhook_data),
                 headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
             )
-            print("HacKart Response: " + response.text)
+            logger.info("HacKart Response: " + response.text)
 
 
 

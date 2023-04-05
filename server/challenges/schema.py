@@ -20,6 +20,10 @@ from teams.validators import validate_team_id
 import os
 import json
 import requests
+import logging
+
+# set up logging
+logger = logging.getLogger(__name__)
 
 # hackKART
 webhook_url = 'https://' + os.environ.get("HACKART_DOMAIN") + '/platform/' + os.environ.get("HACKART_ID") 
@@ -314,16 +318,16 @@ class CheckFlag(graphene.Mutation):
                     if Challenge.objects.filter(flag__iexact=flag).exists():
                         chal = Challenge.objects.get(flag__iexact=flag)
                     
-                    print("Sending solve to HacKART")
-                    print("webhook_url: " + webhook_url)
+                    logger.info("Sending solve to HacKART")
+                    logger.info("webhook_url: " + webhook_url)
                     webhook_data = {"solve": { "team": user.team.id, "challenge": chal.id } }
-                    print("webhook_data: " + json.dumps(webhook_data) )
+                    logger.info("webhook_data: " + json.dumps(webhook_data) )
 
                     response = requests.post(
                         webhook_url, data=json.dumps(webhook_data),
                         headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
                     )
-                    print("HacKart Response: " + response.text)
+                    logger.info("HacKart Response: " + response.text)
 
                 return CheckFlag(status='Correct Flag')
             else:

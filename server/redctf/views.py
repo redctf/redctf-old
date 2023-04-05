@@ -37,6 +37,10 @@ from django.utils.dateformat import format
 import os
 import json
 import requests
+import logging
+
+# set up logging
+logger = logging.getLogger(__name__)
 
 # hackKART
 webhook_url = 'https://' + os.environ.get("HACKART_DOMAIN") + '/platform/' + os.environ.get("HACKART_ID") 
@@ -825,16 +829,16 @@ def team_delete(request, pk):
         connection.close()
 
     # Send team delete to hackKART
-    print("Sending team delete to HacKART")
-    print("webhook_url: " + webhook_url)
+    logger.info("Sending team delete to HacKART")
+    logger.info("webhook_url: " + webhook_url)
     webhook_data = { "team": { "type": "delete", "id": team_to_delete_id, "name": team.name } }
-    print("webhook_data: " + json.dumps(webhook_data) )
+    logger.info("webhook_data: " + json.dumps(webhook_data) )
 
     response = requests.post(
         webhook_url, data=json.dumps(webhook_data),
         headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
     )
-    print("HacKart Response: " + response.text)
+    logger.info("HacKart Response: " + response.text)
 
     return redirect(team_list)
 
@@ -871,16 +875,16 @@ def team_new (request):
 
 
             # Send team create to hackKART
-            print("Sending team create to HacKART")
-            print("webhook_url: " + webhook_url)
+            logger.info("Sending team create to HacKART")
+            logger.info("webhook_url: " + webhook_url)
             webhook_data = { "team": { "type": "create", "id": new_team.id, "name": new_team.name } }
-            print("webhook_data: " + json.dumps(webhook_data) )
+            logger.info("webhook_data: " + json.dumps(webhook_data) )
 
             response = requests.post(
                 webhook_url, data=json.dumps(webhook_data),
                 headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
             )
-            print("HacKart Response: " + response.text)
+            logger.info("HacKart Response: " + response.text)
 
 
             return redirect('team_detail', pk=new_team.pk)
@@ -923,16 +927,16 @@ def team_edit(request, pk):
                         connection.close()
 
             # Send team update to hackKART
-            print("Sending team update to HacKART")
-            print("webhook_url: " + webhook_url)
+            logger.info("Sending team update to HacKART")
+            logger.info("webhook_url: " + webhook_url)
             webhook_data = { "team": { "type": "update", "id": new_team.id, "name": new_team.name } }
-            print("webhook_data: " + json.dumps(webhook_data) )
+            logger.info("webhook_data: " + json.dumps(webhook_data) )
 
             response = requests.post(
                 webhook_url, data=json.dumps(webhook_data),
                 headers={'Content-Type': 'application/json', 'key': os.environ.get("HACKART_KEY") }
             )
-            print("HacKart Response: " + response.text)
+            logger.info("HacKart Response: " + response.text)
 
         
             # redirect to team detail page
