@@ -250,7 +250,7 @@ export default class App extends Component {
           {' '}
           <span className='bricked'>| github:</span>
           {' '}
-          <a href='https://github.com/woodnsec/SuperCTFMaker2' target='_blank'>
+          <a href='https://github.com/clevernyyyy/SuperMario-CTF-Maker' target='_blank'>
             redctf
           </a>
         </footer>
