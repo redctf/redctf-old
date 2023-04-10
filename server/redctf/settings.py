@@ -199,10 +199,10 @@ LOGGING = {
         "standard": {"format": "[%(levelname)s] %(asctime)s %(name)s: %(message)s"},
     },
     "handlers": {
-        "default": {
+        "django": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/default.log",
+            "filename": "logs/django.log",
             "maxBytes": MAXIMUM_FILE_LOGS,
             "backupCount": BACKUP_COUNT,
             "formatter": "standard",
@@ -210,7 +210,7 @@ LOGGING = {
     },
     "loggers": {
         "": {
-            "handlers": ["default"],
+            "handlers": ["django"],
             "level": "DEBUG",
             "propagate": False,
         },
