@@ -53,7 +53,7 @@ services:
       - ./server/.env.dev
     labels:
       - traefik.enable=true
-      - traefik.http.routers.django.rule=PathPrefix(`/graphql`) || PathPrefix(`/djangoadmin`) || PathPrefix(`/adminpanel`) || PathPrefix(`/category`) || PathPrefix(`/challenge`) || PathPrefix(`/container`) || PathPrefix(`/ctf`) || PathPrefix(`/team`) || PathPrefix(`/user`) || PathPrefix(`/static`) || PathPrefix(`/media`)
+      - traefik.http.routers.django.rule=PathPrefix(`/graphql`) || PathPrefix(`/djangoadmin`) || PathPrefix(`/logs`) || PathPrefix(`/adminpanel`) || PathPrefix(`/category`) || PathPrefix(`/challenge`) || PathPrefix(`/container`) || PathPrefix(`/ctf`) || PathPrefix(`/team`) || PathPrefix(`/user`) || PathPrefix(`/static`) || PathPrefix(`/media`)
       - traefik.http.routers.django.service=django-backend
       - traefik.http.services.django-backend.loadbalancer.server.port=8000
 

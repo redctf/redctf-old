@@ -8,3 +8,4 @@ graphene-file-upload==1.2.2
 rethinkdb==2.3.0.post6
 docker==4.1.0
 psycopg2==2.8.4
+django-log-viewer==1.1.7

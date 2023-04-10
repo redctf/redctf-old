@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'categories',
     'ctfs',
     'containers',
-    'corsheaders'
+    'corsheaders',
+    'log_viewer'
 ]
 
 MIDDLEWARE = [
@@ -183,3 +184,42 @@ CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True
 
 MINIMUM_CONTAINER_COUNT = os.environ.get('MINIMUM_CONTAINER_COUNT') or 2 
+
+
+# All logging handlers configurations.
+# 'propagate': False = mean is the error logs ins't duplicates to another file logs.
+
+MAXIMUM_FILE_LOGS = 1024 * 1024 * 10  # 10 MB
+BACKUP_COUNT = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {"format": "[%(levelname)s] %(asctime)s %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "default": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "logs/default.log",
+            "maxBytes": MAXIMUM_FILE_LOGS,
+            "backupCount": BACKUP_COUNT,
+            "formatter": "standard",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["default"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}
+
+LOG_VIEWER_FILES_DIR = 'logs/'
+LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25 # Max log files loaded in Datatable per page
+LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
+LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line

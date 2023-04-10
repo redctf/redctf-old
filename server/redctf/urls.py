@@ -19,15 +19,18 @@ from django.contrib import staticfiles
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.urls import re_path
-from django.urls import path
+from django.urls import path, include
 from redctf import views
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from graphene_file_upload.django import FileUploadGraphQLView
 
+
 urlpatterns = [
     #django admin
     path('djangoadmin/', admin.site.urls),
+
+    path("logs/", include("log_viewer.urls")),
     
     #ctf admin
     path('adminpanel/', views.admin_panel, name='admin_panel'),
