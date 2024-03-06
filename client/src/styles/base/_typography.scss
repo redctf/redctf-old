@@ -20,7 +20,8 @@ h1 {
 
 h1 {font-size: 2.827em;}
 
-h2 {font-size: 1.999em;}
+h2 {font-size: 1.999em;
+	font-family: 'TermFont';}
 
 h3 {font-size: 1.7em;}
 
@@ -38,4 +39,11 @@ a {
 	&.active {
 		color: rgba(#000, 1);
 	}
+}
+
+@font-face {
+    font-family: 'TermFont';
+    src: url('./term.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
 }

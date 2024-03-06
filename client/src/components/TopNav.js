@@ -18,10 +18,10 @@ export default class TopNav extends Component {
 	render() {
 		return (
 			<nav>
-				<ActiveLink activeOnlyWhenExact={true} to="/">Home</ActiveLink>
-				<ActiveLink to="/instructions">Instructions</ActiveLink>
-				<ActiveLink to="/challenges">Challenges</ActiveLink>
-				<ActiveLink to="/scoreboard">Scoreboard</ActiveLink>
+				<ActiveLink activeOnlyWhenExact={true} to="/">Nexus</ActiveLink>
+				<ActiveLink to="/instructions">Protocol</ActiveLink>
+				<ActiveLink to="/challenges">AI Encounters</ActiveLink>
+				<ActiveLink to="/scoreboard">Metrics Matrix</ActiveLink>
 			</nav>
 		);
 	}

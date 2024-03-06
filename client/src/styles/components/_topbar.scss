@@ -8,6 +8,8 @@
 	background: transparent;
   position: absolute;
   z-index: 2;
+  font-family: 'TermFont';
+  font-size: 10px;
   .button {
     color: rgba(#000, .5);
     font-weight: 600;
@@ -19,6 +21,8 @@
 
 .team-name {
   padding: 0px 20px 0px 0px;
+  font-family: 'TermFont';
+  font-size: 10px;
 
   a {
     color: rgba(#000, 0.5);

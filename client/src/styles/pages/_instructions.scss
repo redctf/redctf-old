@@ -23,15 +23,17 @@
   .instruction-heading {
     padding: 10px 0px 0px;
     font-weight: 600;
-    font-size: 1.5em;
+    font-size: 1em;
     color: $mine-shaft;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
+    font-family: 'TermFont';
   }
 
   .instruction-sub-heading {
-    font-size: 1.25em;
+    font-size: 0.85em;
     font-weight: 600;
     padding: 10px 0px 3px;
+    font-family: 'TermFont';
   }
 }

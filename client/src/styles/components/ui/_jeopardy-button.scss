@@ -6,10 +6,11 @@
   max-width: 120px;
   margin: 10px 15px;
   border-radius: 3px;
+  background-color: #000 !important;
 
   &:hover {
     cursor: pointer;
-    background-color: darken(blue, 20%) !important;
+    background-color: darken(black, 20%) !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transition: opacity 0.3s ease-in-out;
   }
@@ -125,4 +126,18 @@ However, delay the fade out process for 2.5 seconds */
 @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
+}
+
+.term-logo-unsolved {
+    background: url(term-eye.jpeg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
+}
+
+.term-logo-solved {
+    background: url(term-eye-green.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
 }

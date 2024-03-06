@@ -69,16 +69,16 @@ export default class JeopardyButton extends Component {
   }
 
   render () {
-    const buttonStyle = {
-      backgroundColor: (this.props.solved) ? '#14af12' : '#2638ED'
-    };
+    const buttonStyle = this.props.solved ? ' term-logo-solved' : ' term-logo-unsolved';
+    const textStyle = {
+      color: (this.props.solved) ? 'lime' : 'white'
+    }
 
     return (
       // TODO - Send hosted information to ChallengeModal
-      <div className='jeopardy-button'
-        onClick={this.handleOpenModal}
-        style={buttonStyle}>
-        <a className='button'>{this.props.value}</a>
+      <div className={`jeopardy-button${buttonStyle}`}
+        onClick={this.handleOpenModal}>
+        <a style={textStyle}>{this.props.value}</a>
         <Modal 
            isOpen={this.state.showModal}
            contentLabel="onRequestClose Example"
