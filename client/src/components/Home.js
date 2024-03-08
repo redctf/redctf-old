@@ -13,10 +13,10 @@ export default class Home extends Component {
 	render() {
 		const store = this.store;
 		return (
-			<div className={`page posts`}>
-				<div className='instructions'>
+			<div className={`page home bkg-term`}>
+				{/* <div className='instructions'>
 					<h2>Kernelcon AI CTF</h2>
-				</div>
+				</div> */}
 			</div>
 		);
 	}
