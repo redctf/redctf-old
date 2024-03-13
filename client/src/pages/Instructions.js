@@ -31,6 +31,11 @@ export default class Instructions extends Component {
 
           <br />
           <div className='instruction-sub-heading'>Good luck, and may the best team emerge victorious in Kernelcon: Arguably Insecure CTF!</div>
+          <div className='instruction-sub-heading'>Flags</div>
+
+          <p>Flag format is <code>{`kernel{md5}`}</code>.  If you find an md5 hash, feel free to append the <code>{`kernel{ }`} </code> around it and submit to see if you've identified a flag! Badge challenges may not match this exact format.</p>
+          <div className='instruction-sub-heading'>Schedule</div>
+          <p>The competition is scheduled is from 8am (CT), Friday, April 4th through Saturday, April 5th at 2PM.</p>
 
         </div>
       </div>
