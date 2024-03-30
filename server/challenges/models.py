@@ -27,6 +27,7 @@ class Challenge(models.Model):
   hosted = models.BooleanField(default=False)
   fileUpload = models.BooleanField(default=False)
   imageName = models.CharField(max_length=100, default=None, null=True, blank=True)
+  runtime = models.CharField(max_length=100, default=None, null=True, blank=True)
   ports = models.CharField(max_length=100, default=None, null=True, blank=True)
   pathPrefix = models.CharField(max_length=100, default=None, null=True, blank=True)
   #upload = models.FileField(upload_to=user_directory_path, default=None, null=True, blank=True)

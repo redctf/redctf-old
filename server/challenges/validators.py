@@ -25,6 +25,10 @@ def validate_imageName(value):
     if not re.match(r"^[a-zA-Z0-9\ \!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~]{,100}", value):
         raise Exception('Invalid imageName')
 
+def validate_runtime(value):
+    if not re.match(r"^[a-zA-Z0-9\ \!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~]{,100}", value):
+        raise Exception('Invalid runtime')
+
 def validate_ports(value):
     if not re.match(r"^[a-zA-Z0-9\ \!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~]{,100}", value):
         raise Exception('Invalid ports')

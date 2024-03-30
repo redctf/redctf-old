@@ -387,6 +387,7 @@ def newContainer(challenge_id, userID=None):
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
+                runtime=chall_obj.runtime,
                 port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType=setContainerType,
                 username=user.username)
             print("############")
@@ -403,6 +404,7 @@ def newContainer(challenge_id, userID=None):
         try:
             new_cont_obj = d.createContainer(
                 imageName=chall_obj.imageName,
+                runtime=chall_obj.runtime,
                 port=chall_obj.ports, pathPrefix=chall_obj.pathPrefix, containerType=setContainerType)
             print("############")
             print("name: {0}, \nimage: {1}, \nlabels: {2}, \nshort_id: {3}, \nstatus: {4}".format(

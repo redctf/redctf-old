@@ -94,12 +94,13 @@ class dockerAPI:
             return False
         return True
 
-    def createContainer(self, imageName, port, containerName=None, pathPrefix=None, netIsolation=None, containerType=None, username=None):
+    def createContainer(self, imageName, port, runtime=None, containerName=None, pathPrefix=None, netIsolation=None, containerType=None, username=None):
         """
         Create a container for a user.
         :from: https://docker-py.readthedocs.io/en/stable/containers.html
         :param username: string, contributes to container name if netIsolation = true
         :param imageName: string, image name to use for container; imageName:versionNumber
+        :param runtime: string, runtime to use for container;
         :param port: dict, port number(s) to use on container
         :param pathPrefix: traefik path prefix: '/hello' is used as a frontend rule
         :param netIsolation: for isolating a container to a specific user network
@@ -157,13 +158,13 @@ class dockerAPI:
                 r_containerName = ("{0}_{1}".format(name, username))
                 r_ports = {"{0}/tcp".format(port): None}
                 r_labels = {"traefik.docker.network": username, "traefik.port": port, "traefik.frontend.rule": "PathPrefix:/{0}; Headers:user, {1};".format(pathPrefix, username), "traefik.backend.loadbalancer.sticky": "True", "traefik.enable": "true"}
-                r = self.client.containers.run(imageName, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
+                r = self.client.containers.run(imageName, runtime=runtime, detach=True, name=r_containerName, network=username, ports=r_ports, labels=r_labels)
 
                 return r
 
         else:
             # check if network exists already
-            ctfNet = "redctf_traefik"
+            ctfNet = "redctf-old_traefik"
             network = self.checkIfNetworkExists(ctfNet)
             if network is False:
                 print("no network found")
@@ -238,7 +239,7 @@ class dockerAPI:
             # define middleware chain middleware list - only appends if http above is true
             # r_labels["traefik.http.middlewares.{0}-chain.chain.middlewares".format(r_containerName)] = middleware_chain
                 
-            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
+            r = self.client.containers.run(imageName, runtime=runtime, detach=True, name=r_containerName, network='redctf-old_traefik', ports=r_ports, labels=r_labels)
 
             return r
 

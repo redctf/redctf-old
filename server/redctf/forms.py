@@ -27,7 +27,7 @@ class ChallengeForm(ModelForm):
     class Meta:
         model = Challenge
         #fields = '__all__'
-        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'fileUpload', 'imageName', 'ports', 'upload']
+        fields = ['title', 'description', 'category', 'points', 'flag', 'hosted', 'fileUpload', 'imageName', 'runtime', 'ports', 'upload']
         widgets = {
             'title': forms.TextInput(
 				attrs={
@@ -73,6 +73,12 @@ class ChallengeForm(ModelForm):
 					}
 				),
             'imageName': forms.TextInput(
+				attrs={
+					'class': 'form-control',
+                    'type': 'text'
+					}
+				),
+            'runtime': forms.TextInput(
 				attrs={
 					'class': 'form-control',
                     'type': 'text'

@@ -134,11 +134,12 @@ class AddChallenge(graphene.Mutation):
         flag = graphene.String(required=True)
         hosted = graphene.Boolean(required=True)
         image_name = graphene.String(required=False)
+        runtime = graphene.String(required=False)
         ports = graphene.String(required=False)
         # path_prefix = graphene.String(required=False)
         upload = Upload(required=False)
 
-    def mutate(self, info, category, title, points, description, flag, hosted, ports, image_name=None, upload=None):
+    def mutate(self, info, category, title, points, description, flag, hosted, ports, image_name=None, runtime=None, upload=None):
         user = info.context.user
         # Validate user is admin
         validate_user_is_admin(user)
@@ -152,6 +153,8 @@ class AddChallenge(graphene.Mutation):
         validate_category_exists(category)
         if image_name:
             validate_imageName(image_name)
+        if runtime:
+            validate_runtime(runtime)
         if ports:
             validate_ports(ports)
         # if path_prefix:
@@ -182,7 +185,7 @@ class AddChallenge(graphene.Mutation):
 
         # Save the challenge flag to the database
         challenge = Challenge(category=challenge_category, title=title, description=description,
-                              flag=flag, points=points, hosted=hosted, imageName=image_name, ports=ports)
+                              flag=flag, points=points, hosted=hosted, imageName=image_name, runtime=runtime, ports=ports)
         challenge.save()
 
         # set var for pathPrefix and tag
@@ -217,7 +220,7 @@ class AddChallenge(graphene.Mutation):
         connection = r.connect(host=RDB_HOST, port=RDB_PORT)
         try:
             r.db(CTF_DB).table('challenges').insert({'sid': challenge.id, 'category': challenge.category.id, 'title': title, 'points': points, 'description': description,
-                                                     'hosted': hosted, 'imageName': image_name, 'ports': ports, 'pathPrefix': path_tag, 'created': format(challenge.created, 'U')}).run(connection)
+                                                     'hosted': hosted, 'imageName': image_name, 'runtime': runtime, 'ports': ports, 'pathPrefix': path_tag, 'created': format(challenge.created, 'U')}).run(connection)
         except RqlRuntimeError as e:
             raise Exception(
                 'Error adding challenge to realtime database: %s' % (e))
@@ -426,10 +429,11 @@ class UpdateChallenge(graphene.Mutation):
         flag = graphene.String(required=False)
         hosted = graphene.Boolean(required=False)
         image_name = graphene.String(required=False)
+        runtime = graphene.String(required=False)
         ports = graphene.String(required=False)
         upload = Upload(required=False)
 
-    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, ports=None, upload=None):
+    def mutate(self, info, id, category=None, title=None, points=None, description=None, flag=None, hosted=None, image_name=None, runtime=None, ports=None, upload=None):
 
         user = info.context.user
         # Validate user is admin
@@ -484,6 +488,11 @@ class UpdateChallenge(graphene.Mutation):
                 validate_imageName(image_name)
                 chal.imageName = image_name
                 rethink_updates['imageName'] = image_name
+
+            if runtime is not None:
+                validate_imageName(runtime)
+                chal.runtime = runtime
+                rethink_updates['runtime'] = runtime
 
             if ports is not None:
                 validate_ports(ports)
