@@ -32,8 +32,7 @@ export default class App extends Component {
     this.store = this.props.store;
   }
   componentDidMount() {
-    //this.authenticate();
-
+    
     horizon.connect();
 
     horizon.onReady().subscribe(() => {
@@ -44,55 +43,6 @@ export default class App extends Component {
       console.info('Disconnected from Horizon server');
     });
 
-    ctf_collection.order('id').watch().subscribe(allCtfs => {
-      console.log({horizon_ctf: allCtfs}),
-      error => console.error(error);
-      this.store.appState.ctfs = allCtfs;
-    });
-    users_collection.order('id').watch().subscribe(allItems => {
-      console.log({horizon_users: allItems}),
-      error => console.error(error) 
-    });
-    categories_collection.order('id').watch().subscribe(allCategories => {
-      allCategories.sort(function(a,b){return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); } );
-      console.log({horizon_categories: allCategories}), error => console.error(error);
-      this.store.appState.categories = allCategories;
-    });
-    challenges_collection.order('id').watch().subscribe(allChallenges => {
-      console.log({horizon_challenges: allChallenges}), error => console.error(error);
-      this.store.appState.challenges = allChallenges;
-    });
-    containers_collection.order('id').watch().subscribe(allContainers => {
-      console.log({horizon_containers: allContainers}), error => console.error(error);
-      this.store.appState.containers = allContainers;
-    });
-    teams_collection.order('id').watch().subscribe(allTeams=> {
-      // add asolute 0 in teams
-      const teams = allTeams.map((team) => {
-        const d = this.store.appState.ctfs[0].start;
-        if (team.solved.length === 0) {
-          team.solved.unshift({
-            timestamp: d,    
-            points: 0
-          });
-        }
-        return team;
-      });
-
-      // primary sort is points
-      // secondary sort is the earliest timestamp on the last challenge solve
-      // third is simple alphabetic sort
-      const sortedTeams = teams.sort((a,b) => {
-        return (+(b.points > a.points) || +(b.points === a.points) - 1) ||
-          (+(a.solved[a.solved.length-1].timestamp > b.solved[b.solved.length-1].timestamp) || 
-          +(a.solved[a.solved.length-1].timestamp === b.solved[b.solved.length-1].timestamp) - 1) ||
-          (+(a.name > b.name) || +(a.name === b.name) - 1);
-      });
-
-      console.log({horizon_teams: sortedTeams}), error => console.error(error);
-      this.store.appState.teams = sortedTeams;
-    });
-    //this.getTeamInfo();
   }
   authenticate(e) {
     if (e) e.preventDefault();
