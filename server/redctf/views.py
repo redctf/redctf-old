@@ -63,7 +63,10 @@ def dashboard(request):
     solved = SolvedChallenge.objects.select_related().all().order_by('timestamp')
     
     # name of first team (not hidden) to solve a challenge
-    first_blood = solved.exclude(team__hidden=True)[0].team_set.first().name
+    if solved.exclude(team__hidden=True).count() > 0:
+        first_blood = solved.exclude(team__hidden=True)[0].team_set.first().name
+    else:
+        first_blood = 'N/A'
     
     # total (not-unique) challenge solves
     solve_count = solved.count()
