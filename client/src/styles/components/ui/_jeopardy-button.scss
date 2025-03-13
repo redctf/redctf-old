@@ -1,21 +1,43 @@
 .jeopardy-button {
   display: flex;
-  padding: 12px 30px;
+//   padding: 12px 30px;
+  align-items: center;
   justify-content: center;
   min-width: 120px;
   max-width: 120px;
   margin: 10px 15px;
   border-radius: 3px;
+  cursor: pointer;
 
-  &:hover {
-    cursor: pointer;
-    background-color: darken(blue, 20%) !important;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: opacity 0.3s ease-in-out;
+  .helmet-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 
-  .button {
-    color: #fff;
+  .helmet-button {
+    width: 80px;
+    height: auto;
+    display: block;
+    transition: filter 0.3 ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .solved {
+    filter: hue-rotate(100deg);
+  }
+
+  &:hover .helmet-button {
+    filter: hue-rotate(200deg) brightness(70%);
+  }
+
+  .helmet-text {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
   }
 }
 

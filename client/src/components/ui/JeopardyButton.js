@@ -8,6 +8,8 @@ import ModalHeader from './Modal/ModalHeader';
 import ModalContent from './Modal/ModalContent';
 import ModalFooter from './Modal/ModalFooter';
 
+import Helmet from '../../images/helmet.png';
+
 export default class JeopardyButton extends Component {
   constructor(props) {
     super(props);
@@ -69,16 +71,16 @@ export default class JeopardyButton extends Component {
   }
 
   render () {
-    const buttonStyle = {
-      backgroundColor: (this.props.solved) ? '#14af12' : '#2638ED'
-    };
-
     return (
       // TODO - Send hosted information to ChallengeModal
       <div className='jeopardy-button'
-        onClick={this.handleOpenModal}
-        style={buttonStyle}>
-        <a className='button'>{this.props.value}</a>
+        onClick={this.handleOpenModal}>
+        <div className='helmet-container'>
+          <img src={Helmet} 
+            alt="helmet-button" 
+            className={`helmet-button ${this.props.solved ? 'solved' : ''}`}/>
+          <span className="helmet-text">{this.props.value}</span>
+        </div>  
         <Modal 
            isOpen={this.state.showModal}
            contentLabel="onRequestClose Example"
