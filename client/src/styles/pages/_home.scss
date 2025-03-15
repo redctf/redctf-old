@@ -7,6 +7,11 @@
         justify-content: center;
         width: 100%;
     }
+    .hero-font {
+        top: 85vh;
+        position: absolute;
+        color: black;
+    }
     header {
         display: flex;
         justify-content: center;
@@ -26,7 +31,7 @@
         max-width: 960px;
         margin: 0 auto;
         padding: 96px 0 0 0;
-        margin-top: -40vh;
+        margin-top: -58vh;
         z-index: 2;
         .section-header {
             flex: 0 1 auto;

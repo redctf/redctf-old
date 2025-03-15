@@ -4,6 +4,9 @@ import { inject, observer } from 'mobx-react';
 import LazyRoute from 'lazy-route';
 import DevTools from 'mobx-react-devtools';
 import axios from "axios";
+import fastHeader from './fast-header.jpg';
+import family from './family.png';
+import crash from './crash.jpg';
 
 /* Horizon */
 import Horizon from '@horizon/client';
@@ -193,7 +196,13 @@ export default class App extends Component {
         />
 
         <footer className='footer'>
-          {testval}
+          <img src={fastHeader} className='footer-img'/>
+          {/* <img src={family}  className='footer-img'/>
+          <img src={crash}  className='footer-img'/> */}
+
+
+
+          {/* {testval}
           <a href='https://twitter.com/redctf' target='_blank'>
             @red_ctf
           </a>
@@ -202,7 +211,7 @@ export default class App extends Component {
           {' '}
           <a href='https://github.com/redctf/redctf' target='_blank'>
             redctf
-          </a>
+          </a> */}
         </footer>
       </div>
     );
