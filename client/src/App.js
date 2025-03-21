@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import LazyRoute from 'lazy-route';
 import DevTools from 'mobx-react-devtools';
 import axios from "axios";
-import fastHeader from './fast-header.jpg';
+import fastHeader from './images/ctf-footer-higher-res.jpg';
 import family from './family.png';
 import crash from './crash.jpg';
 
