@@ -15,7 +15,7 @@ export default class Instructions extends Component {
           <p>“It don’t matter if you hack by an inch or a mile—winning’s winning.”</p>
 
           <div className='instruction-sub-heading'>Schedule</div>
-          <p>The competition is scheduled is from 10am (local time), Thursday, April 3rd through Friday, April  4th at 2:30 PM. </p>
+          <p>The competition is scheduled is from 10am (local time), Thursday, April 3rd through Friday, April  4th at 2:30 PM. <code>Prize drawing in CTF room after competition, eternal kernel awarded at Own the Con.</code> </p>
 
           <div className='instruction-sub-heading'>🏁 START YOUR ENGINES! 🏁</div>
 
@@ -34,8 +34,8 @@ export default class Instructions extends Component {
           </p>
           <div className='instruction-sub-heading'>🏆 WINNERS TAKE ALL 🏆</div>
           <p>💰 Fastest Hackers Alive – First to capture a flag.</p>
-          <p>🏆 Participation trophy - Everybody who has completed at least 1 challenge on their own will be entered into the drawing for the prize pool held at the end of the CTF. MUST BE PRESENT TO CLAIM TROPHY.</p>
-          <p>🏁 First place prize - 4 eternal kernel badges and eternal bragging rights.</p>
+          <p>🏆 Participation trophy - Everybody who has completed at least 1 challenge on their own will be entered into the drawing for the prize pool held at the end of the CTF. <code>MUST BE PRESENT TO CLAIM PRIZE.</code></p>
+          <p>🏁 First place prize - up to 4 eternal kernel badges and eternal bragging rights.</p>
           <div className='instruction-sub-heading'>💨 READY, SET, HACK! 💨</div>
           <p>You’re at the starting line. The clock’s ticking. The competition’s fierce. Will you be fast enough? Or will you get left in the digital dust?</p>
           <h3>🔥 HACK HARD. HACK FAST. HACK FURIOUS. 🔥</h3>
