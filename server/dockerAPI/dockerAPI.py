@@ -238,7 +238,7 @@ class dockerAPI:
             # define middleware chain middleware list - only appends if http above is true
             # r_labels["traefik.http.middlewares.{0}-chain.chain.middlewares".format(r_containerName)] = middleware_chain
                 
-            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf_traefik', ports=r_ports, labels=r_labels)
+            r = self.client.containers.run(imageName, detach=True, name=r_containerName, network='redctf-old_traefik', ports=r_ports, labels=r_labels)
 
             return r
 
