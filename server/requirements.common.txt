@@ -6,5 +6,5 @@ graphene==2.1.3
 graphene-django==2.2.0
 graphene-file-upload==1.2.2
 rethinkdb==2.3.0.post6
-docker==4.1.0
+docker==7.1.0
 psycopg2==2.8.4
