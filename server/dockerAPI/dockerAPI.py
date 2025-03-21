@@ -163,7 +163,7 @@ class dockerAPI:
 
         else:
             # check if network exists already
-            ctfNet = "redctf_traefik"
+            ctfNet = "redctf-old_traefik"
             network = self.checkIfNetworkExists(ctfNet)
             if network is False:
                 print("no network found")
